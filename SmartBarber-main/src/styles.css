@@ -1,0 +1,84 @@
+:root{
+  --ink:#141110;
+  --ivory:#EFE7D8;
+  --ivory-dim:#E2D8C4;
+  --charcoal:#211D1B;
+  --charcoal-2:#2B2623;
+  --red:#9C3B2C;
+  --brass:#B68A4E;
+  --brass-soft:#c9a97a;
+  --tan:#B9A281;
+  --line: rgba(239,231,216,0.14);
+  --maxw: 1160px;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--charcoal);
+  color:var(--ivory);
+  font-family:'Fraunces', serif;
+  font-weight:300;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+}
+h1,h2,h3,.eyebrow,nav a,.btn{font-family:'Oswald', sans-serif; text-transform:uppercase;}
+a{color:inherit; text-decoration:none;}
+img{max-width:100%; display:block;}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+section{padding:96px 0;}
+
+/* Barber pole signature divider — reused between sections */
+.pole-divider{
+  height:14px;
+  background:repeating-linear-gradient(
+    -45deg,
+    var(--red) 0px, var(--red) 22px,
+    var(--ivory) 22px, var(--ivory) 44px,
+    var(--brass) 44px, var(--brass) 66px
+  );
+  background-size:200% 100%;
+  animation: pole-scroll 6s linear infinite;
+}
+@keyframes pole-scroll{
+  from{background-position:0 0;}
+  to{background-position:-93.33px 0;}
+}
+
+/* Shared eyebrow label used above headings across sections */
+.eyebrow{
+  font-size:13px; letter-spacing:0.5px; color:var(--tan); font-weight:500;
+  display:flex; align-items:center; gap:12px; margin-bottom:22px;
+  font-family:'Fraunces', serif; font-style:italic; text-transform:none;
+}
+.eyebrow::before{content:""; width:32px; height:1px; background:var(--tan); align-self:center;}
+
+/* Shared buttons */
+.btn{
+  display:inline-block; padding:16px 30px; font-size:13px; letter-spacing:2px; font-weight:600;
+  border-radius:2px; cursor:pointer; border:1px solid transparent; transition:transform .15s ease, background .15s ease;
+}
+.btn-primary{background:var(--tan); color:var(--ink);}
+.btn-primary:hover, .btn-primary:focus-visible{transform:translateY(-2px); background:var(--brass-soft);}
+.btn-ghost{border-color:rgba(239,231,216,0.4); color:var(--ivory);}
+.btn-ghost:hover, .btn-ghost:focus-visible{border-color:var(--brass); color:var(--brass-soft);}
+.btn:focus-visible{outline:2px solid var(--brass); outline-offset:3px;}
+
+/* Shared centered header used by services / team / pricing sections */
+.showcase-head{text-align:center; max-width:520px; margin:0 auto 50px;}
+.showcase-head .eyebrow{justify-content:center;}
+.showcase-head .eyebrow::before{display:none;}
+.showcase-head h2{
+  font-family:'Fraunces', serif; font-style:normal; font-weight:500; text-transform:none;
+  font-size:clamp(30px, 3.6vw, 44px); color:var(--ink); margin:8px 0 22px;
+}
+.showcase-divider{display:flex; align-items:center; justify-content:center; gap:12px; color:var(--brass);}
+.showcase-divider .dash{width:36px; height:1px; background:repeating-linear-gradient(to right, var(--brass) 0 4px, transparent 4px 8px);}
+.showcase-divider svg{width:26px; height:26px;}
+
+@media (max-width: 540px){
+  section{padding:64px 0;}
+}

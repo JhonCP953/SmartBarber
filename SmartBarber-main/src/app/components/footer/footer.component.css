@@ -1,0 +1,193 @@
+footer {
+  background: var(--ink); 
+  padding: 70px 0 0;
+}
+
+/* --- CONTROL DEL NUEVO LOGO EN EL FOOTER --- */
+footer .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ivory);
+}
+
+footer .footer-logo-img {
+  height: 42px; /* Tamaño elegante y proporcional */
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* Convierte el logo a blanco si la imagen original es oscura */
+}
+
+footer .logo-text {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  line-height: 1.1;
+  color: var(--ivory);
+  display: flex;
+  flex-direction: column;
+}
+
+footer .logo-sub {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: var(--ivory-dim);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* --- ESTRUCTURA DE LA GRILLA --- */
+.footer-grid {
+  display: grid; 
+  grid-template-columns: 1.2fr 1fr 1fr 1.1fr; 
+  gap: 40px; 
+  padding-bottom: 50px;
+}
+
+footer h4 {
+  font-family: 'Fraunces', serif; 
+  font-style: normal; 
+  font-weight: 500; 
+  text-transform: none;
+  font-size: 18px; 
+  color: var(--ivory); 
+  margin-bottom: 20px;
+}
+
+footer ul {
+  list-style: none; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px;
+}
+
+footer a {
+  font-size: 14.5px; 
+  color: var(--ivory-dim);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a:hover, 
+footer a:focus-visible {
+  color: var(--ivory);
+}
+
+.footer-about p {
+  font-size: 14.5px; 
+  color: var(--ivory-dim); 
+  max-width: 270px; 
+  margin: 16px 0 22px; 
+  line-height: 1.75;
+}
+
+.social-row {
+  display: flex; 
+  gap: 14px;
+}
+
+.social-row a {
+  width: 32px; 
+  height: 32px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 13px; 
+  color: var(--ivory-dim);
+}
+
+.social-row a:hover {
+  color: var(--tan);
+}
+
+.footer-contact p {
+  font-size: 14.5px; 
+  color: var(--ivory-dim); 
+  line-height: 1.75; 
+  margin-bottom: 16px;
+}
+
+.footer-hours .hour-row {
+  font-size: 14.5px; 
+  color: var(--ivory-dim); 
+  margin-bottom: 14px; 
+  line-height: 1.6;
+}
+
+/* --- FORMULARIO DE SUSCRIPCIÓN --- */
+.subscribe-form {
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px;
+}
+
+.subscribe-form input {
+  background: var(--charcoal-2); 
+  border: 1px solid var(--line); 
+  color: var(--ivory);
+  padding: 14px 16px; 
+  font-family: 'Fraunces', serif; 
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.subscribe-form input:focus {
+  border-color: var(--tan);
+}
+
+.subscribe-form input::placeholder {
+  color: var(--ivory-dim);
+}
+
+.subscribe-form button {
+  border: none; 
+  width: 100%;
+}
+
+.subscribe-form button:disabled {
+  opacity: 0.6; 
+  cursor: not-allowed;
+}
+
+/* --- BARRA INFERIOR COPYRIGHT --- */
+.footer-bottom {
+  border-top: 1px solid var(--line); 
+  padding: 24px 0;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  font-size: 13px; 
+  color: var(--ivory-dim); 
+  flex-wrap: wrap; 
+  gap: 14px;
+}
+
+.footer-legal-links {
+  display: flex; 
+  gap: 26px; 
+  flex-direction: row !important;
+}
+
+.footer-legal-links a {
+  font-family: 'Oswald', sans-serif; 
+  font-size: 12px; 
+  letter-spacing: 1px;
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 880px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr; 
+    gap: 36px;
+  }
+}
+
+@media (max-width: 540px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

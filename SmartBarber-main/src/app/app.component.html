@@ -1,0 +1,23 @@
+<app-navbar (navigate)="setView($event)"></app-navbar>
+
+<!-- VISTA PRINCIPAL (LANDING PAGE) -->
+<ng-container *ngIf="currentView === 'home'">
+  <app-hero></app-hero>
+  <app-about></app-about>
+  <div class="pole-divider" role="presentation"></div>
+  <app-services></app-services>
+  <app-team></app-team>
+  <app-pricing></app-pricing>
+  <app-testimonials></app-testimonials>
+  <app-cta-banner></app-cta-banner>
+  <app-appointment></app-appointment>
+  <div class="pole-divider" role="presentation"></div>
+  <app-blog></app-blog>
+</ng-container>
+
+<!-- VISTA INDEPENDIENTE DE SUCURSALES -->
+<ng-container *ngIf="currentView === 'sucursales'">
+  <app-branch-register></app-branch-register>
+</ng-container>
+
+<app-footer></app-footer>

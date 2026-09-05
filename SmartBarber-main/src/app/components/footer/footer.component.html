@@ -1,0 +1,63 @@
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      
+      <!-- Columna 1: Logo & Descripción -->
+      <div class="footer-about">
+        <div class="logo">
+          <img src="/logo.png" alt="SmartBarber Logo" class="footer-logo-img" />
+          <div class="logo-text">SMARTBARBER<span class="logo-sub">Barbería &amp; Salón desde 1992</span></div>
+        </div>
+        <p>Barbería y salón creado para quienes valoran calidad, tiempo y un look impecable.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Facebook">FB</a>
+          <a href="#" aria-label="Twitter">TW</a>
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="LinkedIn">IN</a>
+        </div>
+      </div>
+
+      <!-- Columna 2: Sede Principal -->
+      <div class="footer-contact">
+        <h4>Sede principal</h4>
+        <p>Cra. 15 #93-47, 3er piso<br>Bogotá, Colombia</p>
+        <p>hola&#64;navaja.co<br>+57 300 000 0000</p>
+      </div>
+
+      <!-- Columna 3: Horarios -->
+      <div class="footer-hours">
+        <h4>Horario de atención</h4>
+        <div class="hour-row">Lunes – Viernes<br>9:00 a.m. – 8:00 p.m.</div>
+        <div class="hour-row">Sábado<br>9:00 a.m. – 6:00 p.m.</div>
+        <div class="hour-row">Domingo<br>10:00 a.m. – 3:00 p.m.</div>
+      </div>
+
+      <!-- Columna 4: Formulario de Suscripción -->
+      <div>
+        <h4>Suscríbete a novedades</h4>
+        <form class="subscribe-form" [formGroup]="subscribeForm" (ngSubmit)="onSubscribe()">
+          <input formControlName="email" type="email" placeholder="Tu correo electrónico" />
+          <button type="submit" class="btn btn-primary" [disabled]="state === 'sending'">
+            <ng-container [ngSwitch]="state">
+              <ng-container *ngSwitchCase="'sending'">Enviando...</ng-container>
+              <ng-container *ngSwitchCase="'success'">¡Listo, gracias!</ng-container>
+              <ng-container *ngSwitchCase="'error'">Error, intenta de nuevo</ng-container>
+              <ng-container *ngSwitchDefault>Suscribirme</ng-container>
+            </ng-container>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Barra Inferior -->
+    <div class="footer-bottom">
+      <span>© 2026 SmartBarber. Todos los derechos reservados.</span>
+      <ul class="footer-legal-links">
+        <li><a href="#">Pedidos</a></li>
+        <li><a href="#">Términos</a></li>
+        <li><a href="#">Reportar un problema</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

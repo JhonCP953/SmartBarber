@@ -1,0 +1,51 @@
+<section id="servicios" class="services-showcase">
+  <div class="wrap">
+    <div class="showcase-head">
+      <div class="eyebrow">Barbería &amp; Salón de tendencia</div>
+      <h2>Nuestros servicios</h2>
+      <div class="showcase-divider">
+        <span class="dash"></span>
+        
+        <!-- Navaja Abierta Clásica -->
+        <svg class="mustache-svg" viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Hoja de la navaja -->
+          <path d="M12 28 C 12 18, 30 14, 52 14 L 54 22 C 34 22, 20 26, 16 34 Z"/>
+          <!-- Mango articulado -->
+          <path d="M14 32 L 48 50 C 50 51, 52 50, 53 48 L 55 44 C 56 42, 55 40, 53 39 L 20 22 Z" opacity="0.85"/>
+          <!-- Remache de unión -->
+          <circle cx="16" cy="31" r="2.5" fill="#1a1a1a"/>
+        </svg>
+
+        <span class="dash"></span>
+      </div>
+    </div>
+
+    <div class="showcase-grid">
+      <div class="showcase-card" *ngFor="let service of services">
+        <svg class="showcase-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <ng-container [ngSwitch]="service.icon">
+            <ng-container *ngSwitchCase="'scissors'">
+              <circle cx="16" cy="16" r="6"/><circle cx="16" cy="44" r="6"/>
+              <path d="M21 20 L52 44 M21 40 L52 16"/>
+            </ng-container>
+            <ng-container *ngSwitchCase="'razor'">
+              <path d="M14 46 L40 20 a5 5 0 0 1 7 7 L26 52z"/>
+              <path d="M14 46 L20 40"/><path d="M40 20 L46 14"/>
+            </ng-container>
+            <ng-container *ngSwitchCase="'shave'">
+              <path d="M24 10 h16 v18 c0 10 -16 10 -16 0 z"/>
+              <path d="M32 28 v26"/><path d="M24 54 h16"/>
+            </ng-container>
+            <ng-container *ngSwitchCase="'mask'">
+              <rect x="22" y="8" width="20" height="14" rx="2"/>
+              <path d="M24 22 v8 M29 22 v10 M34 22 v10 M39 22 v8"/>
+              <path d="M32 40 v14"/>
+            </ng-container>
+          </ng-container>
+        </svg>
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,126 @@
+.pricing-section {
+  background: var(--ivory, #f9f6f0);
+  padding: 100px 0;
+  color: var(--ink, #1a1a1a);
+}
+
+/* --- Encabezado --- */
+.pricing-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.pricing-head .eyebrow {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #c4ab80;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.pricing-head h2 {
+  font-family: 'Fraunces', serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: clamp(34px, 4vw, 46px);
+  color: var(--ink, #1a1a1a);
+  margin: 0 0 16px 0;
+  line-height: 1.15;
+}
+
+/* Divisor Navaja Vintage */
+.pricing-divider {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.razor-svg {
+  width: 34px !important;
+  height: 34px !important;
+  color: #c4ab80 !important;
+  flex-shrink: 0;
+  display: block;
+}
+
+.pricing-divider .dash {
+  flex: 1;
+  height: 0;
+  border-bottom: 1.5px dashed #c4ab80 !important;
+  display: block;
+}
+
+/* --- Rejilla de 2 Columnas --- */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px;
+  align-items: start;
+}
+
+.pricing-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Estilo de los Ítems de Precio --- */
+.price-item {
+  margin-bottom: 36px;
+}
+
+.item-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.item-title {
+  font-family: 'Fraunces', serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Línea punteada que conecta el servicio con el precio */
+.item-dots {
+  flex: 1;
+  border-bottom: 1.5px dashed #d5c8b5;
+  margin: 0 8px 4px 8px;
+}
+
+/* Precio en cursiva dorada/bronce */
+.item-price {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+  color: #b89d77;
+  white-space: nowrap;
+}
+
+.item-desc {
+  font-size: 14px;
+  color: #726a61;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --- Responsive para pantallas móviles --- */
+@media (max-width: 820px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

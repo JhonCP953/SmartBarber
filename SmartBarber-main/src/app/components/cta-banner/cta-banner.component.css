@@ -1,0 +1,84 @@
+.cta-section {
+  position: relative;
+  background: linear-gradient(180deg, #1f1a17 0%, #141110 100%);
+  color: var(--ivory, #f9f6f0);
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 750px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Divisor Navaja Vintage --- */
+.cta-divider {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto 28px auto;
+}
+
+.razor-svg {
+  width: 32px !important;
+  height: 32px !important;
+  color: #c4ab80 !important;
+  flex-shrink: 0;
+  display: block;
+}
+
+.cta-divider .dash {
+  flex: 1;
+  height: 0;
+  border-bottom: 1.5px dashed #c4ab80 !important;
+  display: block;
+}
+
+/* --- Títulos y Texto --- */
+.cta-section h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 4.2vw, 48px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: #f7f3ec;
+  margin: 0 0 20px 0;
+}
+
+.cta-section p {
+  font-size: 15px;
+  color: #c4ab80;
+  line-height: 1.65;
+  margin: 0 0 38px 0;
+  max-width: 620px;
+}
+
+/* --- Botón Reservar Cita --- */
+.btn-reserve {
+  display: inline-block;
+  background: #b89d77;
+  color: #1a1a1a;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 18px 42px;
+  text-decoration: none;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.btn-reserve:hover {
+  background: #c4ab80;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}

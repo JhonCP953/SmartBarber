@@ -1,0 +1,60 @@
+<section id="reservar" class="appointment">
+  <div class="appointment-grid">
+
+    <!-- Lado Izquierdo: Imagen reserva.jpg -->
+    <div class="appointment-photo" role="img" aria-label="Barbero atendiendo a un cliente"></div>
+
+    <!-- Lado Derecho: Formulario con reserva1.jpg de fondo -->
+    <div class="appointment-panel">
+      <div class="appointment-panel-inner">
+        <h2>Agenda tu cita</h2>
+        <p>Cuéntanos qué necesitas y con quién prefieres tu cita. Te confirmamos disponibilidad el mismo día.</p>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="appt-row">
+            <div class="appt-field">
+              <input formControlName="name" type="text" placeholder="Nombre" />
+            </div>
+            <div class="appt-field">
+              <input formControlName="email" type="email" placeholder="Tu correo" />
+            </div>
+          </div>
+          <div class="appt-row">
+            <div class="appt-field">
+              <input formControlName="phone" type="tel" placeholder="Tu teléfono" />
+            </div>
+            <div class="appt-field">
+              <input formControlName="preferredTime" type="text" placeholder="Horario preferido" />
+            </div>
+          </div>
+          <div class="appt-row">
+            <div class="appt-field">
+              <select formControlName="service">
+                <option value="" disabled selected>Servicios</option>
+                <option *ngFor="let s of services" [value]="s">{{ s }}</option>
+              </select>
+            </div>
+            <div class="appt-field">
+              <select formControlName="barber">
+                <option value="" disabled selected>Elige tu barbero</option>
+                <option *ngFor="let b of barbers" [value]="b">{{ b }}</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary submit-btn" [disabled]="state === 'sending'">
+            <ng-container [ngSwitch]="state">
+              <ng-container *ngSwitchCase="'sending'">Enviando...</ng-container>
+              <ng-container *ngSwitchCase="'success'">¡Solicitud enviada!</ng-container>
+              <ng-container *ngSwitchCase="'error'">Error, intenta de nuevo</ng-container>
+              <ng-container *ngSwitchDefault>Reservar cita</ng-container>
+            </ng-container>
+          </button>
+          <p class="form-note" *ngIf="state === 'error'">
+            No pudimos enviar tu reserva. Revisa el endpoint en <code>form-config.ts</code> o intenta de nuevo.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

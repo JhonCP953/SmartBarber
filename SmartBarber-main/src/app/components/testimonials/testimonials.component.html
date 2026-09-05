@@ -1,0 +1,19 @@
+<section id="opiniones" class="testi-parallax">
+  <div
+    class="testi-slide"
+    *ngFor="let t of testimonials; let i = index"
+    [class.is-active]="i === current"
+  >
+    <q>&quot;{{ t.quote }}&quot;</q>
+    <div class="testi-author">{{ t.author }}</div>
+  </div>
+
+  <div class="testi-dots">
+    <button
+      *ngFor="let t of testimonials; let i = index"
+      [class.is-active]="i === current"
+      (click)="goTo(i)"
+      [attr.aria-label]="'Ver opinión ' + (i + 1)"
+    ></button>
+  </div>
+</section>

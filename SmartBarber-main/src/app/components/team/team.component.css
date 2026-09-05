@@ -1,0 +1,140 @@
+.team-section {
+  background: var(--ivory, #f9f6f0);
+  padding: 100px 0;
+  color: var(--ink, #1a1a1a);
+}
+
+/* --- Encabezado --- */
+.team-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 55px;
+}
+
+.team-head h2 {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(32px, 4vw, 44px);
+  color: var(--ink, #1a1a1a);
+  margin: 0 0 16px 0;
+}
+
+/* Divisor idéntico a la Sección 3 */
+.team-divider {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.razor-svg {
+  width: 34px !important;
+  height: 34px !important;
+  color: #c4ab80 !important;
+  flex-shrink: 0;
+  display: block;
+}
+
+.team-divider .dash {
+  flex: 1;
+  height: 0;
+  border-bottom: 1.5px dashed #c4ab80 !important;
+  display: block;
+}
+
+/* --- Rejilla y Tarjetas --- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.team-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.15; /* Proporción limpia para las fotos de los barberos */
+  overflow: hidden;
+}
+
+.card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+/* EFECTO HOVER: Zoom ligero a la foto */
+.team-card:hover img {
+  transform: scale(1.05);
+}
+
+/* --- Overlay desplegable en la parte inferior --- */
+.hover-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 24px 16px;
+  background: rgba(138, 115, 96, 0.92); /* Tono café / bronce semi-transparente exacto a la imagen */
+  color: #ffffff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* Oculto por defecto y animado al hacer hover */
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* MOSTRAR OVERLAY AL PASAR EL CURSOR */
+.team-card:hover .hover-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.member-name {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+}
+
+.member-role {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #f1e7d8;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 540px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+}

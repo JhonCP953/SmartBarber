@@ -1,0 +1,97 @@
+<section class="branch-section" id="sucursales">
+  <div class="wrap">
+    <div class="section-header">
+      <span class="eyebrow">Expansión SmartBarber</span>
+      <h2>Registrar Nueva Sucursal</h2>
+      <p>Añade los datos de la sede para habilitar agenda de citas y asignación de barberos.</p>
+    </div>
+
+    <form (ngSubmit)="onRegisterBranch()" class="branch-form">
+      <div class="form-grid">
+        <div class="field">
+          <label for="name">Nombre de la Sucursal</label>
+          <input 
+            type="text" 
+            id="name" 
+            [(ngModel)]="branch.name" 
+            name="name" 
+            placeholder="Ej: Sede Chapinero / Centro" 
+            required>
+        </div>
+
+        <div class="field">
+          <label for="city">Ciudad</label>
+          <input 
+            type="text" 
+            id="city" 
+            [(ngModel)]="branch.city" 
+            name="city" 
+            placeholder="Ej: Bogotá" 
+            required>
+        </div>
+
+        <div class="field">
+          <label for="address">Dirección Exacta</label>
+          <input 
+            type="text" 
+            id="address" 
+            [(ngModel)]="branch.address" 
+            name="address" 
+            placeholder="Ej: Calle 63 #11-24" 
+            required>
+        </div>
+
+        <div class="field">
+          <label for="phone">Teléfono de Contacto</label>
+          <input 
+            type="tel" 
+            id="phone" 
+            [(ngModel)]="branch.phone" 
+            name="phone" 
+            placeholder="Ej: 300 123 4567" 
+            required>
+        </div>
+
+        <div class="field">
+          <label for="barbers">Número de Sillas / Barberos</label>
+          <input 
+            type="number" 
+            id="barbers" 
+            [(ngModel)]="branch.capacity" 
+            name="capacity" 
+            placeholder="Ej: 4" 
+            min="1" 
+            required>
+        </div>
+
+        <div class="field">
+          <label for="schedule">Horario de Atención</label>
+          <input 
+            type="text" 
+            id="schedule" 
+            [(ngModel)]="branch.schedule" 
+            name="schedule" 
+            placeholder="Ej: Lun - Sáb: 8:00 AM - 8:00 PM" 
+            required>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Guardar Sucursal</button>
+      </div>
+    </form>
+
+    <div class="branch-list" *ngIf="branches.length > 0">
+      <h3>Sucursales Activas ({{ branches.length }})</h3>
+      <div class="cards-grid">
+        <div class="branch-card" *ngFor="let item of branches">
+          <h4>{{ item.name }}</h4>
+          <p>📍 {{ item.address }} ({{ item.city }})</p>
+          <p>📞 {{ item.phone }}</p>
+          <p>💈 Sillas disponibles: {{ item.capacity }}</p>
+          <p class="schedule">🕒 {{ item.schedule }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

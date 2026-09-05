@@ -1,0 +1,19 @@
+<section id="blog" class="blog">
+  <div class="wrap">
+    <div class="blog-head">
+      <div class="eyebrow">Consejos &amp; novedades</div>
+      <h2>Todo lo que debes saber sobre el cuidado de tu imagen</h2>
+    </div>
+
+    <div class="blog-grid">
+      <div class="blog-card" *ngFor="let post of posts">
+        <div class="blog-photo" [ngStyle]="{ 'background-image': 'url(' + post.image + ')' }">
+          <span class="blog-tag">{{ post.tag }}</span>
+        </div>
+        <div class="blog-body">
+          <h3><a href="#">{{ post.title }}</a></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

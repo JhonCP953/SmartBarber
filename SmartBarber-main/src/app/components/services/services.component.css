@@ -1,0 +1,119 @@
+.services-showcase {
+  background: var(--ivory); 
+  color: var(--ink);
+  padding: 110px 0;
+}
+
+/* --- Encabezado --- */
+.showcase-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.showcase-head .eyebrow {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #c4ab80;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.showcase-head h2 {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  text-transform: none;
+  font-size: clamp(30px, 3.5vw, 42px);
+  color: var(--ink);
+  line-height: 1.2;
+  margin: 0 0 18px 0;
+}
+
+/* --- Divisor Central --- */
+.showcase-divider {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+/* Estilos de la navaja abierta */
+.mustache-svg {
+  width: 36px !important;
+  height: 36px !important;
+  color: #c4ab80 !important;
+  flex-shrink: 0;
+  display: block;
+}
+
+.showcase-divider .dash {
+  flex: 1;
+  height: 0;
+  border-bottom: 1.5px dashed #c4ab80 !important;
+  display: block;
+}
+
+/* --- Grid de Servicios --- */
+.showcase-grid {
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 26px;
+}
+
+.showcase-card {
+  background: #fff; 
+  padding: 44px 28px 38px; 
+  text-align: center;
+  box-shadow: 0 14px 34px rgba(20, 17, 16, 0.06);
+  border-radius: 4px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.showcase-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(20, 17, 16, 0.1);
+}
+
+.showcase-icon {
+  width: 56px; 
+  height: 56px; 
+  margin: 0 auto 24px; 
+  color: var(--tan);
+  display: block;
+}
+
+.showcase-card h3 {
+  font-family: 'Fraunces', serif; 
+  font-style: normal; 
+  font-weight: 500; 
+  text-transform: none;
+  font-size: 21px; 
+  color: var(--ink); 
+  margin-bottom: 14px;
+}
+
+.showcase-card p {
+  font-size: 14px; 
+  color: #726a61; 
+  line-height: 1.75;
+}
+
+/* --- Responsive --- */
+@media (max-width: 880px) {
+  .showcase-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+}

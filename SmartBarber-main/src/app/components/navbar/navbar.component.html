@@ -1,0 +1,27 @@
+<header>
+  <div class="wrap nav-inner">
+    <div class="logo">
+      <img src="/logo.png" alt="SmartBarber Logo" class="logo-icon-img" />
+      <div class="logo-text">SMARTBARBER<span class="logo-sub">Barbería &amp; Salón desde 1992</span></div>
+    </div>
+
+    <nav aria-label="Navegación principal">
+      <ul>
+        <li *ngFor="let link of links"> 
+          <a [href]="link.href" (click)="onNavClick(link)">{{ link.label }}</a>
+        </li>
+      </ul>
+    </nav>
+
+    <a href="#reservar" class="btn nav-cta" (click)="onNavClick({ label: 'Reservar', href: '#reservar', targetView: 'home' })">Reservar cita</a>
+    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menú">☰</button>
+  </div>
+
+  <nav *ngIf="isMenuOpen" class="mobile-nav" aria-label="Navegación móvil">
+    <ul>
+      <li *ngFor="let link of links">
+        <a [href]="link.href" (click)="onNavClick(link)">{{ link.label }}</a>
+      </li>
+    </ul>
+  </nav>
+</header>
