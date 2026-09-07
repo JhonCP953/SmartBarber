@@ -6,6 +6,7 @@ import { AboutComponent } from './components/about/about.component';
 import { ServicesComponent } from './components/services/services.component';
 import { TeamComponent } from './components/team/team.component';
 import { PricingComponent } from './components/pricing/pricing.component';
+import { SubscriptionComponent } from './components/subscription/subscription.component';
 import { TestimonialsComponent } from './components/testimonials/testimonials.component';
 import { BranchRegisterComponent } from './components/branch-register/branch-register.component';
 import { CtaBannerComponent } from './components/cta-banner/cta-banner.component';
@@ -24,6 +25,7 @@ import { FooterComponent } from './components/footer/footer.component';
     ServicesComponent,
     TeamComponent,
     PricingComponent,
+    SubscriptionComponent,
     TestimonialsComponent,
     BranchRegisterComponent,
     CtaBannerComponent,
@@ -37,8 +39,8 @@ export class AppComponent {
   // 'home' o 'sucursales'
   currentView: string = 'home';
 
-  setView(view: string) {
+  setView(view: string): void {
     this.currentView = view;
-    window.scrollTo(0, 0); // Vuelve arriba al cambiar de vista
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

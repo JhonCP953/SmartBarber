@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface Service {
@@ -15,9 +15,8 @@ interface Service {
   styleUrl: './services.component.css'
 })
 export class ServicesComponent {
-  // Extend here: add a new object (pick one of the existing `icon` values,
-  // or add a new one and a matching <ng-container> in the template's
-  // icon switch) to add a service card with no other template changes.
+  @Output() navigateToSubscription = new EventEmitter<string>();
+
   services: Service[] = [
     {
       icon: 'scissors',
@@ -40,4 +39,8 @@ export class ServicesComponent {
       description: 'Limpieza profunda y mascarilla para dejar la piel del rostro fresca y renovada.'
     }
   ];
+
+  onViewPlans(): void {
+    this.navigateToSubscription.emit('suscripcion');
+  }
 }

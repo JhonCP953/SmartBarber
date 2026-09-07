@@ -18,7 +18,7 @@ export class AppointmentComponent {
   private http = inject(HttpClient);
 
   services = ['Corte clásico', 'Arreglo de barba', 'Color y mechas', 'Tratamiento capilar', 'Peinado & evento', 'Combo completo'];
-  barbers = ['Camilo Rey', 'Julián Prieto', 'Andrés Villa', 'Mariana Cote'];
+  barbers = ['Camilo Rey', 'Julián Prieto', 'Andrés Villa', 'Mariano Correa'];
 
   state: SubmitState = 'idle';
 

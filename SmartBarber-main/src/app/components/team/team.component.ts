@@ -32,7 +32,7 @@ export class TeamComponent {
       image: 'Andres.jpg'
     },
     {
-      name: 'Mariana Cote',
+      name: 'Mariano Correa',
       role: 'ESTILISTA',
       image: 'Mario.jpg' 
     }

@@ -1,28 +1,24 @@
 <section id="servicios" class="services-showcase">
   <div class="wrap">
+    
     <div class="showcase-head">
       <div class="eyebrow">Barbería &amp; Salón de tendencia</div>
-      <h2>Nuestros servicios</h2>
+      <h2>NUESTROS SERVICIOS</h2>
       <div class="showcase-divider">
         <span class="dash"></span>
-        
-        <!-- Navaja Abierta Clásica -->
-        <svg class="mustache-svg" viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <!-- Hoja de la navaja -->
+        <svg class="mustache-svg" viewBox="0 0 64 64" fill="currentColor">
           <path d="M12 28 C 12 18, 30 14, 52 14 L 54 22 C 34 22, 20 26, 16 34 Z"/>
-          <!-- Mango articulado -->
           <path d="M14 32 L 48 50 C 50 51, 52 50, 53 48 L 55 44 C 56 42, 55 40, 53 39 L 20 22 Z" opacity="0.85"/>
-          <!-- Remache de unión -->
           <circle cx="16" cy="31" r="2.5" fill="#1a1a1a"/>
         </svg>
-
         <span class="dash"></span>
       </div>
     </div>
 
+    <!-- CARDS DE SERVICIOS -->
     <div class="showcase-grid">
       <div class="showcase-card" *ngFor="let service of services">
-        <svg class="showcase-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg class="showcase-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6">
           <ng-container [ngSwitch]="service.icon">
             <ng-container *ngSwitchCase="'scissors'">
               <circle cx="16" cy="16" r="6"/><circle cx="16" cy="44" r="6"/>
@@ -47,5 +43,13 @@
         <p>{{ service.description }}</p>
       </div>
     </div>
+
+    <!-- BOTÓN QUE LLEVA A SUSCRIPCIÓN -->
+    <div class="showcase-action">
+      <button class="btn-services-plans" (click)="onViewPlans()">
+        VER PLANES DE SUSCRIPCIÓN
+      </button>
+    </div>
+
   </div>
 </section>

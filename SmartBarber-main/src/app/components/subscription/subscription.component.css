@@ -3,13 +3,10 @@
   width: 100%;
 }
 
-.services-showcase {
-  background-color: #f4efe6 !important; /* Color marfil de fondo explícito */
-  color: #1a1a1a !important;
-  padding: 100px 0 80px 0;
+.subscription-section {
+  background-color: #f4efe6 !important;
+  padding: 80px 0;
   width: 100%;
-  position: relative;
-  z-index: 1;
 }
 
 .wrap {
@@ -18,7 +15,7 @@
   padding: 0 20px;
 }
 
-/* --- Encabezado --- */
+/* Header */
 .showcase-head {
   display: flex;
   flex-direction: column;
@@ -32,23 +29,24 @@
   font-style: italic;
   font-size: 16px;
   color: #c4ab80 !important;
-  margin-bottom: 10px;
-  letter-spacing: 0.5px;
-  display: block;
+  margin-bottom: 8px;
 }
 
 .showcase-head h2 {
   font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-weight: 500;
-  font-size: clamp(30px, 3.5vw, 42px);
-  color: #1a1a1a !important; /* Fuerza color oscuro para que resalte en el fondo beige */
-  line-height: 1.2;
-  margin: 0 0 18px 0;
-  display: block;
+  font-size: 38px;
+  color: #1a1a1a !important;
+  margin: 0 0 16px 0;
+  letter-spacing: 1px;
 }
 
-/* --- Divisor Central --- */
+.sub-lead {
+  font-size: 15px;
+  color: #555555 !important;
+  font-style: italic;
+  margin-top: 12px;
+}
+
 .showcase-divider {
   display: flex !important;
   align-items: center !important;
@@ -63,124 +61,15 @@
   width: 36px !important;
   height: 36px !important;
   color: #c4ab80 !important;
-  flex-shrink: 0;
-  display: block;
 }
 
 .showcase-divider .dash {
   flex: 1;
   height: 0;
   border-bottom: 1.5px dashed #c4ab80 !important;
-  display: block;
 }
 
-/* --- Grid de Servicios --- */
-.showcase-grid {
-  display: grid; 
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 26px;
-}
-
-.showcase-card {
-  background: #ffffff !important; 
-  padding: 44px 28px 38px; 
-  text-align: center;
-  box-shadow: 0 14px 34px rgba(20, 17, 16, 0.08);
-  border-radius: 4px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.showcase-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(20, 17, 16, 0.12);
-}
-
-.showcase-icon {
-  width: 56px; 
-  height: 56px; 
-  margin: 0 auto 24px; 
-  color: #c4ab80 !important;
-  display: block;
-}
-
-.showcase-card h3 {
-  font-family: 'Fraunces', serif; 
-  font-style: normal; 
-  font-weight: 600; 
-  font-size: 21px; 
-  color: #1a1a1a !important; /* Fuerza el título de cada servicio a negro/charcoal */
-  margin-bottom: 14px;
-  display: block;
-}
-
-.showcase-card p {
-  font-size: 14px; 
-  color: #555555 !important; /* Gris oscuro legibles para las descripciones */
-  line-height: 1.75;
-  display: block;
-}
-
-/* --- Botón Ver Planes de Suscripción --- */
-.showcase-action {
-  margin-top: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.btn-services-plans {
-  padding: 16px 36px;
-  background-color: transparent;
-  color: #1a1a1a !important;
-  border: 1.5px solid #c4ab80;
-  font-family: 'Fraunces', serif;
-  font-size: 14px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 4px;
-}
-
-.btn-services-plans:hover {
-  background-color: #c4ab80;
-  color: #ffffff !important;
-  box-shadow: 0 8px 24px rgba(196, 171, 128, 0.25);
-  transform: translateY(-2px);
-}
-
-/* --- ESTILOS AGREGADOS: SECCIÓN DE PLANES DE SUSCRIPCIÓN --- */
-.subscription-section {
-  margin-top: 80px;
-  padding-top: 60px;
-  border-top: 1px dashed #c4ab80;
-  width: 100%;
-}
-
-.sub-head {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.sub-head h3 {
-  font-family: 'Fraunces', serif;
-  font-size: 32px;
-  color: #1a1a1a !important;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.sub-head p {
-  font-size: 15px;
-  color: #726a61 !important;
-  font-style: italic;
-  display: block;
-}
-
-/* Grid de Tarjetas de Planes */
+/* Cards Grid */
 .plans-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -212,7 +101,6 @@
   box-shadow: 0 15px 35px rgba(196, 171, 128, 0.25);
 }
 
-/* Badges e Insignias */
 .plan-badge {
   display: inline-block;
   align-self: center;
@@ -232,13 +120,11 @@
   color: #ffffff !important;
 }
 
-.plan-card h3, 
-.plan-card h4 {
+.plan-card h3 {
   font-family: 'Fraunces', serif;
   font-size: 22px;
   color: #1a1a1a !important;
   margin-bottom: 10px;
-  display: block;
 }
 
 .plan-price {
@@ -248,24 +134,20 @@
   color: #c4ab80 !important;
   font-weight: 600;
   margin-bottom: 10px;
-  display: block;
 }
 
 .plan-price span {
   font-size: 14px;
   font-style: normal;
   color: #726a61 !important;
-  font-weight: normal;
 }
 
 .plan-desc {
   font-size: 13px;
-  color: #726a61 !important;
+  color: #555555 !important;
   margin-bottom: 20px;
-  display: block;
 }
 
-/* Formato de la Lista de Beneficios */
 .plan-features {
   list-style: none !important;
   padding: 20px 0 0 0 !important;
@@ -289,7 +171,6 @@
   margin-right: 10px;
 }
 
-/* Botones de Suscripción */
 .btn-subscribe {
   width: 100%;
   padding: 14px 20px;
@@ -322,21 +203,10 @@
   border-color: #b09568;
 }
 
-/* --- Responsive --- */
-@media (max-width: 880px) {
-  .showcase-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
+@media (max-width: 900px) {
   .plans-grid {
     grid-template-columns: 1fr;
     max-width: 450px;
     margin: 0 auto;
-  }
-}
-
-@media (max-width: 540px) {
-  .showcase-grid {
-    grid-template-columns: 1fr;
   }
 }

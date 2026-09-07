@@ -1,10 +1,17 @@
-import { Component, Output, EventEmitter } from '@angular/core'; // <-- Se agregaron Output y EventEmitter
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+interface NavSubLink {
+  label: string;
+  href: string;
+  targetView: string;
+}
 
 interface NavLink {
   label: string;
   href: string;
-  targetView?: string; // Propiedad opcional para identificar la vista
+  targetView?: string;
+  sublinks?: NavSubLink[];
 }
 
 @Component({
@@ -15,7 +22,6 @@ interface NavLink {
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  // Evento de salida para notificar a AppComponent el cambio de vista
   @Output() navigate = new EventEmitter<string>();
 
   links: NavLink[] = [
@@ -26,7 +32,15 @@ export class NavbarComponent {
     { label: 'Opiniones', href: '#opiniones', targetView: 'home' },
     { label: 'Blog', href: '#blog', targetView: 'home' },
     { label: 'SUCURSALES', href: '#sucursales', targetView: 'sucursales' },
-    { label: 'Contacto', href: '#reservar', targetView: 'home' }
+    { 
+      label: 'Contacto', 
+      href: '#reservar', 
+      targetView: 'home',
+      sublinks: [
+        { label: 'Contacto directo', href: '#reservar', targetView: 'home' },
+        { label: 'Suscripción / Planes', href: '#suscripcion', targetView: 'suscripcion' }
+      ]
+    }
   ];
 
   isMenuOpen = false;
@@ -39,9 +53,8 @@ export class NavbarComponent {
     this.isMenuOpen = false;
   }
 
-  // Método para manejar la navegación entre vistas
-onNavClick(link: NavLink): void {
-    if (link.targetView) {
+  onNavClick(link: { targetView?: string; [key: string]: any }): void {
+    if (link && link.targetView) {
       this.navigate.emit(link.targetView);
     }
     this.closeMenu();
