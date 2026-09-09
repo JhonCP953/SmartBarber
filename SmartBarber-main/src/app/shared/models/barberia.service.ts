@@ -1,0 +1,23 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { BarberShopRegisterRequest, BarberShopResponse } from './barber-shop.interface';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class BarberiaService {
+  private apiUrl = 'http://localhost:8080/barberia-service';
+
+  constructor(private http: HttpClient) {}
+
+  // Petición POST enviando BarberShopRegisterRequest y esperando BarberShopResponse
+  crearBarberia(barberiaData: BarberShopRegisterRequest): Observable<BarberShopResponse> {
+    return this.http.post<BarberShopResponse>(`${this.apiUrl}/crear-barberia`, barberiaData);
+  }
+
+  // Petición GET devolviendo un arreglo de BarberShopResponse
+  obtenerBarberias(): Observable<BarberShopResponse[]> {
+    return this.http.get<BarberShopResponse[]>(`${this.apiUrl}/obtener-barberia-nombre`);
+  }
+}

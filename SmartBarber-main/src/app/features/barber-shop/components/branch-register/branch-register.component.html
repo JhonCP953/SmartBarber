@@ -64,100 +64,131 @@
             </div>
           </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary full-width-btn">Iniciar Sesión</button>
+          <div class="form-actions flex-center">
+            <button type="submit" class="btn btn-primary btn-save">Iniciar Sesión</button>
           </div>
         </form>
 
-        <!-- FORMULARIO 2: REGISTRAR SUCURSAL -->
+        <!-- FORMULARIO 2: REGISTRAR BARBERÍA -->
         <form *ngIf="activeTab === 'signup'" (ngSubmit)="onRegisterBranch()" class="branch-form">
           <div class="form-grid">
+            
             <div class="field">
-              <label for="name">Nombre de la Sucursal</label>
+              <label for="nombre">Nombre de la Barbería</label>
               <input 
                 type="text" 
-                id="name" 
-                [(ngModel)]="branch.name" 
-                name="name" 
-                placeholder="Ej: Sede Chapinero / Centro" 
+                id="nombre" 
+                [(ngModel)]="registerData.nombre" 
+                name="nombre" 
+                placeholder="Ej: Smart Barber 15" 
                 required>
             </div>
 
             <div class="field">
-              <label for="city">Ciudad</label>
+              <label for="razonSocial">Razón Social</label>
               <input 
                 type="text" 
-                id="city" 
-                [(ngModel)]="branch.city" 
-                name="city" 
-                placeholder="Ej: Bogotá" 
+                id="razonSocial" 
+                [(ngModel)]="registerData.razonSocial" 
+                name="razonSocial" 
+                placeholder="Ej: Smart Barber S.A.S." 
                 required>
             </div>
 
             <div class="field">
-              <label for="address">Dirección Exacta</label>
+              <label for="tipoDocumento">Tipo de Documento</label>
+              <select 
+                id="tipoDocumento" 
+                [(ngModel)]="registerData.tipoDocumento" 
+                name="tipoDocumento" 
+                required>
+                <option value="NIT">NIT</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="documento">Número de Documento / NIT</label>
               <input 
                 type="text" 
-                id="address" 
-                [(ngModel)]="branch.address" 
-                name="address" 
-                placeholder="Ej: Calle 63 #11-24" 
+                id="documento" 
+                [(ngModel)]="registerData.documento" 
+                name="documento" 
+                placeholder="Ej: 9012345" 
                 required>
             </div>
 
             <div class="field">
-              <label for="phone">Teléfono de Contacto</label>
+              <label for="celular">Teléfono Celular</label>
               <input 
                 type="tel" 
-                id="phone" 
-                [(ngModel)]="branch.phone" 
-                name="phone" 
-                placeholder="Ej: 300 123 4567" 
+                id="celular" 
+                [(ngModel)]="registerData.celular" 
+                name="celular" 
+                placeholder="Ej: 3001234567" 
                 required>
             </div>
 
             <div class="field">
-              <label for="barbers">Número de Sillas / Barberos</label>
-              <input 
-                type="number" 
-                id="barbers" 
-                [(ngModel)]="branch.capacity" 
-                name="capacity" 
-                placeholder="Ej: 4" 
-                min="1" 
-                required>
-            </div>
-
-            <div class="field">
-              <label for="schedule">Horario de Atención</label>
+              <label for="ubicacion">Ubicación / Dirección</label>
               <input 
                 type="text" 
-                id="schedule" 
-                [(ngModel)]="branch.schedule" 
-                name="schedule" 
-                placeholder="Ej: Lun - Sáb: 8:00 AM - 8:00 PM" 
+                id="ubicacion" 
+                [(ngModel)]="registerData.ubicacion" 
+                name="ubicacion" 
+                placeholder="Ej: Soacha, Cundinamarca" 
                 required>
             </div>
+
+            <div class="field full-width">
+              <label for="descripcion">Descripción</label>
+              <textarea 
+                id="descripcion" 
+                [(ngModel)]="registerData.descripcion" 
+                name="descripcion" 
+                rows="2"
+                placeholder="Ej: Barbería especializada en cortes modernos y tradicionales" 
+                required></textarea>
+            </div>
+
           </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary full-width-btn">Guardar Sucursal</button>
+          <div class="form-actions flex-center">
+            <button type="submit" class="btn btn-primary btn-save">Guardar Barbería</button>
           </div>
         </form>
 
       </div>
     </div>
 
-    <!-- SECCIÓN DE SUCURSALES ACTIVAS -->
+    <!-- SECCIÓN DE BARBERÍAS ACTIVAS CON DISEÑO CIRCULAR -->
     <div class="branch-list" *ngIf="branches.length > 0">
-      <h3>Sucursales Activas ({{ branches.length }})</h3>
-      <div class="cards-grid">
-        <div class="branch-card" *ngFor="let item of branches">
-          <h4>{{ item.name }}</h4>
-          <p>📍 {{ item.address }} ({{ item.city }})</p>
-          <p>📞 {{ item.phone }}</p>
-          <p>💈 Sillas disponibles: {{ item.capacity }}</p>
-          <p class="schedule">🕒 {{ item.schedule }}</p>
+      <div class="section-title-wrap">
+        <h3>BARBERÍAS ACTIVAS ({{ branches.length }})</h3>
+      </div>
+
+      <div class="cards-grid-circular">
+        <div class="branch-circle-card" *ngFor="let item of branches">
+          
+          <div class="circle-avatar">
+            <img 
+              src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=600&auto=format&fit=crop" 
+              [alt]="item.nombre">
+          </div>
+
+          <div class="branch-circle-content">
+            <h4>{{ item.nombre }}</h4>
+            <p class="description">{{ item.descripcion }}</p>
+            
+            <div class="meta-info">
+              <span>📍 {{ item.ubicacion }}</span>
+              <span>📞 {{ item.celular }}</span>
+              <span>🏢 {{ item.razonSocial }}</span>
+              <span>📄 {{ item.tipoDocumento }}: {{ item.documento }}</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

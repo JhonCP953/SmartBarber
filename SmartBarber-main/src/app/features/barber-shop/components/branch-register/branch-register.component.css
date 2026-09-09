@@ -1,100 +1,103 @@
-:host {
-  display: block;
-  width: 100%;
-}
-
+/* ==========================================
+   ESTILOS BASE Y CONTENEDOR
+   ========================================== */
 .branch-section {
-  background-color: #1a1a1a;
-  min-height: calc(100vh - 90px);
-  padding: 100px 0 80px 0;
-  width: 100%;
+  padding: 3rem 1rem;
+  background-color: #0d0d0d;
+  color: #f4efe6;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .wrap {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
-/* Tarjeta Principal Dividida */
 .auth-card {
   display: grid;
-  grid-template-columns: 360px 1fr;
-  background-color: #222222;
-  border: 1px solid #333333;
+  grid-template-columns: 1fr 1.5fr;
+  background-color: #181818;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  margin-bottom: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid #2a2a2a;
 }
 
-/* Columna Izquierda: Banner */
+@media (max-width: 850px) {
+  .auth-card {
+    grid-template-columns: 1fr;
+  }
+  .auth-banner {
+    min-height: 200px;
+  }
+}
+
+/* ==========================================
+   BANNER IZQUIERDO
+   ========================================== */
 .auth-banner {
-  background: linear-gradient(135deg, rgba(18, 18, 18, 0.85) 0%, rgba(44, 37, 30, 0.9) 100%), 
-              url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80') center/cover;
-  padding: 40px;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)),
+              url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
   display: flex;
   align-items: flex-end;
-  border-right: 1px solid #333333;
+  padding: 2.5rem;
 }
 
 .banner-overlay .eyebrow {
-  display: block;
-  font-family: 'Fraunces', serif;
-  font-style: italic;
   color: #c4ab80;
-  font-size: 14px;
-  margin-bottom: 6px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
 }
 
 .banner-overlay h3 {
-  font-family: 'Fraunces', serif;
+  font-size: 2rem;
   color: #ffffff;
-  font-size: 26px;
-  margin: 0 0 10px 0;
-  letter-spacing: 1px;
+  margin: 0.5rem 0;
+  letter-spacing: 1.5px;
 }
 
 .banner-overlay p {
   color: #a0a0a0;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 0.95rem;
   margin: 0;
 }
 
-/* Columna Derecha: Contenido */
+/* ==========================================
+   CONTENIDO Y PESTAÑAS
+   ========================================== */
 .auth-content {
-  padding: 40px 45px;
-}
-
-.auth-header {
-  margin-bottom: 25px;
+  padding: 2.5rem;
 }
 
 .auth-header h2 {
-  font-family: 'Fraunces', serif;
-  color: #ffffff;
-  font-size: 30px;
-  margin: 0 0 20px 0;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
 }
 
-/* Pestañas (Tabs) */
 .auth-tabs {
   display: flex;
-  gap: 25px;
-  border-bottom: 1px solid #333333;
+  gap: 1.5rem;
+  border-bottom: 1px solid #2a2a2a;
+  margin-bottom: 2rem;
 }
 
 .tab-btn {
-  background: transparent;
+  background: none;
   border: none;
   color: #888888;
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 600;
-  padding-bottom: 12px;
+  padding-bottom: 0.75rem;
   cursor: pointer;
+  transition: all 0.3s ease;
   position: relative;
-  transition: color 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: #f4efe6;
 }
 
 .tab-btn.active {
@@ -111,149 +114,214 @@
   background-color: #c4ab80;
 }
 
-/* Formulario y Grids */
-.branch-form {
-  margin-top: 10px;
-}
-
+/* ==========================================
+   FORMULARIO E INPUTS UNIFORMES
+   ========================================== */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 1.25rem;
 }
 
 .form-grid.single-col {
   grid-template-columns: 1fr;
 }
 
-/* Ajustar y centrar los campos del formulario de login */
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: 70% !important;        /* Ancho del input al 70% */
-  margin: 0 auto !important;     /* Centra el campo dentro del contenedor */
 }
 
-.btn-primary.full-width-btn {
-  width: 70% !important;        /* Hace que el botón combine con el ancho del 70% */
-  display: block !important;
-  margin: 25px auto 0 auto !important;
-  padding: 12px 16px;
-  background-color: #c4ab80;
-  color: #1a1a1a;
-  border: none;
-  border-radius: 4px;
-  font-family: 'Fraunces', serif;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.field.full-width {
+  grid-column: span 2;
 }
 
-.field input {
-  background-color: #171717;
-  border: 1px solid #333333;
-  border-radius: 4px;
-  padding: 12px 14px;
-  color: #ffffff;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.field input:focus {
-  border-color: #c4ab80;
-}
-
-/* Botones */
-.form-actions {
-  margin-top: 25px;
-}
-
-.btn-primary.full-width-btn {
-  width: 40% !important;        
-  display: block !important;     
-  margin: 20px auto 0 auto !important; 
-  padding: 12px 16px;
-  background-color: #c4ab80;
-  color: #1a1a1a;
-  border: none;
-  border-radius: 4px;
-  font-family: 'Fraunces', serif;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary.full-width-btn:hover {
-  background-color: #b09568;
-}
-/* Lista de Sucursales Activas */
-.branch-list {
-  margin-top: 40px;
-  border-top: 1px dashed #333333;
-  padding-top: 30px;
-}
-
-.branch-list h3 {
-  font-family: 'Fraunces', serif;
-  color: #ffffff;
-  font-size: 22px;
-  margin-bottom: 20px;
-}
-
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.branch-card {
-  background: #222222;
-  border: 1px solid #333333;
-  border-radius: 6px;
-  padding: 20px;
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.branch-card:hover {
-  transform: translateY(-4px);
-  border-color: #c4ab80;
-}
-
-.branch-card h4 {
-  font-family: 'Fraunces', serif;
-  color: #c4ab80;
-  font-size: 18px;
-  margin: 0 0 10px 0;
-}
-
-.branch-card p {
-  color: #cccccc;
-  font-size: 13px;
-  margin: 6px 0;
-}
-
-.branch-card .schedule {
-  color: #888888;
-  font-style: italic;
-  font-size: 12px;
-}
-
-@media (max-width: 850px) {
-  .auth-card {
-    grid-template-columns: 1fr;
-  }
-  .auth-banner {
-    display: none;
-  }
+@media (max-width: 600px) {
   .form-grid {
     grid-template-columns: 1fr;
   }
+  .field.full-width {
+    grid-column: span 1;
+  }
+}
+
+.field label {
+  color: #c4ab80;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+/* UNIFICACIÓN DE CAMPOS DE TEXTO, SELECT Y TEXTAREA */
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #121212;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #f4efe6;
+  font-family: inherit;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Icono personalizado para el Select */
+.field select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c4ab80%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.65rem auto;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.field select option {
+  background-color: #181818;
+  color: #f4efe6;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #555555;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: #c4ab80;
+  box-shadow: 0 0 0 2px rgba(196, 171, 128, 0.2);
+}
+
+/* ==========================================
+   BOTONES
+   ========================================== */
+.form-actions {
+  margin-top: 1.5rem;
+}
+
+.form-actions.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-save {
+  width: 40%;
+  min-width: 160px;
+  padding: 0.85rem;
+  background-color: #c4ab80;
+  color: #121212;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.btn-save:hover {
+  background-color: #d5be94;
+}
+
+.btn-save:active {
+  transform: scale(0.99);
+}
+
+/* ==========================================
+   LISTADO DE BARBERÍAS ACTIVAS (CIRCULAR)
+   ========================================== */
+.branch-list {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid #2a2a2a;
+}
+
+.section-title-wrap {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title-wrap h3 {
+  font-size: 1.5rem;
+  color: #c4ab80;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.cards-grid-circular {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  justify-content: center;
+}
+
+.branch-circle-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.circle-avatar {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 2px solid #2a2a2a;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.branch-circle-card:hover .circle-avatar {
+  transform: translateY(-5px);
+  border-color: #c4ab80;
+}
+
+.circle-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.branch-circle-content h4 {
+  font-size: 1.25rem;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.branch-circle-content .description {
+  color: #a0a0a0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  max-width: 260px;
+}
+
+.branch-circle-content .meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #888888;
+}
+
+.branch-circle-content .meta-info span {
+  display: block;
 }

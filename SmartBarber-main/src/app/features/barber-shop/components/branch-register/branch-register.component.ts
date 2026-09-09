@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { BarberShopRegisterRequest, BarberShopResponse } from '../../../../shared/models/barber-shop.interface';
+import { BarberiaService } from '../../../../shared/models/barberia.service';
 
 @Component({
   selector: 'app-branch-register',
@@ -9,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './branch-register.component.html',
   styleUrl: './branch-register.component.css'
 })
-export class BranchRegisterComponent {
+export class BranchRegisterComponent implements OnInit {
   // Pestaña activa: 'login' | 'signup'
   activeTab: 'login' | 'signup' = 'signup';
 
@@ -19,30 +21,40 @@ export class BranchRegisterComponent {
     password: ''
   };
 
-  // Objeto para formulario de sucursal
-  branch = {
-    name: '',
-    city: '',
-    address: '',
-    phone: '',
-    capacity: null as number | null,
-    schedule: ''
+  // Objeto para formulario de registro ajustado a la API POST del backend
+  registerData: BarberShopRegisterRequest = {
+    nombre: '',
+    descripcion: '',
+    ubicacion: '',
+    celular: '',
+    documento: '',
+    tipoDocumento: 'NIT',
+    razonSocial: ''
   };
 
-  // Lista de sucursales registradas
-  branches: Array<any> = [
-    {
-      name: 'SmartBarber Principal',
-      city: 'Bogotá',
-      address: 'Calle 93 #13-45',
-      phone: '310 987 6543',
-      capacity: 6,
-      schedule: 'Lun - Sáb: 9:00 AM - 8:00 PM'
-    }
-  ];
+  // Lista de barberías enviadas por la API
+  branches: BarberShopResponse[] = [];
+
+  constructor(private barberiaService: BarberiaService) {}
+
+  ngOnInit(): void {
+    this.cargarBarberias();
+  }
 
   switchTab(tab: 'login' | 'signup'): void {
     this.activeTab = tab;
+  }
+
+  // Cargar lista desde la API
+  cargarBarberias(): void {
+    this.barberiaService.obtenerBarberias().subscribe({
+      next: (data: BarberShopResponse[]) => {
+        this.branches = data;
+      },
+      error: (err) => {
+        console.error('Error al obtener la lista de barberías:', err);
+      }
+    });
   }
 
   onLogin(): void {
@@ -50,22 +62,34 @@ export class BranchRegisterComponent {
     alert(`¡Bienvenido de nuevo, ${this.loginData.email}!`);
   }
 
+  // Enviar el registro a la API
   onRegisterBranch(): void {
-    if (this.branch.name && this.branch.address) {
-      this.branches.push({ ...this.branch });
-      alert(`¡Sucursal "${this.branch.name}" registrada con éxito!`);
-      this.resetForm();
+    if (this.registerData.nombre && this.registerData.documento) {
+      console.log('Payload a enviar al backend:', this.registerData);
+
+      this.barberiaService.crearBarberia(this.registerData).subscribe({
+        next: (res: BarberShopResponse) => {
+          alert(`¡Barbería "${this.registerData.nombre}" registrada con éxito!`);
+          this.resetForm();
+          this.cargarBarberias(); // Refrescar la lista de la API
+        },
+        error: (err) => {
+          console.error('Error al registrar barbería:', err);
+          alert('Ocurrió un error al intentar guardar en el servidor.');
+        }
+      });
     }
   }
 
   private resetForm(): void {
-    this.branch = {
-      name: '',
-      city: '',
-      address: '',
-      phone: '',
-      capacity: null,
-      schedule: ''
+    this.registerData = {
+      nombre: '',
+      descripcion: '',
+      ubicacion: '',
+      celular: '',
+      documento: '',
+      tipoDocumento: 'NIT',
+      razonSocial: ''
     };
   }
 }
