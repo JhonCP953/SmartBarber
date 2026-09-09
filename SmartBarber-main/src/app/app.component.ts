@@ -1,18 +1,30 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { HeroComponent } from './components/hero/hero.component';
-import { AboutComponent } from './components/about/about.component';
-import { ServicesComponent } from './components/services/services.component';
-import { TeamComponent } from './components/team/team.component';
-import { PricingComponent } from './components/pricing/pricing.component';
-import { SubscriptionComponent } from './components/subscription/subscription.component';
-import { TestimonialsComponent } from './components/testimonials/testimonials.component';
-import { BranchRegisterComponent } from './components/branch-register/branch-register.component';
-import { CtaBannerComponent } from './components/cta-banner/cta-banner.component';
-import { AppointmentComponent } from './components/appointment/appointment.component';
-import { BlogComponent } from './components/blog/blog.component';
-import { FooterComponent } from './components/footer/footer.component';
+
+// Shared
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { FooterComponent } from './shared/components/footer/footer.component';
+
+// Features - Landing Page
+import { HeroComponent } from './features/landing/components/hero/hero.component';
+import { AboutComponent } from './features/landing/components/about/about.component';
+import { TeamComponent } from './features/landing/components/team/team.component';
+import { TestimonialsComponent } from './features/landing/components/testimonials/testimonials.component';
+import { CtaBannerComponent } from './features/landing/components/cta-banner/cta-banner.component';
+import { BlogComponent } from './features/landing/components/blog/blog.component';
+
+// Features - Servicios y Tarifas
+import { ServicesComponent } from './features/services/components/services/services.component';
+import { PricingComponent } from './features/services/components/pricing/pricing.component';
+
+// Features - Suscripciones y Membresías
+import { SubscriptionComponent } from './features/subscription/components/subscription/subscription.component';
+
+// Features - Gestión de Sucursales
+import { BranchRegisterComponent } from './features/barber-shop/components/branch-register/branch-register.component';
+
+// Features - Agenda de Citas
+import { AppointmentComponent } from './features/reservations/components/appointment/appointment.component';
 
 @Component({
   selector: 'app-root',
@@ -36,7 +48,6 @@ import { FooterComponent } from './components/footer/footer.component';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  // 'home' o 'sucursales'
   currentView: string = 'home';
 
   setView(view: string): void {

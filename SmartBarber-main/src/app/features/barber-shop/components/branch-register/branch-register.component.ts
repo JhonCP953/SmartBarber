@@ -10,15 +10,26 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './branch-register.component.css'
 })
 export class BranchRegisterComponent {
+  // Pestaña activa: 'login' | 'signup'
+  activeTab: 'login' | 'signup' = 'signup';
+
+  // Datos de Login
+  loginData = {
+    email: '',
+    password: ''
+  };
+
+  // Objeto para formulario de sucursal
   branch = {
     name: '',
     city: '',
     address: '',
     phone: '',
-    capacity: null,
+    capacity: null as number | null,
     schedule: ''
   };
 
+  // Lista de sucursales registradas
   branches: Array<any> = [
     {
       name: 'SmartBarber Principal',
@@ -30,18 +41,31 @@ export class BranchRegisterComponent {
     }
   ];
 
-  onRegisterBranch() {
+  switchTab(tab: 'login' | 'signup'): void {
+    this.activeTab = tab;
+  }
+
+  onLogin(): void {
+    console.log('Iniciando sesión:', this.loginData);
+    alert(`¡Bienvenido de nuevo, ${this.loginData.email}!`);
+  }
+
+  onRegisterBranch(): void {
     if (this.branch.name && this.branch.address) {
       this.branches.push({ ...this.branch });
       alert(`¡Sucursal "${this.branch.name}" registrada con éxito!`);
-      this.branch = {
-        name: '',
-        city: '',
-        address: '',
-        phone: '',
-        capacity: null,
-        schedule: ''
-      };
+      this.resetForm();
     }
+  }
+
+  private resetForm(): void {
+    this.branch = {
+      name: '',
+      city: '',
+      address: '',
+      phone: '',
+      capacity: null,
+      schedule: ''
+    };
   }
 }

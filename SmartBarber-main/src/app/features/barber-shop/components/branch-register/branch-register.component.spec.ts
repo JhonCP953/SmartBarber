@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BranchRegisterComponent } from './branch-register.component';
 
 describe('BranchRegisterComponent', () => {

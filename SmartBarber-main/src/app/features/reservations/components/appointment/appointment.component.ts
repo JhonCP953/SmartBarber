@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { formEndpoints } from '../../form-config';
+import { formEndpoints } from '../../../../shared/forms/form-config';
 
 type SubmitState = 'idle' | 'sending' | 'success' | 'error';
 
