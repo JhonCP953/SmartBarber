@@ -7,7 +7,7 @@ import { BarberShopRegisterRequest, BarberShopResponse } from './barber-shop.int
   providedIn: 'root'
 })
 export class BarberiaService {
-  private apiUrl = 'http://localhost:8080/barberia-service';
+  private apiUrl = 'http://localhost:8080/barber-service';
 
   constructor(private http: HttpClient) {}
 

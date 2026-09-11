@@ -23,13 +23,13 @@ export class BranchRegisterComponent implements OnInit {
 
   // Objeto para formulario de registro ajustado a la API POST del backend
   registerData: BarberShopRegisterRequest = {
-    nombre: '',
-    descripcion: '',
-    ubicacion: '',
-    celular: '',
-    documento: '',
-    tipoDocumento: 'NIT',
-    razonSocial: ''
+    name: '',
+    description: '',
+    location: '',
+    phone: '',
+    document: '',
+    documentType: 'NIT',
+    companyName: ''
   };
 
   // Lista de barberías enviadas por la API
@@ -64,12 +64,12 @@ export class BranchRegisterComponent implements OnInit {
 
   // Enviar el registro a la API
   onRegisterBranch(): void {
-    if (this.registerData.nombre && this.registerData.documento) {
+    if (this.registerData.name && this.registerData.document) {
       console.log('Payload a enviar al backend:', this.registerData);
 
       this.barberiaService.crearBarberia(this.registerData).subscribe({
         next: (res: BarberShopResponse) => {
-          alert(`¡Barbería "${this.registerData.nombre}" registrada con éxito!`);
+          alert(`¡Barbería "${this.registerData.name}" registrada con éxito!`);
           this.resetForm();
           this.cargarBarberias(); // Refrescar la lista de la API
         },
@@ -83,13 +83,13 @@ export class BranchRegisterComponent implements OnInit {
 
   private resetForm(): void {
     this.registerData = {
-      nombre: '',
-      descripcion: '',
-      ubicacion: '',
-      celular: '',
-      documento: '',
-      tipoDocumento: 'NIT',
-      razonSocial: ''
+      name: '',
+      description: '',
+      location: '',
+      phone: '',
+      document: '',
+      documentType: 'NIT',
+      companyName: ''
     };
   }
 }
