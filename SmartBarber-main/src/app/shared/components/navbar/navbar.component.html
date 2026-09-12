@@ -1,43 +1,75 @@
 <header>
   <div class="wrap nav-inner">
+
     <div class="logo">
       <img src="/logo.png" alt="SmartBarber Logo" class="logo-icon-img" />
-      <div class="logo-text">SMARTBARBER<span class="logo-sub">Barbería &amp; Salón desde 1992</span></div>
+
+      <div class="logo-text">
+        SMARTBARBER
+        <span class="logo-sub">
+          Barbería &amp; Salón desde 1992
+        </span>
+      </div>
     </div>
 
     <nav aria-label="Navegación principal">
       <ul>
-        <li *ngFor="let link of links" [class.has-dropdown]="link.sublinks"> 
-          <a [href]="link.href" (click)="onNavClick(link)">
+
+        <li *ngFor="let link of links" [class.has-dropdown]="link.sublinks">
+
+          <a [routerLink]="link.route" [fragment]="link.fragment" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: !link.fragment }" (click)="closeMenu()">
             {{ link.label }}
-            <span *ngIf="link.sublinks" class="dropdown-arrow">▾</span>
+
+            <span *ngIf="link.sublinks" class="dropdown-arrow">
+              
+            </span>
           </a>
 
-          <!-- Cajita desplegable flotante -->
           <ul *ngIf="link.sublinks" class="dropdown-menu">
             <li *ngFor="let sub of link.sublinks">
-              <a [href]="sub.href" (click)="onNavClick(sub)">{{ sub.label }}</a>
+
+              <a [routerLink]="sub.route" [fragment]="sub.fragment" (click)="closeMenu()">
+                {{ sub.label }}
+              </a>
+
             </li>
           </ul>
+
         </li>
+
       </ul>
     </nav>
 
-    <a href="#reservar" class="btn nav-cta" (click)="onNavClick({ targetView: 'home' })">Reservar cita</a>
-    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menú">☰</button>
+    <a [routerLink]="['/']" fragment="reservar" class="btn nav-cta" (click)="closeMenu()">
+      Reservar cita
+    </a>
+
+    <button class="menu-toggle" type="button" (click)="toggleMenu()" aria-label="Abrir menú">
+      ☰
+    </button>
+
   </div>
 
-  <!-- Menú versión móvil -->
   <nav *ngIf="isMenuOpen" class="mobile-nav" aria-label="Navegación móvil">
     <ul>
+
       <ng-container *ngFor="let link of links">
+
         <li>
-          <a [href]="link.href" (click)="onNavClick(link)">{{ link.label }}</a>
+          <a [routerLink]="link.route" [fragment]="link.fragment" (click)="closeMenu()">
+            {{ link.label }}
+          </a>
         </li>
+
         <li *ngFor="let sub of link.sublinks" class="mobile-sublink">
-          <a [href]="sub.href" (click)="onNavClick(sub)">— {{ sub.label }}</a>
+          <a [routerLink]="sub.route" [fragment]="sub.fragment" (click)="closeMenu()">
+            — {{ sub.label }}
+          </a>
         </li>
+
       </ng-container>
+
     </ul>
   </nav>
 </header>

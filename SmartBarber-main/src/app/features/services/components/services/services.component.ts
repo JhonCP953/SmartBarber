@@ -1,5 +1,6 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 interface Service {
   title: string;
@@ -10,12 +11,14 @@ interface Service {
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    RouterLink
+  ],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })
 export class ServicesComponent {
-  @Output() navigateToSubscription = new EventEmitter<string>();
 
   services: Service[] = [
     {
@@ -40,7 +43,4 @@ export class ServicesComponent {
     }
   ];
 
-  onViewPlans(): void {
-    this.navigateToSubscription.emit('suscripcion');
-  }
 }
