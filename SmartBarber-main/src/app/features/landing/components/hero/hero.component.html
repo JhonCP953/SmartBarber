@@ -1,11 +1,8 @@
 <section class="hero" id="inicio">
   <div class="hero-slides">
-    <div
-      *ngFor="let i of slideIndexes()"
-      class="hero-slide"
-      [class.is-active]="i === currentSlide"
-      [ngStyle]="{'background-image': 'linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(' + images[i] + ')'}"
-    ></div>
+    <div *ngFor="let i of slideIndexes()" class="hero-slide" [class.is-active]="i === currentSlide"
+      [ngStyle]="{'background-image': 'linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(' + images[i] + ')'}">
+    </div>
   </div>
 
   <button class="slide-arrow prev" (click)="prev()" aria-label="Imagen anterior">‹</button>
@@ -15,20 +12,21 @@
     <div class="hero-inner">
       <div class="eyebrow">Más que un corte, una experiencia</div>
       <h1>Donde los hombres lucen<br>su <em>mejor versión</em>.</h1>
-      <p>Barbería y salón pensado para quienes valoran el detalle: técnica clásica, productos premium y tiempo dedicado a cada cliente.</p>
+      <p>Barbería y salón pensado para quienes valoran el detalle: técnica clásica, productos premium y tiempo dedicado
+        a cada cliente.</p>
       <div class="hero-ctas">
-        <a href="#reservar" class="btn btn-primary">Reservar cita</a>
-        <a href="#servicios" class="btn btn-ghost">Ver servicios</a>
+        <a routerLink="/reservar" class="btn btn-primary">
+          Reservar cita
+        </a>
+        <a routerLink="/subscription" class="btn btn-ghost">
+          Ver servicios
+        </a>
       </div>
     </div>
   </div>
 
   <div class="slide-dots">
-    <button
-      *ngFor="let i of slideIndexes()"
-      [class.is-active]="i === currentSlide"
-      (click)="goTo(i)"
-      [attr.aria-label]="'Ir a imagen ' + (i + 1)"
-    ></button>
+    <button *ngFor="let i of slideIndexes()" [class.is-active]="i === currentSlide" (click)="goTo(i)"
+      [attr.aria-label]="'Ir a imagen ' + (i + 1)"></button>
   </div>
 </section>

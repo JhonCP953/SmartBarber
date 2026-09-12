@@ -57,3 +57,7 @@ export class AppointmentComponent {
     });
   }
 }
+
+export class RerservarionComponent {
+
+}

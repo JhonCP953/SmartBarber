@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BarberShopRegisterRequest, BarberShopResponse } from './barber-shop.interface';
+import { BarberShopRegisterRequest, BarberShopResponse } from '../../features/barber-shop/domain/models/barber-shop.model';
 
 @Injectable({
   providedIn: 'root'

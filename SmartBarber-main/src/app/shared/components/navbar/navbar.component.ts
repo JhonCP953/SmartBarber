@@ -1,44 +1,82 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 interface NavSubLink {
   label: string;
-  href: string;
-  targetView: string;
+  route: string;
+  fragment?: string;
 }
 
 interface NavLink {
   label: string;
-  href: string;
-  targetView?: string;
+  route: string;
+  fragment?: string;
   sublinks?: NavSubLink[];
 }
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  @Output() navigate = new EventEmitter<string>();
 
   links: NavLink[] = [
-    { label: 'Inicio', href: '#inicio', targetView: 'home' },
-    { label: 'Nosotros', href: '#nosotros', targetView: 'home' },
-    { label: 'Servicios', href: '#servicios', targetView: 'home' },
-    { label: 'Equipo', href: '#equipo', targetView: 'home' },
-    { label: 'Opiniones', href: '#opiniones', targetView: 'home' },
-    { label: 'Blog', href: '#blog', targetView: 'home' },
-    { label: 'SUCURSALES', href: '#sucursales', targetView: 'sucursales' },
-    { 
-      label: 'Contacto', 
-      href: '#reservar', 
-      targetView: 'home',
+    {
+      label: 'Inicio',
+      route: '/',
+      fragment: 'inicio'
+    },
+    {
+      label: 'Nosotros',
+      route: '/',
+      fragment: 'nosotros'
+    },
+    {
+      label: 'Servicios',
+      route: '/',
+      fragment: 'servicios'
+    },
+    {
+      label: 'Equipo',
+      route: '/',
+      fragment: 'equipo'
+    },
+    {
+      label: 'Opiniones',
+      route: '/',
+      fragment: 'opiniones'
+    },
+    {
+      label: 'Blog',
+      route: '/',
+      fragment: 'blog'
+    },
+    {
+      label: 'SUCURSALES',
+      route: '/barberShop'
+    },
+    {
+      label: 'Contacto',
+      route: '/',
+      fragment: 'reservar',
       sublinks: [
-        { label: 'Contacto directo', href: '#reservar', targetView: 'home' },
-        { label: 'Suscripción / Planes', href: '#suscripcion', targetView: 'suscripcion' }
+        {
+          label: 'Contacto directo',
+          route: '/',
+          fragment: 'reservar'
+        },
+        {
+          label: 'Suscripción / Planes',
+          route: '/subscription'
+        }
       ]
     }
   ];
@@ -51,12 +89,5 @@ export class NavbarComponent {
 
   closeMenu(): void {
     this.isMenuOpen = false;
-  }
-
-  onNavClick(link: { targetView?: string; [key: string]: any }): void {
-    if (link && link.targetView) {
-      this.navigate.emit(link.targetView);
-    }
-    this.closeMenu();
   }
 }

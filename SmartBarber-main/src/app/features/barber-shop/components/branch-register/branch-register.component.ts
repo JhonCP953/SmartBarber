@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BarberShopRegisterRequest, BarberShopResponse } from '../../../../shared/models/barber-shop.interface';
-import { BarberiaService } from '../../../../shared/models/barberia.service';
+import {
+  BarberShopRegisterRequest,
+  BarberShopResponse
+} from '../../domain/models/barber-shop.model';
+
+import {
+  BarberShopApiService
+} from '../../infrastructure/services/barber-shop-api.service';
 
 @Component({
   selector: 'app-branch-register',
@@ -35,7 +41,9 @@ export class BranchRegisterComponent implements OnInit {
   // Lista de barberías enviadas por la API
   branches: BarberShopResponse[] = [];
 
-  constructor(private barberiaService: BarberiaService) {}
+  constructor(
+    private readonly barberShopApiService: BarberShopApiService
+  ) { }
 
   ngOnInit(): void {
     this.cargarBarberias();
@@ -47,7 +55,7 @@ export class BranchRegisterComponent implements OnInit {
 
   // Cargar lista desde la API
   cargarBarberias(): void {
-    this.barberiaService.obtenerBarberias().subscribe({
+    this.barberShopApiService.obtenerBarberias().subscribe({
       next: (data: BarberShopResponse[]) => {
         this.branches = data;
       },
@@ -67,7 +75,7 @@ export class BranchRegisterComponent implements OnInit {
     if (this.registerData.name && this.registerData.document) {
       console.log('Payload a enviar al backend:', this.registerData);
 
-      this.barberiaService.crearBarberia(this.registerData).subscribe({
+      this.barberShopApiService.crearBarberia(this.registerData).subscribe({
         next: (res: BarberShopResponse) => {
           alert(`¡Barbería "${this.registerData.name}" registrada con éxito!`);
           this.resetForm();
