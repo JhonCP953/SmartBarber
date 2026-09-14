@@ -1,10 +1,9 @@
 import { Routes } from '@angular/router';
+import { SubscriptionComponent } from './components/subscription/subscription.component';
 
 export const SUBSCRIPTION_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./components/subscription/subscription.component')
-        .then(m => m.SubscriptionComponent)
+    component: SubscriptionComponent
   }
 ];

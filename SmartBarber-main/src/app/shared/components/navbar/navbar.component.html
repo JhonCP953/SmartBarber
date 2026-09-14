@@ -1,6 +1,7 @@
 <header>
   <div class="wrap nav-inner">
 
+    <!-- Logo -->
     <div class="logo">
       <img src="/logo.png" alt="SmartBarber Logo" class="logo-icon-img" />
 
@@ -12,6 +13,7 @@
       </div>
     </div>
 
+    <!-- Navegación principal -->
     <nav aria-label="Navegación principal">
       <ul>
 
@@ -22,10 +24,11 @@
             {{ link.label }}
 
             <span *ngIf="link.sublinks" class="dropdown-arrow">
-              
+              ▾
             </span>
           </a>
 
+          <!-- Submenú desplegable si existe -->
           <ul *ngIf="link.sublinks" class="dropdown-menu">
             <li *ngFor="let sub of link.sublinks">
 
@@ -41,16 +44,19 @@
       </ul>
     </nav>
 
-    <a [routerLink]="['/']" fragment="reservar" class="btn nav-cta" (click)="closeMenu()">
-      Reservar cita
+    <!-- Botón CTA principal -->
+    <a [routerLink]="['/barberShop']" class="btn nav-cta" (click)="closeMenu()">
+      Inicio / registro 
     </a>
 
+    <!-- Botón Hamburguesa para Mobile -->
     <button class="menu-toggle" type="button" (click)="toggleMenu()" aria-label="Abrir menú">
       ☰
     </button>
 
   </div>
 
+  <!-- Navegación Mobile -->
   <nav *ngIf="isMenuOpen" class="mobile-nav" aria-label="Navegación móvil">
     <ul>
 

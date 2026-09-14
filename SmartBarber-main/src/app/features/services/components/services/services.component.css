@@ -96,13 +96,20 @@
 }
 
 .showcase-icon {
-  width: 56px; 
-  height: 56px; 
-  margin: 0 auto 24px; 
-  color: #c4ab80 !important;
+  width: 48px;
+  height: 48px;
   display: block;
+  margin: 0 auto 1.5rem auto;
+  stroke: var(--primary-color, #c5a059);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
+.showcase-icon circle {
+  fill: var(--primary-color, #c5a059);
+}
 .showcase-card h3 {
   font-family: 'Fraunces', serif; 
   font-style: normal; 

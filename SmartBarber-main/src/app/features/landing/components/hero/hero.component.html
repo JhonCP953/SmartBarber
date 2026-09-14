@@ -15,10 +15,8 @@
       <p>Barbería y salón pensado para quienes valoran el detalle: técnica clásica, productos premium y tiempo dedicado
         a cada cliente.</p>
       <div class="hero-ctas">
-        <a routerLink="/reservar" class="btn btn-primary">
-          Reservar cita
-        </a>
-        <a routerLink="/subscription" class="btn btn-ghost">
+      
+        <a [routerLink]="['/']" fragment="servicios" class="btn btn-ghost">
           Ver servicios
         </a>
       </div>

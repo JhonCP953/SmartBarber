@@ -5,7 +5,7 @@ export const RESERVATION_ROUTES: Routes = [
         path: '',
         loadComponent: () =>
             import('./components/appointment/appointment.component')
-                .then(m => m.RerservarionComponent)
+                .then(m => m.AppointmentComponent)
     }
    
 ];

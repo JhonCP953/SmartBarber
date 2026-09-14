@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 interface Service {
   title: string;
   description: string;
-  icon: 'scissors' | 'razor' | 'shave' | 'mask';
+  icon: 'calendar' | 'users' | 'catalog' | 'chart';
 }
 
 @Component({
@@ -22,24 +22,24 @@ export class ServicesComponent {
 
   services: Service[] = [
     {
-      icon: 'scissors',
-      title: 'Estilos de corte',
-      description: 'Cortes clásicos y modernos adaptados a la forma de tu rostro y tipo de cabello.'
+      icon: 'calendar',
+      title: 'Gestión de Citas',
+      description: 'Agenda digital interactiva para organizar los turnos de tu barbería y evitar cruces de horarios.'
     },
     {
-      icon: 'razor',
-      title: 'Arreglo de barba',
-      description: 'Perfilado con navaja, toallas calientes y aceites para hidratar y dar forma.'
+      icon: 'users',
+      title: 'Control de Equipos',
+      description: 'Administra tus barberos, asignación de sillones, horarios de trabajo y cálculo de comisiones.'
     },
     {
-      icon: 'shave',
-      title: 'Afeitado suave',
-      description: 'Afeitado tradicional a navaja con toallas calientes para un acabado impecable.'
+      icon: 'catalog',
+      title: 'Catálogo de Servicios',
+      description: 'Personaliza tu menú de cortes, precios, duraciones estimadas y ofertas especiales para tus clientes.'
     },
     {
-      icon: 'mask',
-      title: 'Mascarilla facial',
-      description: 'Limpieza profunda y mascarilla para dejar la piel del rostro fresca y renovada.'
+      icon: 'chart',
+      title: 'Métricas de Negocio',
+      description: 'Reportes en tiempo real sobre ingresos, flujo de clientes y rendimiento diario de tus barberos.'
     }
   ];
 

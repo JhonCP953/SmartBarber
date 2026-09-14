@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface TeamMember {
+interface Barbershop {
   name: string;
-  role: string;
+  location: string;
   image: string;
 }
 
@@ -12,29 +12,31 @@ interface TeamMember {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './team.component.html',
-  styleUrls: ['./team.component.css']
+  styleUrl: './team.component.css'
 })
 export class TeamComponent {
-  teamMembers: TeamMember[] = [
+
+  barbershops: Barbershop[] = [
     {
-      name: 'Camilo Rey',
-      role: 'BARBERO PRINCIPAL',
-      image: 'Camilo.jpg'
+      name: 'Barbería El Imperio',
+      location: 'Bogotá, Colombia',
+      image: 'Shop1.jpg'
     },
     {
-      name: 'Julián Prieto',
-      role: 'BARBERO',
-      image: 'Julian.jpg'
+      name: 'Viking Cut Studio',
+      location: 'Medellín, Colombia',
+      image: 'Shop2.jpg'
     },
     {
-      name: 'Andrés Villa',
-      role: 'BARBERO SENIOR',
-      image: 'Andres.jpg'
+      name: 'Golden Blade Club',
+      location: 'Cali, Colombia',
+      image: 'Shop3.jpg'
     },
     {
-      name: 'Mariano Correa',
-      role: 'ESTILISTA',
-      image: 'Mario.jpg' 
+      name: 'Master Barber Shop',
+      location: 'Barranquilla, Colombia',
+      image: 'Shop4.jpg'
     }
   ];
+
 }

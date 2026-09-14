@@ -60,19 +60,10 @@ export class NavbarComponent {
       fragment: 'blog'
     },
     {
-      label: 'SUCURSALES',
-      route: '/barberShop'
-    },
-    {
       label: 'Contacto',
       route: '/',
       fragment: 'reservar',
       sublinks: [
-        {
-          label: 'Contacto directo',
-          route: '/',
-          fragment: 'reservar'
-        },
         {
           label: 'Suscripción / Planes',
           route: '/subscription'

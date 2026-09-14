@@ -17,47 +17,48 @@ export class AppointmentComponent {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
 
-  services = ['Corte clásico', 'Arreglo de barba', 'Color y mechas', 'Tratamiento capilar', 'Peinado & evento', 'Combo completo'];
-  barbers = ['Camilo Rey', 'Julián Prieto', 'Andrés Villa', 'Mariano Correa'];
+  // Arreglo de barberos alineado exactamente con la plantilla HTML
+barberos = [
+  'Crop Top con Fade',
+  'Mullet Moderno',
+  'Taper Fade',
+  'Buzz Cut con Diseño'
+];
 
   state: SubmitState = 'idle';
 
-  form = this.fb.group({
+  // Formulario reactivo 'feedbackForm' que resuelve el error TS/NG9
+  feedbackForm = this.fb.group({
     name: ['', Validators.required],
-    email: ['', Validators.email],
-    phone: ['', Validators.required],
-    preferredTime: [''],
-    service: ['', Validators.required],
-    barber: ['']
+    email: ['', [Validators.required, Validators.email]],
+    barber: ['', Validators.required],
+    rating: ['', Validators.required],
+    comment: ['', [Validators.required, Validators.minLength(10)]]
   });
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.feedbackForm.invalid) {
+      this.feedbackForm.markAllAsTouched();
       return;
     }
 
     this.state = 'sending';
 
-    this.http.post(formEndpoints.appointmentEndpoint, this.form.value, {
-      headers: { Accept: 'application/json' }
+    this.http.post(formEndpoints.appointmentEndpoint, this.feedbackForm.value, {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
     }).subscribe({
       next: () => {
         this.state = 'success';
         setTimeout(() => {
           this.state = 'idle';
-          this.form.reset();
+          this.feedbackForm.reset();
         }, 3000);
       },
       error: (err) => {
-        console.error('Error al enviar la reserva:', err);
+        console.error('Error al enviar la opinión:', err);
         this.state = 'error';
         setTimeout(() => (this.state = 'idle'), 4000);
       }
     });
   }
-}
-
-export class RerservarionComponent {
-
 }

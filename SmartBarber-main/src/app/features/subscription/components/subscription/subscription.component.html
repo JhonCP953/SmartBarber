@@ -3,8 +3,8 @@
     
     <!-- ENCABEZADO DE LA SECCIÓN -->
     <div class="showcase-head">
-      <div class="eyebrow">Membresías Exclusivas</div>
-      <h2>PLANES DE SUSCRIPCIÓN</h2>
+      <div class="eyebrow">Soluciones para Profesionales</div>
+      <h2>PLANES PARA BARBEROS</h2>
       <div class="showcase-divider">
         <span class="dash"></span>
         <svg class="mustache-svg" viewBox="0 0 64 64" fill="currentColor">
@@ -14,59 +14,100 @@
         </svg>
         <span class="dash"></span>
       </div>
-      <p class="sub-lead">Asegura tu estilo mes a mes con nuestros paquetes exclusivos</p>
+      <p class="sub-lead">Potencia tu negocio, gestiona tus sucursales y llena tu agenda mes a mes</p>
     </div>
 
     <!-- TARJETAS DE PLANES -->
     <div class="plans-grid">
       
-      <!-- PLAN BÁSICO -->
+      <!-- PLAN INDEPENDIENTE -->
       <div class="plan-card">
-        <span class="plan-badge">Membresía Mensual</span>
-        <h3>PLAN BÁSICO</h3>
-        <div class="plan-price">$60.000 <span>/ mes</span></div>
-        <p class="plan-desc">Ideal para mantener un corte impecable todo el mes.</p>
+        <span class="plan-badge">Independiente</span>
+        <h3>PLAN BARBER</h3>
+        <div class="plan-price">$50.000 <span>/ mes</span></div>
+        <p class="plan-desc">Ideal para barberos que trabajan por su cuenta y buscan digitalizarse.</p>
         <ul class="plan-features">
-          <li>2 Cortes de cabello al mes</li>
-          <li>1 Peinado de estilo</li>
-          <li>Atención prioritaria</li>
-          <li>10% off en productos</li>
+          <li>Gestión de citas online 24/7</li>
+          <li>Perfil profesional personalizado</li>
+          <li>Control de ingresos básicos</li>
+          <li>Recordatorios automáticos por WhatsApp</li>
         </ul>
-        <button class="btn-subscribe">SUSCRIBIRME</button>
+        <button class="btn-subscribe" (click)="openPaymentModal('Plan Barber - $50.000/mes')">COMENZAR AHORA</button>
       </div>
 
-      <!-- PLAN VIP BARBER -->
+      <!-- PLAN PRO / SUCURSAL -->
       <div class="plan-card featured">
         <span class="plan-badge gold">Más Popular</span>
-        <h3>PLAN VIP BARBER</h3>
-        <div class="plan-price">$100.000 <span>/ mes</span></div>
-        <p class="plan-desc">El combo completo para quienes cuidan cada detalle.</p>
+        <h3>PLAN SUCURSAL</h3>
+        <div class="plan-price">$120.000 <span>/ mes</span></div>
+        <p class="plan-desc">La solución completa para administrar tu barbería y equipo.</p>
         <ul class="plan-features">
-          <li>Cortes de cabello ilimitados</li>
-          <li>2 Arreglos de barba completos</li>
-          <li>1 Tratamiento facial masculino</li>
-          <li>Bebida de cortesía en cada visita</li>
-          <li>15% off en productos</li>
+          <li>Registro y gestión de 1 sucursal</li>
+          <li>Hasta 5 barberos en equipo</li>
+          <li>Control de inventario y caja diaria</li>
+          <li>Panel de estadísticas avanzadas</li>
+          <li>Soporte técnico prioritario</li>
         </ul>
-        <button class="btn-subscribe featured-btn">SUSCRIBIRME</button>
+        <button class="btn-subscribe featured-btn" (click)="openPaymentModal('Plan Sucursal - $120.000/mes')">UNIR MI BARBERÍA</button>
       </div>
 
-      <!-- PLAN EXECUTIVE -->
+      <!-- PLAN FRANCHISE / EMPRESA -->
       <div class="plan-card">
-        <span class="plan-badge">Corporativo</span>
-        <h3>PLAN EXECUTIVE</h3>
-        <div class="plan-price">$80.000 <span>/ mes</span></div>
-        <p class="plan-desc">Pensado para caballeros con agenda ajustada.</p>
+        <span class="plan-badge">Multisucursal</span>
+        <h3>PLAN MASTER</h3>
+        <div class="plan-price">$220.000 <span>/ mes</span></div>
+        <p class="plan-desc">Diseñado para cadenas de barberías o negocios en expansión.</p>
         <ul class="plan-features">
-          <li>2 Cortes + Arreglo de barba</li>
-          <li>Perfilado de bigote ilimitado</li>
-          <li>Reserva de turnos preferencial</li>
-          <li>10% off en productos</li>
+          <li>Sucursales ilimitadas</li>
+          <li>Barberos ilimitados por local</li>
+          <li>Multi-rol (Admin, Barbero, Caja)</li>
+          <li>API y reportes personalizados</li>
+          <li>Cuenta destacada en la plataforma</li>
         </ul>
-        <button class="btn-subscribe">SUSCRIBIRME</button>
+        <button class="btn-subscribe" (click)="openPaymentModal('Plan Master - $220.000/mes')">CONTACTAR VENTAS</button>
       </div>
 
     </div>
 
+  </div>
+
+  <!-- MODAL DE SUSCRIPCIÓN Y PAGO -->
+  <div class="modal-overlay" *ngIf="isModalOpen">
+    <div class="modal-content">
+      <button class="modal-close" (click)="closePaymentModal()">&times;</button>
+      
+      <div class="modal-header">
+        <h3>SUSCRIPCIÓN DE BARBERO</h3>
+        <p class="selected-plan-text">Plan seleccionado: <strong>{{ selectedPlan }}</strong></p>
+      </div>
+
+      <form (ngSubmit)="submitPaymentForm()">
+        <div class="modal-grid">
+          <div class="modal-field">
+            <label>Nombre de la Barbería o Profesional</label>
+            <input type="text" placeholder="Ej. SmartBarber Studio" required />
+          </div>
+          <div class="modal-field">
+            <label>Correo Electrónico</label>
+            <input type="email" placeholder="correo@barberia.com" required />
+          </div>
+          <div class="modal-field">
+            <label>Número de WhatsApp / Teléfono</label>
+            <input type="tel" placeholder="+57 300 000 0000" required />
+          </div>
+          <div class="modal-field">
+            <label>Método de Pago</label>
+            <select required>
+              <option value="" disabled selected>Selecciona método de pago</option>
+              <option value="card">Tarjeta de Crédito / Débito</option>
+              <option value="pse">PSE (Cuenta de Ahorros/Corriente)</option>
+              <option value="nequi">Nequi / Daviplata</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-pay-submit">CONFIRMAR Y ACTIVAR SUSCRIPCIÓN</button>
+      </form>
+    </div>
   </div>
 </section>
