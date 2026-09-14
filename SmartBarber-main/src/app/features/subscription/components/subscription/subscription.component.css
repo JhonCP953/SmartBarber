@@ -203,6 +203,144 @@
   border-color: #b09568;
 }
 
+/* ==========================================
+   ESTILOS DEL MODAL DE PAGO (INTEGRADOS)
+   ========================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(26, 26, 26, 0.75);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #ffffff;
+  border: 1.5px solid #e2d9cd;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  padding: 35px 30px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #726a61;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #1a1a1a;
+}
+
+.modal-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.modal-header h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.selected-plan-text {
+  font-size: 14px;
+  color: #c4ab80;
+  font-style: italic;
+}
+
+.modal-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-field label {
+  font-size: 11px;
+  color: #726a61;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.modal-field input,
+.modal-field select {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: #fcfbfa;
+  border: 1px solid #e2d9cd;
+  color: #1a1a1a;
+  font-size: 14px;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.modal-field input:focus,
+.modal-field select:focus {
+  border-color: #c4ab80;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(196, 171, 128, 0.15);
+}
+
+.btn-pay-submit {
+  width: 100%;
+  padding: 14px 20px;
+  background-color: #1a1a1a;
+  color: #ffffff !important;
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-pay-submit:hover {
+  background-color: #c4ab80;
+  color: #ffffff !important;
+}
+
 @media (max-width: 900px) {
   .plans-grid {
     grid-template-columns: 1fr;
