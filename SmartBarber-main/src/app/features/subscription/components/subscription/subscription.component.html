@@ -84,20 +84,20 @@
       <form (ngSubmit)="submitPaymentForm()">
         <div class="modal-grid">
           <div class="modal-field">
-            <label>Nombre de la Barbería  </label>
-            <input type="text" placeholder="Ej. SmartBarber Studio" required />
+            <label>Nombre de la Barbería</label>
+            <input type="text" [(ngModel)]="barberShopName" name="barberShopName" placeholder="Ej. SmartBarber Studio" required />
           </div>
           <div class="modal-field">
             <label>Correo Electrónico</label>
-            <input type="email" placeholder="correo@barberia.com" required />
+            <input type="email" [(ngModel)]="email" name="email" placeholder="correo@barberia.com" required />
           </div>
           <div class="modal-field">
             <label>Número Cuenta</label>
-            <input type="tel" placeholder="601 343 0000 6700" required />
+            <input type="tel" [(ngModel)]="accountNumber" name="accountNumber" placeholder="601 343 0000 6700" required />
           </div>
           <div class="modal-field">
             <label>Método de Pago</label>
-            <select required>
+            <select [(ngModel)]="paymentMethod" name="paymentMethod" required>
               <option value="" disabled selected>Selecciona método de pago</option>
               <option value="card">Tarjeta de Crédito / Débito</option>
               <option value="pse">PSE (Cuenta de Ahorros/Corriente)</option>
