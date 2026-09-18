@@ -83,15 +83,23 @@
 
       <form (ngSubmit)="submitPaymentForm()">
         <div class="modal-grid">
-          <!-- Único campo que llena el cliente: El nombre de su barbería -->
           <div class="modal-field" style="grid-column: 1 / -1;">
             <label>Nombre de la Barbería</label>
             <input type="text" [(ngModel)]="barberShopName" name="barberShopName" placeholder="Ej. SmartBarber Studio" required />
           </div>
         </div>
 
-        <button type="submit" class="btn-pay-submit">GUARDAR SUSCRIPCIÓN</button>
+        <!-- Botón con estado de carga y validación para evitar envíos vacíos -->
+        <button type="submit" class="btn-pay-submit" [disabled]="!barberShopName.trim() || isLoading">
+          {{ isLoading ? 'PROCESANDO...' : 'GUARDAR SUSCRIPCIÓN' }}
+        </button>
       </form>
     </div>
   </div>
+    <!-- 
+  Validación de rutas para realizar diseño de interfaz.
+  <router-outlet></router-outlet> 
+    -->
+
+  
 </section>

@@ -1,0 +1,196 @@
+.my-subscription-section {
+  padding: 60px 20px;
+  background-color: #faf9f6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 80vh;
+}
+
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.showcase-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: #c5a059;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.showcase-head h2 {
+  font-size: 2.2rem;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.sub-lead {
+  color: #666;
+  font-size: 1.05rem;
+}
+
+/* Tarjeta de Estado Activo */
+.subscription-status-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eae5dc;
+  overflow: hidden;
+  padding: 30px;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.active-badge {
+  background-color: #e6f4ea;
+  color: #137333;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.plan-info-main h3 {
+  font-size: 1.6rem;
+  color: #1a1a1a;
+  margin: 0 0 5px 0;
+}
+
+.barber-shop-title {
+  color: #555;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.plan-price-tag {
+  text-align: right;
+}
+
+.plan-price-tag .price {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #c5a059;
+}
+
+.plan-price-tag .period {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.status-body .desc {
+  color: #444;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.features-summary h4 {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.features-summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+}
+
+.features-summary li {
+  color: #555;
+  font-size: 0.9rem;
+  padding: 5px 0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.features-summary li::before {
+  content: '✓';
+  color: #c5a059;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.status-footer {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+/* Estado Vacío */
+.empty-subscription-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eae5dc;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.empty-subscription-card h3 {
+  font-size: 1.4rem;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.empty-subscription-card p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+/* Botones */
+.btn-primary {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #c5a059;
+  color: #1a1a1a;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #1a1a1a;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  border-color: #1a1a1a;
+}
