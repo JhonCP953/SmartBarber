@@ -20,43 +20,43 @@
     <!-- TARJETAS DE PLANES -->
     <div class="plans-grid">
       
-      <!-- PLAN INDEPENDIENTE -->
+      <!-- PLAN BASICO -->
       <div class="plan-card">
         <span class="plan-badge">Independiente</span>
-        <h3>PLAN BARBER</h3>
-        <div class="plan-price">$50.000 <span>/ mes</span></div>
-        <p class="plan-desc">Ideal para barberos que trabajan por su cuenta y buscan digitalizarse.</p>
+        <h3>PLAN BASICO</h3>
+        <div class="plan-price">$30.000 <span>/ mes</span></div>
+        <p class="plan-desc">Plan básico para barberías con funciones esenciales.</p>
         <ul class="plan-features">
           <li>Gestión de citas online 24/7</li>
           <li>Perfil profesional personalizado</li>
           <li>Control de ingresos básicos</li>
           <li>Recordatorios automáticos por WhatsApp</li>
         </ul>
-        <button class="btn-subscribe" (click)="openPaymentModal('Plan Barber - $50.000/mes')">COMENZAR AHORA</button>
+        <button class="btn-subscribe" (click)="openPaymentModal('PLAN BASICO', 30000)">COMENZAR AHORA</button>
       </div>
 
-      <!-- PLAN PRO / SUCURSAL -->
+      <!-- PLAN PREMIUM -->
       <div class="plan-card featured">
         <span class="plan-badge gold">Más Popular</span>
-        <h3>PLAN SUCURSAL</h3>
-        <div class="plan-price">$120.000 <span>/ mes</span></div>
-        <p class="plan-desc">La solución completa para administrar tu barbería y equipo.</p>
+        <h3>PLAN PREMIUM</h3>
+        <div class="plan-price">$45.000 <span>/ mes</span></div>
+        <p class="plan-desc">Plan premium para barberías con funciones avanzadas y equipo.</p>
         <ul class="plan-features">
-          <li>Registro y gestión de 1 sucursal</li>
+          <li>Registro y gestión de sucursales</li>
           <li>Hasta 5 barberos en equipo</li>
           <li>Control de inventario y caja diaria</li>
           <li>Panel de estadísticas avanzadas</li>
           <li>Soporte técnico prioritario</li>
         </ul>
-        <button class="btn-subscribe featured-btn" (click)="openPaymentModal('Plan Sucursal - $120.000/mes')">UNIR MI BARBERÍA</button>
+        <button class="btn-subscribe featured-btn" (click)="openPaymentModal('PLAN PREMIUM', 45000)">UNIR MI BARBERÍA</button>
       </div>
 
-      <!-- PLAN FRANCHISE / EMPRESA -->
+      <!-- PLAN PLATINUM -->
       <div class="plan-card">
         <span class="plan-badge">Multisucursal</span>
-        <h3>PLAN MASTER</h3>
-        <div class="plan-price">$220.000 <span>/ mes</span></div>
-        <p class="plan-desc">Diseñado para cadenas de barberías o negocios en expansión.</p>
+        <h3>Plan Platinum</h3>
+        <div class="plan-price">$50.000 <span>/ mes</span></div>
+        <p class="plan-desc">Suscripción platinum para barberías con máxima capacidad.</p>
         <ul class="plan-features">
           <li>Sucursales ilimitadas</li>
           <li>Barberos ilimitados por local</li>
@@ -64,7 +64,7 @@
           <li>API y reportes personalizados</li>
           <li>Cuenta destacada en la plataforma</li>
         </ul>
-        <button class="btn-subscribe" (click)="openPaymentModal('Plan Master - $220.000/mes')">CONTACTAR VENTAS</button>
+        <button class="btn-subscribe" (click)="openPaymentModal('Plan Platinum', 50000)">CONTACTAR VENTAS</button>
       </div>
 
     </div>
@@ -77,36 +77,20 @@
       <button class="modal-close" (click)="closePaymentModal()">&times;</button>
       
       <div class="modal-header">
-        <h3>SUSCRIPCIÓN DE BARBERO</h3>
+        <h3>GESTIÓN DE SUSCRIPCIÓN</h3>
         <p class="selected-plan-text">Plan seleccionado: <strong>{{ selectedPlan }}</strong></p>
       </div>
 
       <form (ngSubmit)="submitPaymentForm()">
         <div class="modal-grid">
-          <div class="modal-field">
+          <!-- Único campo que llena el cliente: El nombre de su barbería -->
+          <div class="modal-field" style="grid-column: 1 / -1;">
             <label>Nombre de la Barbería</label>
             <input type="text" [(ngModel)]="barberShopName" name="barberShopName" placeholder="Ej. SmartBarber Studio" required />
           </div>
-          <div class="modal-field">
-            <label>Correo Electrónico</label>
-            <input type="email" [(ngModel)]="email" name="email" placeholder="correo@barberia.com" required />
-          </div>
-          <div class="modal-field">
-            <label>Número Cuenta</label>
-            <input type="tel" [(ngModel)]="accountNumber" name="accountNumber" placeholder="601 343 0000 6700" required />
-          </div>
-          <div class="modal-field">
-            <label>Método de Pago</label>
-            <select [(ngModel)]="paymentMethod" name="paymentMethod" required>
-              <option value="" disabled selected>Selecciona método de pago</option>
-              <option value="card">Tarjeta de Crédito / Débito</option>
-              <option value="pse">PSE (Cuenta de Ahorros/Corriente)</option>
-              <option value="nequi">Nequi / Daviplata</option>
-            </select>
-          </div>
         </div>
 
-        <button type="submit" class="btn-pay-submit">CONFIRMAR Y ACTIVAR SUSCRIPCIÓN</button>
+        <button type="submit" class="btn-pay-submit">GUARDAR SUSCRIPCIÓN</button>
       </form>
     </div>
   </div>

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubscriptionComponent } from './subscription.component';
-import { SubscriptionWsService } from '../../../../infrastructure/websocket/subscription-ws.service';
+import { SubscriptionWsService } from '../../infrastructure/subscription-ws.service';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
