@@ -1,0 +1,120 @@
+.faq-section-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: inherit;
+  color: #fff;
+}
+
+.faq-main-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #0a0909;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.faq-item {
+  background-color: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.faq-item.active {
+  border-color: #f5b041;
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 18px 20px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f5b041;
+}
+
+.faq-answer {
+  padding: 0 20px 18px 20px;
+  color: #b0b0b0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  border-top: 1px solid #222;
+  background-color: #121212;
+}
+
+/* Banner de WhatsApp */
+.whatsapp-banner {
+  background-color: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 24px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.whatsapp-text h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.whatsapp-text p {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.btn-whatsapp {
+  background-color: #c4ab80;
+  color: #1a1a1a;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 0 15px rgba(245, 176, 65, 0.3);
+}
+
+.btn-whatsapp:hover {
+  background-color: #f39c12;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .whatsapp-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btn-whatsapp {
+    width: 100%;
+    text-align: center;
+  }
+}

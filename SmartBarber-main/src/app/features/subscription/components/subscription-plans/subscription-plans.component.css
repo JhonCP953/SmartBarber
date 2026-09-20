@@ -1,0 +1,350 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.subscription-section {
+  background-color: #f4efe6 !important;
+  padding: 80px 0;
+  width: 100%;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.showcase-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.showcase-head .eyebrow {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #c4ab80 !important;
+  margin-bottom: 8px;
+}
+
+.showcase-head h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 38px;
+  color: #1a1a1a !important;
+  margin: 0 0 16px 0;
+  letter-spacing: 1px;
+}
+
+.sub-lead {
+  font-size: 15px;
+  color: #555555 !important;
+  font-style: italic;
+  margin-top: 12px;
+}
+
+.showcase-divider {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.mustache-svg {
+  width: 36px !important;
+  height: 36px !important;
+  color: #c4ab80 !important;
+}
+
+.showcase-divider .dash {
+  flex: 1;
+  height: 0;
+  border-bottom: 1.5px dashed #c4ab80 !important;
+}
+
+/* Cards Grid */
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  align-items: stretch;
+}
+
+.plan-card {
+  background: #ffffff !important;
+  border: 1px solid #e2d9cd;
+  border-radius: 6px;
+  padding: 40px 28px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.plan-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card.featured {
+  border: 2px solid #c4ab80;
+  background: #fffdf9 !important;
+  box-shadow: 0 15px 35px rgba(196, 171, 128, 0.25);
+}
+
+.plan-badge {
+  display: inline-block;
+  align-self: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #726a61 !important;
+  background: #f4efe6;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  font-weight: 600;
+}
+
+.plan-badge.gold {
+  background: #c4ab80;
+  color: #ffffff !important;
+}
+
+.plan-card h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  color: #1a1a1a !important;
+  margin-bottom: 10px;
+}
+
+.plan-price {
+  font-family: 'Fraunces', serif;
+  font-size: 34px;
+  font-style: italic;
+  color: #c4ab80 !important;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.plan-price span {
+  font-size: 14px;
+  font-style: normal;
+  color: #726a61 !important;
+}
+
+.plan-desc {
+  font-size: 13px;
+  color: #555555 !important;
+  margin-bottom: 20px;
+}
+
+.plan-features {
+  list-style: none !important;
+  padding: 20px 0 0 0 !important;
+  margin: 0 0 30px 0 !important;
+  border-top: 1px solid #f0e9df;
+  text-align: left;
+}
+
+.plan-features li {
+  font-size: 14px;
+  color: #333333 !important;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.plan-features li::before {
+  content: "✓";
+  color: #c4ab80;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.btn-subscribe {
+  width: 100%;
+  padding: 14px 20px;
+  background: transparent;
+  color: #1a1a1a !important;
+  border: 1.5px solid #1a1a1a;
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.btn-subscribe:hover {
+  background: #1a1a1a;
+  color: #ffffff !important;
+}
+
+.featured-btn {
+  background: #c4ab80;
+  border-color: #c4ab80;
+  color: #ffffff !important;
+}
+
+.featured-btn:hover {
+  background: #b09568;
+  border-color: #b09568;
+}
+
+/* ==========================================
+   ESTILOS DEL MODAL DE PAGO (INTEGRADOS)
+   ========================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(26, 26, 26, 0.75);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #ffffff;
+  border: 1.5px solid #e2d9cd;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  padding: 35px 30px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #726a61;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #1a1a1a;
+}
+
+.modal-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.modal-header h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.selected-plan-text {
+  font-size: 14px;
+  color: #c4ab80;
+  font-style: italic;
+}
+
+.modal-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-field label {
+  font-size: 11px;
+  color: #726a61;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.modal-field input,
+.modal-field select {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: #fcfbfa;
+  border: 1px solid #e2d9cd;
+  color: #1a1a1a;
+  font-size: 14px;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.modal-field input:focus,
+.modal-field select:focus {
+  border-color: #c4ab80;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(196, 171, 128, 0.15);
+}
+
+.btn-pay-submit {
+  width: 100%;
+  padding: 14px 20px;
+  background-color: #1a1a1a;
+  color: #ffffff !important;
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-pay-submit:hover {
+  background-color: #c4ab80;
+  color: #ffffff !important;
+}
+
+@media (max-width: 900px) {
+  .plans-grid {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+}

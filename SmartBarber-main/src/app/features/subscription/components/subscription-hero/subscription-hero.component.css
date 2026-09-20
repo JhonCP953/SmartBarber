@@ -1,0 +1,73 @@
+.membership-hero-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.85)), url('/Sub1.jpg');  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #fff;
+  margin-bottom: 40px;
+  min-height: 340px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.membership-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 40px 30px;
+}
+
+.eyebrow {
+  color: #f9f9f9;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.membership-hero-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #f9f9f9;
+}
+
+/* Línea divisoria a la mitad */
+.hero-divider {
+  width: 50%;
+  height: 2px;
+  background-color: #d4af37;
+  margin-bottom: 15px;
+}
+
+.sub-lead {
+  color: #e0e0e0;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+
+.rating-badge-container {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 8px 16px;
+  border-radius: 20px;
+  gap: 10px;
+}
+
+.stars {
+  font-weight: bold;
+  color: #ffc107;
+}
+
+.rating-text {
+  font-size: 0.85rem;
+  color: #f1f1f1;
+}

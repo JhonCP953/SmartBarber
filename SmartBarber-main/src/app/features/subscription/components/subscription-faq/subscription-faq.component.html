@@ -1,0 +1,29 @@
+<div class="faq-section-container">
+  
+  <h2 class="faq-main-title">Preguntas frecuentes</h2>
+
+  <!-- ACORDEÓN DE PREGUNTAS -->
+  <div class="faq-list">
+    <div class="faq-item" *ngFor="let faq of faqs; let i = index" [class.active]="openIndex === i">
+      <button class="faq-question" (click)="toggleFaq(i)">
+        <span>{{ faq.question }}</span>
+        <span class="faq-icon">{{ openIndex === i ? '-' : '+' }}</span>
+      </button>
+      <div class="faq-answer" *ngIf="openIndex === i">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNER DE SOPORTE WHATSAPP -->
+  <div class="whatsapp-banner">
+    <div class="whatsapp-text">
+      <h3>¿Dudas sobre cuál membresía te conviene?</h3>
+      <p>Escríbenos y te ayudamos a elegir el plan ideal para ti.</p>
+    </div>
+    <button class="btn-whatsapp" (click)="openWhatsApp()">
+      Escribir por WhatsApp
+    </button>
+  </div>
+
+</div>
