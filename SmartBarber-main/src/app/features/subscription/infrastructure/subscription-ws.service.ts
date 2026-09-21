@@ -5,6 +5,9 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class SubscriptionWsService {
+  getSubscriptionData() {
+    throw new Error('Method not implemented.');
+  }
   private socket$!: WebSocket;
   private messageSubject = new Subject<any>();
 

@@ -1,55 +1,48 @@
-<section class="my-subscription-section">
+<section class="my-sub-section">
   <div class="wrap">
     
-    <!-- ENCABEZADO -->
-    <div class="showcase-head">
-      <div class="eyebrow">Panel de Control</div>
+    <div class="header-content">
+      <span class="badge-control">PANEL DE CONTROL</span>
       <h2>MI SUSCRIPCIÓN ACTIVA</h2>
-      <p class="sub-lead">Administra el plan actual de tu negocio y revisa los detalles de tu cuenta</p>
+      <p>Gestiona los detalles de tu plan actual y el estado de tu cuenta en tiempo real.</p>
     </div>
 
-    <!-- CONTENEDOR DE INFORMACIÓN DE LA SUSCRIPCIÓN -->
-    <div class="subscription-status-card" *ngIf="subscriptionData; else noSubscription">
-      <div class="status-header">
-        <div class="plan-info-main">
-          <span class="active-badge">Activo</span>
-          <h3>{{ subscriptionData.nombre }}</h3>
-          <p class="barber-shop-title">Barbería: <strong>{{ subscriptionData.barberShopName }}</strong></p>
+    <!-- Contenedor Principal de la Tarjeta Activa -->
+    <div class="sub-card active-card">
+      
+      <!-- Estado y Icono -->
+      <div class="card-status-header">
+        <div class="status-badge">
+          <span class="dot"></span> ACTIVA
         </div>
-        <div class="plan-price-tag">
-          <span class="price">${{ subscriptionData.precio | number }}</span>
-          <span class="period">/ mes</span>
+        <div class="barber-pole-icon">💈</div>
+      </div>
+
+      <!-- Información del Plan -->
+      <div class="plan-details">
+        <h3 class="plan-title">{{ subscriptionData?.planName || 'Plan Independiente - SmartBarber' }}</h3>
+        <p class="plan-price">{{ subscriptionData?.price || '$30.000 / mes' }}</p>
+      </div>
+
+      <!-- Fechas Clave / Métricas -->
+      <div class="dates-grid">
+        <div class="date-box">
+          <span class="label">Fecha de Inicio</span>
+          <span class="value">{{ subscriptionData?.startDate || '01 Sep 2026' }}</span>
+        </div>próximo
+        <div class="date-box">
+          <span class="label">Próximo Cobro / Renovación</span>
+          <span class="value">{{ subscriptionData?.renewalDate || '01 Oct 2026' }}</span>
         </div>
       </div>
 
-      <div class="status-body">
-        <p class="desc">{{ subscriptionData.descripcion }}</p>
-        
-        <div class="features-summary">
-          <h4>Beneficios de tu plan actual:</h4>
-          <ul>
-            <li>Acceso completo al sistema SmartBarber</li>
-            <li>Soporte técnico preferencial</li>
-            <li>Actualizaciones automáticas</li>
-          </ul>
-        </div>
+      <!-- Botones de Acción -->
+      <div class="card-actions">
+        <button class="btn-primary" (click)="renewOrManage()">Gestionar Pagos</button>
+        <button class="btn-secondary" (click)="goToPlans()">Cambiar de Plan</button>
       </div>
 
-      <div class="status-footer">
-        <button class="btn-secondary" (click)="goToPlans()">Cambiar Plan</button>
-        <button class="btn-primary" (click)="renewOrManage()">Gestionar Facturación</button>
-      </div>
     </div>
-
-    <!-- ESTADO VACÍO (SI NO TIENE SUSCRIPCIÓN) -->
-    <ng-template #noSubscription>
-      <div class="empty-subscription-card">
-        <div class="empty-icon">💈</div>
-        <h3>Aún no tienes una suscripción activa</h3>
-        <p>Potencia tu barbería digitalizando tus citas, sucursales e ingresos hoy mismo.</p>
-        <button class="btn-primary" (click)="goToPlans()">Ver Planes Disponibles</button>
-      </div>
-    </ng-template>
 
   </div>
 </section>

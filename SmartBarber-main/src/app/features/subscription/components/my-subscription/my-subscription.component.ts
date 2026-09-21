@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { SubscriptionWsService } from '../../infrastructure/subscription-ws.service';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-my-subscription',
@@ -9,34 +11,58 @@ import { Router } from '@angular/router';
   templateUrl: './my-subscription.component.html',
   styleUrls: ['./my-subscription.component.css']
 })
-export class MySubscriptionComponent implements OnInit {
+export class MySubscriptionComponent implements OnInit, OnDestroy {
   
-  // Objeto simulado o que luego vendrá de tu servicio backend/WebSocket
   subscriptionData: any = null;
+  isLoading: boolean = true;
+  errorMessage: string = '';
+  
+  private wsSub?: Subscription;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private subscriptionWsService: SubscriptionWsService
+  ) {}
 
   ngOnInit(): void {
-    // AQUÍ CONECTARÁS EL SERVICIO CUANDO TU COMPAÑERO TERMINE EL BACKEND
-    // Ejemplo de prueba temporal para ver cómo luce el diseño:
-    this.loadMockSubscription();
+    this.loadRealSubscription();
   }
 
-  loadMockSubscription() {
-    // Simulamos que ya trajo los datos de la BD
-    this.subscriptionData = {
-      nombre: 'PLAN PREMIUM',
-      descripcion: 'Plan premium para barberías con funciones avanzadas y equipo.',
-      precio: 45000,
-      barberShopName: 'SmartBarber Studio Principal'
-    };
+  loadRealSubscription() {
+    this.isLoading = true;
+    const subscriptionData$ = (this.subscriptionWsService.getSubscriptionData as unknown as () => Observable<any>)();
+    this.wsSub = subscriptionData$.subscribe({
+      next: (data: any) => {
+        // Validación: Si el backend responde nulo o sin suscripción activa, redirigimos a planes
+        if (!data || data.active === false) {
+          this.router.navigate(['/subscription']);
+          return;
+        }
+        
+        this.subscriptionData = data;
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Error al recibir datos de suscripción:', err);
+        this.errorMessage = 'No se pudo conectar con el servidor en tiempo real.';
+        this.isLoading = false;
+        
+     
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.wsSub) {
+      this.wsSub.unsubscribe();
+    }
   }
 
   goToPlans() {
-    this.router.navigate(['/subscription']); // O la ruta donde tengas tus tarjetas de planes
+    this.router.navigate(['/subscription']); 
   }
 
   renewOrManage() {
-    alert('Próximamente: Módulo de pasarela de pagos y facturación por Gmail.');
+    alert('Próximamente: Módulo de pasarela de pagos.');
   }
 }
