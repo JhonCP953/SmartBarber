@@ -1,0 +1,250 @@
+<section class="register-container">
+
+    <div class="register-card">
+
+        <div class="header">
+
+            <h1>Crear cuenta de administrador</h1>
+
+            <p>
+                Completa tus datos para administrar tu barbería
+                en SmartBarber.
+            </p>
+
+        </div>
+
+
+        @if (email()) {
+
+        <div class="google-account">
+
+            <strong>Cuenta de Google</strong>
+
+            <span>
+                {{ email() }}
+            </span>
+
+        </div>
+
+        }
+
+
+        @if (errorMessage()) {
+
+        <div class="message error">
+
+            {{ errorMessage() }}
+
+        </div>
+
+        }
+
+
+        @if (success()) {
+
+        <div class="message success">
+
+            <strong>¡Registro exitoso!</strong>
+
+            <p>
+                Tu cuenta de administrador y la barbería
+                fueron registradas correctamente.
+            </p>
+
+            <p>
+                Redireccionando...
+            </p>
+
+        </div>
+
+        }
+
+
+        @if (!success()) {
+
+        <form [formGroup]="adminForm" (ngSubmit)="submit()">
+
+            <h2>Datos del administrador</h2>
+
+
+            <div class="field">
+
+                <label for="name">
+                    Nombre completo
+                </label>
+
+                <input id="name" type="text" formControlName="name" placeholder="Nombre completo">
+
+                @if (
+                name.invalid &&
+                name.touched
+                ) {
+
+                <small>
+                    El nombre es obligatorio y debe tener
+                    al menos 3 caracteres.
+                </small>
+
+                }
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="email">
+                    Correo electrónico
+                </label>
+
+                <input id="email" type="email" [value]="email()" readonly>
+
+                <small>
+                    Este correo proviene de tu cuenta de Google.
+                </small>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="cell">
+                    Teléfono
+                </label>
+
+                <input id="cell" type="tel" formControlName="cell" maxlength="10" placeholder="3001234567">
+
+                @if (
+                cell.invalid &&
+                cell.touched
+                ) {
+
+                <small>
+                    Ingresa un número de teléfono válido
+                    de 10 dígitos.
+                </small>
+
+                }
+
+            </div>
+
+
+            <h2>Datos de la barbería</h2>
+
+
+            <div [formGroup]="barberShopForm">
+
+                <div class="field">
+
+                    <label>
+                        Nombre de la barbería
+                    </label>
+
+                    <input type="text" formControlName="name" placeholder="Nombre de la barbería">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Razón social
+                    </label>
+
+                    <input type="text" formControlName="companyName" placeholder="Razón social">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Tipo de documento
+                    </label>
+
+                    <select formControlName="documentType">
+
+                        <option value="NIT">
+                            NIT
+                        </option>
+
+                        <option value="CC">
+                            Cédula de ciudadanía
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Documento
+                    </label>
+
+                    <input type="text" formControlName="document" placeholder="Número de documento">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Teléfono de la barbería
+                    </label>
+
+                    <input type="tel" formControlName="phone" maxlength="10" placeholder="3001234567">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Ubicación
+                    </label>
+
+                    <input type="text" formControlName="location" placeholder="Ciudad y dirección">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Descripción
+                    </label>
+
+                    <textarea formControlName="description" rows="4"
+                        placeholder="Describe brevemente tu barbería"></textarea>
+
+                </div>
+
+            </div>
+
+
+            <button type="submit" [disabled]="loading()">
+
+                @if (loading()) {
+
+                <span>
+                    Registrando...
+                </span>
+
+                } @else {
+
+                <span>
+                    Crear cuenta y barbería
+                </span>
+
+                }
+
+            </button>
+
+        </form>
+
+        }
+
+    </div>
+
+</section>

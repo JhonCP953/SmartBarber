@@ -1,126 +1,165 @@
-/* ==========================================
-   ESTILOS BASE Y CONTENEDOR
-   ========================================== */
 .branch-section {
-  padding: 3rem 1rem;
-  background-color: #0d0d0d;
-  color: #f4efe6;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+
+  padding: 80px 20px;
+
+  background:
+    radial-gradient(circle at top left,
+      rgba(182, 138, 78, 0.1),
+      transparent 35%),
+    var(--color-charcoal);
+
+  color: var(--color-ivory);
 }
 
-.wrap {
-  max-width: 1100px;
-  margin: 0 auto;
+.branch-section .wrap {
+  width: min(100%, 1100px);
+
+  margin-inline: auto;
 }
+
+/* =====================================================
+   CARD PRINCIPAL
+   ===================================================== */
 
 .auth-card {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  background-color: #181818;
-  border-radius: 12px;
+
+  grid-template-columns: 0.9fr 1.4fr;
+
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  border: 1px solid #2a2a2a;
+
+  background: var(--color-charcoal-2);
+
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-lg);
 }
 
-@media (max-width: 850px) {
-  .auth-card {
-    grid-template-columns: 1fr;
-  }
-  .auth-banner {
-    min-height: 200px;
-  }
-}
+/* =====================================================
+   BANNER
+   ===================================================== */
 
-/* ==========================================
-   BANNER IZQUIERDO
-   ========================================== */
 .auth-banner {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)),
-              url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+  min-height: 520px;
+
   display: flex;
   align-items: flex-end;
-  padding: 2.5rem;
+
+  padding: 38px;
+
+  background:
+    linear-gradient(rgba(20, 17, 16, 0.45),
+      rgba(20, 17, 16, 0.9)),
+    url("https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1000&auto=format&fit=crop") center / cover no-repeat;
 }
 
 .banner-overlay .eyebrow {
-  color: #c4ab80;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 600;
+  margin-bottom: 14px;
+
+  color: var(--color-brass-light);
 }
 
 .banner-overlay h3 {
-  font-size: 2rem;
-  color: #ffffff;
-  margin: 0.5rem 0;
-  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+
+  color: var(--color-white);
+
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 500;
 }
 
 .banner-overlay p {
-  color: #a0a0a0;
-  font-size: 0.95rem;
-  margin: 0;
+  max-width: 330px;
+
+  color: var(--color-ivory-dim);
+
+  font-size: 13px;
 }
 
-/* ==========================================
-   CONTENIDO Y PESTAÑAS
-   ========================================== */
+/* =====================================================
+   CONTENIDO
+   ===================================================== */
+
 .auth-content {
-  padding: 2.5rem;
+  padding: 42px;
 }
 
 .auth-header h2 {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.8rem;
-  letter-spacing: 1px;
+  margin-bottom: 24px;
+
+  color: var(--color-ivory);
+
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 500;
 }
+
+/* =====================================================
+   TABS
+   ===================================================== */
 
 .auth-tabs {
   display: flex;
-  gap: 1.5rem;
-  border-bottom: 1px solid #2a2a2a;
-  margin-bottom: 2rem;
+
+  gap: 28px;
+
+  margin-bottom: 30px;
+
+  border-bottom: 1px solid var(--color-border-dark);
 }
 
 .tab-btn {
-  background: none;
-  border: none;
-  color: #888888;
-  font-size: 1rem;
-  font-weight: 600;
-  padding-bottom: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
   position: relative;
+
+  padding: 0 0 12px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: var(--color-text-light);
+
+  font-size: 12px;
+
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
 }
 
 .tab-btn:hover {
-  color: #f4efe6;
+  color: var(--color-ivory);
 }
 
 .tab-btn.active {
-  color: #c4ab80;
+  color: var(--color-brass-light);
 }
 
 .tab-btn.active::after {
-  content: '';
+  content: "";
+
   position: absolute;
-  bottom: -1px;
+
   left: 0;
-  width: 100%;
+  right: 0;
+  bottom: -1px;
+
   height: 2px;
-  background-color: #c4ab80;
+
+  background: var(--color-brass);
 }
 
-/* ==========================================
-   FORMULARIO E INPUTS UNIFORMES
-   ========================================== */
+/* =====================================================
+   FORMULARIO
+   ===================================================== */
+
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
 }
 
 .form-grid.single-col {
@@ -133,83 +172,72 @@
 }
 
 .field.full-width {
-  grid-column: span 2;
-}
-
-@media (max-width: 600px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-  .field.full-width {
-    grid-column: span 1;
-  }
+  grid-column: 1 / -1;
 }
 
 .field label {
-  color: #c4ab80;
-  font-size: 0.8rem;
+  margin-bottom: 7px;
+
+  color: var(--color-brass-light);
+
+  font-family: var(--font-label);
+  font-size: 11px;
+
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.4rem;
-  font-weight: 600;
 }
 
-/* UNIFICACIÓN DE CAMPOS DE TEXTO, SELECT Y TEXTAREA */
 .field input,
 .field select,
 .field textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: #121212;
-  border: 1px solid #2a2a2a;
-  border-radius: 6px;
-  color: #f4efe6;
-  font-family: inherit;
-  font-size: 0.95rem;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  appearance: none;
-  -webkit-appearance: none;
-}
 
-/* Icono personalizado para el Select */
-.field select {
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c4ab80%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 0.65rem auto;
-  padding-right: 2.5rem;
-  cursor: pointer;
-}
+  padding: 12px 14px;
 
-.field select option {
-  background-color: #181818;
-  color: #f4efe6;
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-sm);
+
+  background: rgba(20, 17, 16, 0.7);
+
+  color: var(--color-ivory);
+
+  font-family: var(--font-body);
+  font-size: 14px;
 }
 
 .field textarea {
-  resize: vertical;
-  min-height: 80px;
-}
+  min-height: 100px;
 
-.field input::placeholder,
-.field textarea::placeholder {
-  color: #555555;
+  resize: vertical;
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-color: #c4ab80;
-  box-shadow: 0 0 0 2px rgba(196, 171, 128, 0.2);
+
+  border-color: var(--color-brass);
+
+  box-shadow:
+    0 0 0 3px rgba(182, 138, 78, 0.12);
 }
 
-/* ==========================================
+.field input::placeholder,
+.field textarea::placeholder {
+  color: rgba(226, 216, 196, 0.4);
+}
+
+.field select option {
+  background: var(--color-charcoal-2);
+  color: var(--color-ivory);
+}
+
+/* =====================================================
    BOTONES
-   ========================================== */
+   ===================================================== */
+
 .form-actions {
-  margin-top: 1.5rem;
+  margin-top: 24px;
 }
 
 .form-actions.flex-center {
@@ -218,110 +246,167 @@
 }
 
 .btn-save {
-  width: 40%;
-  min-width: 160px;
-  padding: 0.85rem;
-  background-color: #c4ab80;
-  color: #121212;
-  border: none;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 1px;
+  width: min(100%, 260px);
+
+  min-height: 48px;
+
+  padding: 12px 22px;
+
+  border: 1px solid var(--color-brass);
+  border-radius: var(--radius-sm);
+
+  background: var(--color-brass);
+
+  color: var(--color-ink);
+
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
 .btn-save:hover {
-  background-color: #d5be94;
+  transform: translateY(-2px);
+
+  background: var(--color-brass-light);
 }
 
-.btn-save:active {
-  transform: scale(0.99);
-}
+/* =====================================================
+   LISTADO
+   ===================================================== */
 
-/* ==========================================
-   LISTADO DE BARBERÍAS ACTIVAS (CIRCULAR)
-   ========================================== */
 .branch-list {
-  margin-top: 4rem;
-  padding-top: 2rem;
-  border-top: 1px solid #2a2a2a;
+  margin-top: 60px;
+
+  padding-top: 50px;
+
+  border-top: 1px solid var(--color-border-dark);
 }
 
 .section-title-wrap {
+  margin-bottom: 38px;
+
   text-align: center;
-  margin-bottom: 3rem;
 }
 
 .section-title-wrap h3 {
-  font-size: 1.5rem;
-  color: #c4ab80;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  color: var(--color-brass-light);
+
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 500;
 }
 
 .cards-grid-circular {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2.5rem;
-  justify-content: center;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(250px, 1fr));
+
+  gap: 42px;
 }
 
 .branch-circle-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+
   text-align: center;
 }
 
 .circle-avatar {
   width: 180px;
   height: 180px;
-  border-radius: 50%;
+
+  margin-bottom: 20px;
+
   overflow: hidden;
-  margin-bottom: 1.5rem;
-  border: 2px solid #2a2a2a;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+
+  border: 2px solid var(--color-border-dark);
+  border-radius: 50%;
+
+  box-shadow: var(--shadow-md);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .branch-circle-card:hover .circle-avatar {
-  transform: translateY(-5px);
-  border-color: #c4ab80;
+  transform: translateY(-6px);
+
+  border-color: var(--color-brass);
 }
 
 .circle-avatar img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 }
 
 .branch-circle-content h4 {
-  font-size: 1.25rem;
-  color: #ffffff;
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+
+  color: var(--color-ivory);
+
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 500;
 }
 
 .branch-circle-content .description {
-  color: #a0a0a0;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-  max-width: 260px;
+  max-width: 270px;
+
+  margin-bottom: 14px;
+
+  color: var(--color-text-light);
+
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .branch-circle-content .meta-info {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.82rem;
-  color: #888888;
+
+  gap: 4px;
+
+  color: var(--color-text-muted);
+
+  font-size: 12px;
 }
 
-.branch-circle-content .meta-info span {
-  display: block;
+@media (max-width: 850px) {
+  .auth-card {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-banner {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .branch-section {
+    padding: 50px 14px;
+  }
+
+  .auth-content {
+    padding: 28px 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full-width {
+    grid-column: auto;
+  }
 }

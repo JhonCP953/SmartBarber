@@ -1,0 +1,255 @@
+<section class="register-page">
+
+  <div class="register-card">
+
+    <div class="register-header">
+
+      <h1>Crea tu cuenta de SmartBarber</h1>
+
+      <p>
+        Usa tu cuenta de Google para crear tu perfil de SmartBarber.
+      </p>
+
+    </div>
+
+    <!-- Step 1: Google authentication -->
+    @if (!googleAuthenticated()) {
+
+    <div class="step">
+
+      <h2>1. Continúa con Google</h2>
+
+      <p>
+        Tu cuenta de Google se utilizará para autenticar tu cuenta de
+        SmartBarber.
+      </p>
+
+      <button type="button" class="google-button" [disabled]="loadingGoogle()" (click)="continueWithGoogle()">
+
+        @if (loadingGoogle()) {
+        Conectando...
+        } @else {
+        Continuar con Google
+        }
+
+      </button>
+
+    </div>
+
+    } @else {
+
+    <!-- Authenticated Google account -->
+    <div class="google-account">
+
+      @if (currentUser()?.photoURL) {
+
+      <img [src]="currentUser()?.photoURL" alt="Perfil de Google" class="profile-image">
+
+      }
+
+      <div>
+
+        <strong>
+          {{ currentUser()?.displayName }}
+        </strong>
+
+        <span>
+          {{ currentUser()?.email }}
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- Step 2: Select role -->
+    @if (!selectedRole()) {
+
+    <div class="step">
+
+      <h2>2. ¿Cómo deseas registrarte?</h2>
+
+      <div class="role-options">
+
+        <button type="button" class="role-card" (click)="selectRole('CLIENT')">
+
+          <span class="role-icon">👤</span>
+
+          <strong>Cliente</strong>
+
+          <span>
+            Quiero reservar servicios en barberías.
+          </span>
+
+        </button>
+
+        <button type="button" class="role-card" (click)="selectRole('BARBER_SHOP')">
+
+          <span class="role-icon">✂</span>
+
+          <strong>Barbería</strong>
+
+          <span>
+            Quiero administrar mi propia barbería.
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+    <!-- Step 3: Client form -->
+    @if (clientSelected()) {
+
+    <div class="step">
+
+      <h2>3. Completa tu información de cliente</h2>
+
+      <form [formGroup]="clientForm" (ngSubmit)="submitClientRegistration()" novalidate>
+
+        <div class="field">
+
+          <label for="name">
+            Nombre completo
+          </label>
+
+          <input id="name" type="text" formControlName="name" autocomplete="name"
+            placeholder="Ingresa tu nombre completo">
+
+          @if (hasError('name', 'required')) {
+          <small>
+            El nombre completo es obligatorio.
+          </small>
+          }
+
+          @if (hasError('name', 'minlength')) {
+          <small>
+            El nombre debe contener al menos 3 caracteres.
+          </small>
+          }
+
+        </div>
+
+        <div class="field">
+
+          <label for="email">
+            Cuenta de Google
+          </label>
+
+          <input id="email" type="email" [value]="currentUser()?.email ?? ''" readonly>
+
+          <small class="help">
+            Este correo proviene de tu cuenta de Google autenticada.
+          </small>
+
+        </div>
+
+        <div class="field">
+
+          <label for="documentType">
+            Tipo de documento
+          </label>
+
+          <select id="documentType" formControlName="documentType">
+
+            <option value="CC">
+              Cédula de ciudadanía
+            </option>
+
+            <option value="CE">
+              Cédula de extranjería
+            </option>
+
+            <option value="PASSPORT">
+              Pasaporte
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="field">
+
+          <label for="document">
+            Número de documento
+          </label>
+
+          <input id="document" type="text" formControlName="document" inputmode="numeric" maxlength="15"
+            placeholder="Ingresa tu número de documento">
+
+          @if (hasError('document', 'required')) {
+          <small>
+            El número de documento es obligatorio.
+          </small>
+          }
+
+          @if (hasError('document', 'pattern')) {
+          <small>
+            Ingresa un número de documento válido.
+          </small>
+          }
+
+        </div>
+
+        <div class="field">
+
+          <label for="cell">
+            Teléfono celular
+          </label>
+
+          <input id="cell" type="tel" formControlName="cell" inputmode="numeric" maxlength="10"
+            placeholder="3001234567">
+
+          @if (hasError('cell', 'required')) {
+          <small>
+            El número de celular es obligatorio.
+          </small>
+          }
+
+          @if (hasError('cell', 'pattern')) {
+          <small>
+            Ingresa un número de celular colombiano válido.
+          </small>
+          }
+
+        </div>
+
+        <button type="submit" class="submit-button" [disabled]="submitting()">
+
+          @if (submitting()) {
+          Registrando...
+          } @else {
+          Crear cuenta de cliente
+          }
+
+        </button>
+
+      </form>
+
+    </div>
+
+    }
+
+    }
+
+    @if (errorMessage()) {
+
+    <div class="message error">
+      {{ errorMessage() }}
+    </div>
+
+    }
+
+    @if (successMessage()) {
+
+    <div class="message success">
+      {{ successMessage() }}
+    </div>
+
+    }
+
+  </div>
+
+</section>

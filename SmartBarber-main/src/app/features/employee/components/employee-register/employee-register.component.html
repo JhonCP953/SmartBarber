@@ -1,0 +1,74 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Registrar barbero</h2>
+
+    <label for="name">Nombre completo *</label>
+    <input id="name" formControlName="name" />
+    <small *ngIf="form.controls.name.touched &&
+                form.controls.name.invalid">
+        El nombre es obligatorio.
+    </small>
+
+    <label for="documentType">Tipo de documento *</label>
+    <select id="documentType" formControlName="documentType">
+        <option value="">Seleccione</option>
+        <option value="CC">Cédula de ciudadanía</option>
+        <option value="CE">Cédula de extranjería</option>
+        <option value="PASSPORT">Pasaporte</option>
+    </select>
+    <small *ngIf="form.controls.documentType.touched &&
+                form.controls.documentType.invalid">
+        Selecciona el tipo de documento.
+    </small>
+
+    <label for="document">Número de documento *</label>
+    <input id="document" formControlName="document" />
+    <small *ngIf="form.controls.document.touched &&
+                form.controls.document.invalid">
+        El documento es obligatorio.
+    </small>
+
+    <label for="email">Correo electrónico *</label>
+    <input id="email" type="email" formControlName="email" />
+    <small *ngIf="form.controls.email.touched &&
+                form.controls.email.invalid">
+        Ingresa un correo válido.
+    </small>
+
+    <label for="cell">Celular *</label>
+    <input id="cell" type="tel" formControlName="cell" />
+    <small *ngIf="form.controls.cell.touched &&
+                form.controls.cell.invalid">
+        Ingresa un celular de 10 dígitos.
+    </small>
+
+    <label for="experienceYears">Años de experiencia *</label>
+    <input id="experienceYears" type="number" min="0" max="70" formControlName="experienceYears" />
+
+    <fieldset>
+        <legend>Especialidades *</legend>
+
+        <label *ngFor="let specialty of specialties">
+            <input type="checkbox" [checked]="selectedSpecialties.has(specialty)" (change)="toggleSpecialty(
+          specialty,
+          $any($event.target).checked
+        )" />
+            {{ specialty }}
+        </label>
+    </fieldset>
+
+    <small *ngIf="selectedSpecialties.size === 0">
+        Selecciona al menos una especialidad.
+    </small>
+
+    <p *ngIf="backendError" role="alert">
+        {{ backendError }}
+    </p>
+
+    <p *ngIf="successMessage" role="status">
+        {{ successMessage }}
+    </p>
+
+    <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Registrando...' : 'Registrar barbero' }}
+    </button>
+</form>

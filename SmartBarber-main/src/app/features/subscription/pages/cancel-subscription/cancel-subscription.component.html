@@ -1,0 +1,602 @@
+<section class="cancel-subscription-section">
+
+  <div class="wrap">
+
+    <header class="page-header">
+
+      <span class="eyebrow">
+        Gestión de suscripción
+      </span>
+
+      <h1>
+        Cancelar suscripción
+      </h1>
+
+      <p>
+        Revisa la información antes de cancelar el servicio de tu barbería.
+      </p>
+
+    </header>
+
+
+    <!-- CARGANDO -->
+
+    @if (loading()) {
+
+      <div class="state-card">
+
+        <p>
+          Cargando información de la suscripción...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ERROR -->
+
+    @if (!loading() && errorMessage()) {
+
+      <div
+        class="alert alert-error"
+        role="alert"
+      >
+
+        {{ errorMessage() }}
+
+      </div>
+
+    }
+
+
+    @if (!loading() && currentSubscription()) {
+
+      <!-- INFORMACIÓN ACTUAL -->
+
+      <section class="subscription-card">
+
+        <div class="section-title">
+
+          <span>
+            Suscripción actual
+          </span>
+
+          <span
+            class="status"
+            [class.cancelled]="
+              currentSubscription()!.status === 'CANCELLED'
+            "
+          >
+            {{ currentSubscription()!.status }}
+          </span>
+
+        </div>
+
+
+        <div class="subscription-content">
+
+          <div>
+
+            <span class="label">
+              PLAN ACTUAL
+            </span>
+
+            <h2>
+              {{ currentSubscription()!.plan.name }}
+            </h2>
+
+            <p>
+              {{ currentSubscription()!.plan.description }}
+            </p>
+
+          </div>
+
+
+          <div class="price">
+
+            {{
+              formatCurrency(
+                currentSubscription()!.plan.price,
+                currentSubscription()!.plan.currency
+              )
+            }}
+
+            <span>
+
+              /
+
+              {{
+                currentSubscription()!.plan.billingPeriod === 'MONTHLY'
+                  ? 'mes'
+                  : 'año'
+              }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="subscription-dates">
+
+          <div>
+
+            <span>
+              Inicio
+            </span>
+
+            <strong>
+              {{
+                formatDate(
+                  currentSubscription()!.startDate
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Próxima renovación
+            </span>
+
+            <strong>
+              {{
+                formatDate(
+                  currentSubscription()!.renewalDate
+                )
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ADVERTENCIA -->
+
+      @if (isActive() && !cancellationCompleted()) {
+
+        <section class="warning-card">
+
+          <div class="warning-icon">
+            !
+          </div>
+
+          <div>
+
+            <h2>
+              Antes de cancelar
+            </h2>
+
+            <p>
+              Al cancelar la suscripción, tu barbería dejará de contar
+              con las funcionalidades asociadas al plan una vez llegue
+              la fecha efectiva de cancelación.
+            </p>
+
+            <p>
+              El historial generado durante el uso de la plataforma
+              se conservará.
+            </p>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <!-- FUNCIONALIDADES -->
+
+      @if (cancellationCompleted() && successResponse()) {
+
+        <section class="features-card">
+
+          <h2>
+            Estado de las funcionalidades
+          </h2>
+
+          <div class="features-grid">
+
+            <div>
+
+              <h3>
+                Disponibles
+              </h3>
+
+              <ul>
+
+                @for (
+                  feature of successResponse()!.availableFeatures;
+                  track feature
+                ) {
+
+                  <li>
+                    ✓ {{ feature }}
+                  </li>
+
+                }
+
+              </ul>
+
+            </div>
+
+
+            <div>
+
+              <h3>
+                Restringidas
+              </h3>
+
+              <ul>
+
+                @for (
+                  feature of successResponse()!.restrictedFeatures;
+                  track feature
+                ) {
+
+                  <li>
+                    × {{ feature }}
+                  </li>
+
+                }
+
+              </ul>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <!-- MOTIVO -->
+
+      @if (isActive() && !cancellationCompleted()) {
+
+        <section class="reason-card">
+
+          <div class="section-title">
+
+            <span>
+              Motivo de cancelación
+            </span>
+
+            @if (reasonRequired()) {
+
+              <span class="required">
+                Obligatorio
+              </span>
+
+            } @else {
+
+              <span class="optional">
+                Opcional
+              </span>
+
+            }
+
+          </div>
+
+
+          <div class="reasons">
+
+            @for (
+              reason of cancellationReasons;
+              track reason
+            ) {
+
+              <button
+                type="button"
+                class="reason-button"
+                [class.selected]="
+                  selectedReason() === reason
+                "
+                (click)="selectReason(reason)"
+              >
+
+                {{ reason }}
+
+              </button>
+
+            }
+
+          </div>
+
+
+          @if (selectedReason() === 'Otro') {
+
+            <textarea
+              class="reason-detail"
+              rows="4"
+              placeholder="Indica brevemente el motivo..."
+              [value]="reasonDetail()"
+              (input)="updateReasonDetail($event)"
+            ></textarea>
+
+          }
+
+        </section>
+
+      }
+
+
+      <!-- CANCELAR -->
+
+      @if (isActive() && !cancellationCompleted()) {
+
+        <section class="cancel-action">
+
+          <button
+            type="button"
+            class="cancel-button"
+            [disabled]="!canContinue()"
+            (click)="openConfirmation()"
+          >
+
+            Cancelar suscripción
+
+          </button>
+
+        </section>
+
+      }
+
+
+      <!-- CONFIRMACIÓN -->
+
+      @if (showConfirmation()) {
+
+        <section class="confirmation">
+
+          <div class="confirmation-card">
+
+            <span class="eyebrow">
+              Confirmación
+            </span>
+
+            <h2>
+              ¿Confirmas la cancelación?
+            </h2>
+
+            <p>
+              Estás a punto de cancelar la suscripción
+              de tu barbería.
+            </p>
+
+
+            <div class="confirmation-warning">
+
+              <strong>
+                Importante
+              </strong>
+
+              <p>
+                El historial de la barbería será conservado.
+              </p>
+
+              <p>
+                La fecha efectiva de cancelación será determinada
+                por el sistema de suscripciones.
+              </p>
+
+            </div>
+
+
+            <div class="summary">
+
+              <div>
+
+                <span>
+                  Plan
+                </span>
+
+                <strong>
+                  {{ currentSubscription()!.plan.name }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Costo actual
+                </span>
+
+                <strong>
+
+                  {{
+                    formatCurrency(
+                      currentSubscription()!.plan.price,
+                      currentSubscription()!.plan.currency
+                    )
+                  }}
+
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Motivo
+                </span>
+
+                <strong>
+                  {{ selectedReason() || 'No especificado' }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="confirmation-actions">
+
+              <button
+                type="button"
+                class="secondary-button"
+                [disabled]="cancelling()"
+                (click)="cancelConfirmation()"
+              >
+
+                Volver
+
+              </button>
+
+
+              <button
+                type="button"
+                class="confirm-button"
+                [disabled]="cancelling()"
+                (click)="confirmCancellation()"
+              >
+
+                @if (cancelling()) {
+
+                  Procesando...
+
+                } @else {
+
+                  Confirmar cancelación
+
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <!-- RESULTADO -->
+
+      @if (
+        cancellationCompleted() &&
+        successResponse()
+      ) {
+
+        <section
+          class="success-card"
+          role="status"
+        >
+
+          <div class="success-icon">
+            ✓
+          </div>
+
+          <h2>
+            Suscripción cancelada
+          </h2>
+
+          <p>
+            {{ successResponse()!.message }}
+          </p>
+
+
+          <div class="success-summary">
+
+            <div>
+
+              <span>
+                Estado
+              </span>
+
+              <strong>
+                {{ successResponse()!.status }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Fecha de solicitud
+              </span>
+
+              <strong>
+
+                {{
+                  formatDate(
+                    successResponse()!.cancellationDate
+                  )
+                }}
+
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Fecha efectiva
+              </span>
+
+              <strong>
+
+                {{
+                  formatDate(
+                    successResponse()!.effectiveDate
+                  )
+                }}
+
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Historial
+              </span>
+
+              <strong>
+
+                {{
+                  successResponse()!.historyRetained
+                    ? 'Conservado'
+                    : 'No disponible'
+                }}
+
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <div class="back-link">
+
+        <a routerLink="/subscription/change-plan">
+          ← Volver a gestión de suscripción
+        </a>
+
+      </div>
+
+    }
+
+  </div>
+
+</section>

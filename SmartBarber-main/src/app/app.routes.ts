@@ -26,13 +26,20 @@ export const routes: Routes = [
           import('./features/subscription/subscription.routes')
             .then(m => m.SUBSCRIPTION_ROUTES)
       },
-      
+
       {
         path: 'reservar',
         loadChildren: () =>
           import('./features/reservations/reservations.routes')
             .then(m => m.RESERVATION_ROUTES)
+      },
+      {
+        path: 'auth',
+        loadChildren: () =>
+          import('./features/authentication/authentication.routes')
+            .then(m => m.AUTHENTICATION_ROUTES)
       }
+
     ]
   },
 
