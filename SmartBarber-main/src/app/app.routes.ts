@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 
+import { authGuard } from './core/auth/guards/auth.guard';
+import { roleGuard } from './core/auth/guards/role.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -42,6 +45,22 @@ export const routes: Routes = [
 
     ]
   },
+
+
+  /*
+   * Las rutas privadas de cliente y administrador deben agregarse aquí cuando sus módulos estén definidos.
+   *
+   * Ejemplo de protección:
+   *
+   * {
+   *   path: 'admin',
+   *   canActivate: [authGuard, roleGuard],
+   *   data: { role: 'ADMIN' },
+   *   loadChildren: () => ...
+   * }
+   *
+   * No activar hasta confirmar el módulo/ruta real.
+   */
 
   {
     path: '**',

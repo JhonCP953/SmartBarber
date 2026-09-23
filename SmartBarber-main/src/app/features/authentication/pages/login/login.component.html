@@ -1,0 +1,50 @@
+<section class="login-page">
+    <div class="login-card">
+
+        <div class="login-brand">
+            <span class="brand-mark">SB</span>
+            <span class="brand-name">SmartBarber</span>
+        </div>
+
+        <div class="login-heading">
+            <p class="eyebrow">BIENVENIDO</p>
+
+            <h1>Inicia sesión</h1>
+
+            <p class="subtitle">
+                Accede a SmartBarber para continuar.
+            </p>
+        </div>
+
+        <div class="login-error" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <button type="button" class="google-button" [disabled]="loading" (click)="loginWithGoogle()">
+
+            <span class="google-icon">G</span>
+
+            <span>
+                {{ loading ? 'Conectando...' : 'Continuar con Google' }}
+            </span>
+        </button>
+
+        <div class="login-divider">
+            <span>¿Aún no tienes una cuenta?</span>
+        </div>
+
+        <button type="button" class="register-button" (click)="goToRegister()">
+            Registrarme como cliente
+        </button>
+
+        <button type="button" class="admin-register-button" (click)="goToAdminRegister()">
+            Registrar una barbería
+        </button>
+
+        <p class="login-terms">
+            Al continuar, aceptas las condiciones de uso
+            y la política de privacidad de SmartBarber.
+        </p>
+
+    </div>
+</section>
