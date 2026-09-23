@@ -8,7 +8,30 @@ import { AdminRegistrationRepository } from './domain/repositories/admin-registr
 import { AdminRegistrationApiService } from './infrastructure/api/admin-registration-api.service';
 import { RegisterAdminUseCase } from './application/use-cases/register-admin.use-case';
 
+import { AuthRepository } from './domain/repositories/auth.repository';
+import { AuthApiService } from './infrastructure/api/auth-api.service';
+import { LoginUseCase } from './application/use-cases/login.use-case';
+
 export const AUTHENTICATION_ROUTES: Routes = [
+
+  // =========================
+  // LOGIN
+  // =========================
+
+
+  {
+    path: 'login',
+    providers: [
+      {
+        provide: AuthRepository,
+        useClass: AuthApiService
+      },
+      LoginUseCase
+    ],
+    loadComponent: () =>
+      import('./pages/login/login.component')
+        .then(m => m.LoginComponent)
+  },
   // =========================
   // REGISTRO DE CLIENTE
   // =========================
