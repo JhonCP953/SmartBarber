@@ -1,0 +1,473 @@
+<section id="change-plan" class="change-plan-section">
+
+  <div class="wrap">
+
+    <header class="page-header">
+
+      <span class="eyebrow">
+        Gestión de suscripción
+      </span>
+
+      <h1>
+        Cambiar plan
+      </h1>
+
+      <p>
+        Selecciona el plan que mejor se adapte a las necesidades de tu barbería.
+      </p>
+
+    </header>
+
+
+    <!-- LOADING -->
+
+    @if (loading()) {
+
+    <div class="state-card">
+      <p>Cargando información de la suscripción...</p>
+    </div>
+
+    }
+
+
+    <!-- ERROR -->
+
+    @if (!loading() && errorMessage()) {
+
+    <div class="alert alert-error" role="alert">
+      {{ errorMessage() }}
+    </div>
+
+    }
+
+
+    @if (!loading() && currentSubscription()) {
+
+    <!-- PLAN ACTUAL -->
+
+    <section class="current-plan">
+
+      <div class="section-title">
+
+        <span>
+          Plan actual
+        </span>
+
+        <span class="status">
+          {{ currentSubscription()!.status }}
+        </span>
+
+      </div>
+
+      <div class="current-plan-card">
+
+        <div>
+
+          <span class="plan-label">
+            PLAN ACTUAL
+          </span>
+
+          <h2>
+            {{ currentSubscription()!.plan.name }}
+          </h2>
+
+          <p>
+            {{ currentSubscription()!.plan.description }}
+          </p>
+
+        </div>
+
+        <div class="current-price">
+
+          {{
+          formatCurrency(
+          currentSubscription()!.plan.price,
+          currentSubscription()!.plan.currency
+          )
+          }}
+
+          <span>
+            /
+            {{
+            currentSubscription()!.plan.billingPeriod === 'MONTHLY'
+            ? 'mes'
+            : 'año'
+            }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PLANES DISPONIBLES -->
+
+    <section class="available-plans">
+
+      <div class="section-title">
+
+        <span>
+          Planes disponibles
+        </span>
+
+      </div>
+
+      <div class="plans-grid">
+
+        @for (plan of plans(); track plan.id) {
+
+        <article class="plan-card" [class.current]="isCurrentPlan(plan)"
+          [class.selected]="selectedPlan()?.id === plan.id">
+
+          <div class="plan-content">
+
+            @if (isCurrentPlan(plan)) {
+
+            <span class="current-badge">
+              PLAN ACTUAL
+            </span>
+
+            }
+
+            <h3>
+              {{ plan.name }}
+            </h3>
+
+            <p class="description">
+              {{ plan.description }}
+            </p>
+
+            <div class="price">
+
+              {{
+              formatCurrency(
+              plan.price,
+              plan.currency
+              )
+              }}
+
+              <span>
+                /
+                {{
+                plan.billingPeriod === 'MONTHLY'
+                ? 'mes'
+                : 'año'
+                }}
+              </span>
+
+            </div>
+
+            <ul>
+
+              @for (
+              feature of plan.features;
+              track feature
+              ) {
+
+              <li>
+                <span>✓</span>
+                {{ feature }}
+              </li>
+
+              }
+
+            </ul>
+
+          </div>
+
+          <button type="button" class="select-button" [disabled]="isCurrentPlan(plan)" (click)="selectPlan(plan)">
+
+            @if (isCurrentPlan(plan)) {
+            Plan actual
+            } @else if (selectedPlan()?.id === plan.id) {
+            Seleccionado
+            } @else {
+            Seleccionar plan
+            }
+
+          </button>
+
+        </article>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- COMPARACIÓN -->
+
+    @if (selectedPlan()) {
+
+    <section class="comparison">
+
+      <div class="section-title">
+        Diferencias del cambio
+      </div>
+
+      <div class="comparison-grid">
+
+        <div class="comparison-column">
+
+          <span>
+            PLAN ACTUAL
+          </span>
+
+          <strong>
+            {{ currentSubscription()!.plan.name }}
+          </strong>
+
+          <p>
+            {{
+            formatCurrency(
+            currentSubscription()!.plan.price,
+            currentSubscription()!.plan.currency
+            )
+            }}
+          </p>
+
+        </div>
+
+
+        <div class="comparison-arrow">
+          →
+        </div>
+
+
+        <div class="comparison-column new">
+
+          <span>
+            NUEVO PLAN
+          </span>
+
+          <strong>
+            {{ selectedPlan()!.name }}
+          </strong>
+
+          <p>
+            {{
+            formatCurrency(
+            selectedPlan()!.price,
+            selectedPlan()!.currency
+            )
+            }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="cost-summary">
+
+        <span>
+          Diferencia de costo
+        </span>
+
+        <strong [class.increase]="(planDifference() ?? 0) > 0" [class.decrease]="(planDifference() ?? 0) < 0">
+
+          {{
+          formatCurrency(
+          planDifference() ?? 0,
+          selectedPlan()!.currency
+          )
+          }}
+
+        </strong>
+
+      </div>
+
+
+      <button type="button" class="confirm-button" (click)="openConfirmation()">
+        Continuar con el cambio
+      </button>
+
+    </section>
+
+    }
+
+
+    <!-- CONFIRMACIÓN -->
+
+    @if (showConfirmation()) {
+
+    <section class="confirmation">
+
+      <div class="confirmation-card">
+
+        <span class="eyebrow">
+          Confirmación
+        </span>
+
+        <h2>
+          Confirmar cambio de plan
+        </h2>
+
+        <p>
+          Estás a punto de cambiar tu suscripción.
+        </p>
+
+
+        <div class="summary">
+
+          <div>
+            <span>
+              Plan actual
+            </span>
+
+            <strong>
+              {{ currentSubscription()!.plan.name }}
+            </strong>
+          </div>
+
+
+          <div>
+            <span>
+              Nuevo plan
+            </span>
+
+            <strong>
+              {{ selectedPlan()!.name }}
+            </strong>
+          </div>
+
+
+          <div>
+            <span>
+              Nuevo costo
+            </span>
+
+            <strong>
+              {{
+              formatCurrency(
+              selectedPlan()!.price,
+              selectedPlan()!.currency
+              )
+              }}
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div class="confirmation-actions">
+
+          <button type="button" class="secondary-button" [disabled]="changingPlan()" (click)="cancelConfirmation()">
+            Cancelar
+          </button>
+
+          <button type="button" class="confirm-button" [disabled]="changingPlan()" (click)="confirmChange()">
+
+            @if (changingPlan()) {
+            Procesando...
+            } @else {
+            Confirmar cambio
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    }
+
+
+    <!-- RESULTADO -->
+
+    @if (changeCompleted() && successResponse()) {
+
+    <section class="success-card">
+
+      <div class="success-icon">
+        ✓
+      </div>
+
+      <h2>
+        Cambio de plan realizado
+      </h2>
+
+      <p>
+        {{ successResponse()!.message }}
+      </p>
+
+
+      <div class="success-summary">
+
+        <div>
+          <span>
+            Plan anterior
+          </span>
+
+          <strong>
+            {{ successResponse()!.previousPlan.name }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Nuevo plan
+          </span>
+
+          <strong>
+            {{ successResponse()!.newPlan.name }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Fecha efectiva
+          </span>
+
+          <strong>
+            {{
+            formatDate(
+            successResponse()!.effectiveDate
+            )
+            }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Próxima facturación
+          </span>
+
+          <strong>
+            {{
+            formatDate(
+            successResponse()!.nextBillingDate
+            )
+            }}
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    }
+
+
+    <div class="management-links">
+
+      <a routerLink="/subscription/cancel" class="cancel-subscription-link">
+        Cancelar suscripción
+      </a>
+
+      <a routerLink="/" class="back-link">
+        ← Volver
+      </a>
+
+    </div>
+
+    }
+
+  </div>
+
+</section>

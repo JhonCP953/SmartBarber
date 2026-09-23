@@ -1,0 +1,415 @@
+<section class="subscription-status-section">
+
+    <div class="wrap">
+
+        <!-- ENCABEZADO -->
+
+        <header class="page-header">
+
+            <span class="eyebrow">
+                Gestión de suscripción
+            </span>
+
+            <h1>
+                Estado de mi suscripción
+            </h1>
+
+            <p>
+                Consulta el estado actual del plan contratado por tu barbería.
+            </p>
+
+        </header>
+
+
+        <!-- CARGANDO -->
+
+        @if (loading()) {
+
+        <section class="state-card" role="status" aria-live="polite">
+
+            <div class="spinner" aria-hidden="true">
+            </div>
+
+            <p>
+                Consultando información de la suscripción...
+            </p>
+
+        </section>
+
+        }
+
+
+        <!-- ERROR -->
+
+        @if (
+        !loading() &&
+        errorMessage()
+        ) {
+
+        <section class="state-card error-state" role="alert">
+
+            <h2>
+                No fue posible consultar la suscripción
+            </h2>
+
+            <p>
+                {{ errorMessage() }}
+            </p>
+
+            <button type="button" class="primary-button" (click)="reload()">
+
+                Reintentar
+
+            </button>
+
+        </section>
+
+        }
+
+
+        <!-- CONTENIDO -->
+
+        @if (
+        !loading() &&
+        !errorMessage() &&
+        currentSubscription()
+        ) {
+
+        @let subscription =
+        currentSubscription();
+
+
+        <!-- ALERTA DE EXPIRACIÓN -->
+
+        @if (isExpiringSoon()) {
+
+        <div class="expiration-alert" role="alert">
+
+            <strong>
+                Tu suscripción está próxima a vencer.
+            </strong>
+
+            <span>
+
+                Quedan
+                {{ daysRemaining() }}
+                día{{ daysRemaining() === 1 ? '' : 's' }}
+                para su vencimiento.
+
+            </span>
+
+        </div>
+
+        }
+
+
+        <!-- ESTADO PRINCIPAL -->
+
+        <section class="status-card">
+
+            <div class="status-card-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Suscripción actual
+                    </span>
+
+                    <h2>
+                        {{ subscription!.plan.name }}
+                    </h2>
+
+                </div>
+
+
+                <span class="status-badge" [class]="
+              getStatusClass(
+                subscription!.status
+              )
+            ">
+
+                    {{ statusLabel() }}
+
+                </span>
+
+            </div>
+
+
+            <p class="status-description">
+
+                {{ statusDescription() }}
+
+            </p>
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="subscription-info-grid">
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Plan
+                    </span>
+
+                    <strong>
+                        {{ subscription!.plan.name }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Precio
+                    </span>
+
+                    <strong>
+
+                        {{
+                        formatCurrency(
+                        subscription!.plan.price,
+                        subscription!.plan.currency
+                        )
+                        }}
+
+                        <small>
+                            /
+                            {{
+                            subscription!.plan.billingPeriod ===
+                            'MONTHLY'
+                            ? 'mes'
+                            : 'año'
+                            }}
+                        </small>
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Fecha de inicio
+                    </span>
+
+                    <strong>
+
+                        {{
+                        formatDate(
+                        subscription!.startDate
+                        )
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Fecha de vencimiento
+                    </span>
+
+                    <strong>
+
+                        {{
+                        formatDate(
+                        subscription!.renewalDate
+                        )
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item days-item">
+
+                    <span class="info-label">
+                        Días restantes
+                    </span>
+
+                    <strong>
+
+                        {{ daysRemaining() }}
+
+                        <small>
+                            día{{ daysRemaining() === 1 ? '' : 's' }}
+                        </small>
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- BENEFICIOS -->
+
+        <section class="benefits-card">
+
+            <div class="section-heading">
+
+                <span class="eyebrow">
+                    Incluido en tu plan
+                </span>
+
+                <h2>
+                    Beneficios
+                </h2>
+
+            </div>
+
+
+            @if (
+            subscription!.plan.features.length > 0
+            ) {
+
+            <ul class="benefits-list">
+
+                @for (
+                feature of subscription!.plan.features;
+                track feature
+                ) {
+
+                <li>
+
+                    <span class="benefit-icon" aria-hidden="true">
+
+                        ✓
+
+                    </span>
+
+                    <span>
+                        {{ feature }}
+                    </span>
+
+                </li>
+
+                }
+
+            </ul>
+
+            } @else {
+
+            <p class="no-benefits">
+                Este plan no tiene beneficios configurados.
+            </p>
+
+            }
+
+        </section>
+
+
+        <!-- ACCIONES -->
+
+        <section class="actions-card">
+
+            <div class="section-heading">
+
+                <span class="eyebrow">
+                    Administración
+                </span>
+
+                <h2>
+                    Acciones disponibles
+                </h2>
+
+            </div>
+
+
+            <div class="actions-grid">
+
+
+                @if (canRenew()) {
+
+                <a routerLink="../renew" class="action-button primary-action">
+
+                    <span>
+                        Renovar suscripción
+                    </span>
+
+                    <small>
+                        Mantén activo tu servicio
+                    </small>
+
+                </a>
+
+                }
+
+
+                @if (canChangePlan()) {
+
+                <a routerLink="../change-plan" class="action-button">
+
+                    <span>
+                        Cambiar plan
+                    </span>
+
+                    <small>
+                        Selecciona otro plan
+                    </small>
+
+                </a>
+
+                }
+
+
+                @if (canCancel()) {
+
+                <a routerLink="../cancel" class="action-button danger-action">
+
+                    <span>
+                        Cancelar suscripción
+                    </span>
+
+                    <small>
+                        Gestiona la cancelación
+                    </small>
+
+                </a>
+
+                }
+
+
+                @if (
+                !canRenew() &&
+                !canChangePlan() &&
+                !canCancel()
+                ) {
+
+                <p class="no-actions">
+                    No hay acciones disponibles para el estado actual.
+                </p>
+
+                }
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTORIAL -->
+
+        <section class="history-link-section">
+
+            <a routerLink="../payment-history" class="history-link">
+
+                Consultar historial de pagos
+
+            </a>
+
+        </section>
+
+        }
+
+    </div>
+
+</section>

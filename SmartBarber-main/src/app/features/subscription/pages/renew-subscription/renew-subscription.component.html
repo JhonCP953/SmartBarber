@@ -1,0 +1,293 @@
+<section class="renewal-page">
+
+    <div class="renewal-header">
+        <div>
+            <span class="eyebrow">SUBSCRIPTION MANAGEMENT</span>
+
+            <h1>Renew Subscription</h1>
+
+            <p>
+                Review your current subscription information before
+                continuing with the renewal process.
+            </p>
+        </div>
+
+        <a routerLink="/subscription" class="back-link">
+            Back to subscription
+        </a>
+    </div>
+
+    @if (loadingSubscription()) {
+
+    <div class="state-card">
+        <div class="loader"></div>
+
+        <h2>Loading subscription</h2>
+
+        <p>
+            We are retrieving your current subscription information.
+        </p>
+    </div>
+
+    } @else if (errorMessage() && !currentSubscription()) {
+
+    <div class="state-card error">
+
+        <h2>Unable to load subscription</h2>
+
+        <p>
+            {{ errorMessage() }}
+        </p>
+
+        <button type="button" class="primary-button" (click)="reloadSubscription()">
+            Try again
+        </button>
+
+    </div>
+
+    } @else if (currentSubscription()) {
+
+    <div class="content-grid">
+
+        <article class="subscription-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="card-label">
+                        CURRENT PLAN
+                    </span>
+
+                    <h2>
+                        {{ planName() }}
+                    </h2>
+                </div>
+
+                <span class="status-badge" [class.active]="currentSubscription()?.status === 'ACTIVE'"
+                    [class.warning]="currentSubscription()?.status === 'PAST_DUE'"
+                    [class.expired]="currentSubscription()?.status === 'EXPIRED'">
+
+                    {{ getStatusLabel(currentSubscription()!.status) }}
+
+                </span>
+
+            </div>
+
+            <div class="details">
+
+                <div class="detail-item">
+                    <span>Current expiration date</span>
+
+                    <strong>
+                        {{ formatDate(expirationDate()) }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Renewal cost</span>
+
+                    <strong>
+                        {{ formatCurrency(renewalCost()) }}
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="benefits">
+
+                <h3>Plan benefits</h3>
+
+                <ul>
+                    @for (
+                    feature of currentSubscription()!.plan.features;
+                    track feature
+                    ) {
+                    <li>
+                        <span>✓</span>
+                        {{ feature }}
+                    </li>
+                    }
+                </ul>
+
+            </div>
+
+        </article>
+
+        <article class="renewal-card">
+
+            <div class="renewal-card-header">
+                <span class="card-label">
+                    RENEWAL PROCESS
+                </span>
+
+                <h2>
+                    Continue with renewal
+                </h2>
+
+                <p>
+                    The renewal will be processed through the configured
+                    payment gateway.
+                </p>
+            </div>
+
+            @if (processStatus() === 'IDLE') {
+
+            <div class="process-message">
+                <p>
+                    Your current plan will be used for the renewal.
+                </p>
+
+                <div class="summary-row">
+                    <span>Plan</span>
+                    <strong>{{ planName() }}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Expiration</span>
+                    <strong>
+                        {{ formatDate(expirationDate()) }}
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Renewal cost</span>
+                    <strong>
+                        {{ formatCurrency(renewalCost()) }}
+                    </strong>
+                </div>
+            </div>
+
+            @if (renewalAvailable()) {
+
+            <button type="button" class="primary-button full-width" (click)="renewSubscription()">
+                Renew subscription
+            </button>
+
+            } @else {
+
+            <div class="notice">
+                <strong>Renewal unavailable</strong>
+
+                <p>
+                    The current subscription status does not allow
+                    a renewal operation at this time.
+                </p>
+            </div>
+
+            }
+
+            }
+
+            @if (isProcessing()) {
+
+            <div class="process-state processing">
+
+                <div class="loader"></div>
+
+                <h3>
+                    Processing renewal
+                </h3>
+
+                <p>
+                    We are preparing your renewal payment.
+                    Please wait.
+                </p>
+
+            </div>
+
+            }
+
+            @if (isRedirecting()) {
+
+            <div class="process-state">
+
+                <div class="redirect-icon">
+                    →
+                </div>
+
+                <h3>
+                    Redirecting to payment
+                </h3>
+
+                <p>
+                    You are being redirected to the payment gateway.
+                    Do not close this window.
+                </p>
+
+            </div>
+
+            }
+
+            @if (isSuccess()) {
+
+            <div class="process-state success">
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <h3>
+                    Subscription renewed successfully
+                </h3>
+
+                <p>
+                    {{ confirmationMessage() }}
+                </p>
+
+                @if (paymentReference()) {
+                <div class="reference">
+                    <span>Payment reference</span>
+
+                    <strong>
+                        {{ paymentReference() }}
+                    </strong>
+                </div>
+                }
+
+                <div class="success-actions">
+
+                    <a routerLink="/subscription" class="primary-button">
+                        View subscription
+                    </a>
+
+                    <button type="button" class="secondary-button" (click)="reloadSubscription()">
+                        Refresh information
+                    </button>
+
+                </div>
+
+            </div>
+
+            }
+
+            @if (isError()) {
+
+            <div class="process-state error">
+
+                <div class="error-icon">
+                    !
+                </div>
+
+                <h3>
+                    Renewal could not be completed
+                </h3>
+
+                <p>
+                    {{ errorMessage() }}
+                </p>
+
+                <button type="button" class="primary-button" (click)="reloadSubscription()">
+                    Try again
+                </button>
+
+            </div>
+
+            }
+
+        </article>
+
+    </div>
+
+    }
+
+</section>

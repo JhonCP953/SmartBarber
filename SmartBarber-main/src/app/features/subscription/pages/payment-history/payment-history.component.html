@@ -1,0 +1,405 @@
+<section class="payment-history-section">
+
+  <div class="wrap">
+
+    <header class="page-header">
+
+      <span class="eyebrow">
+        Gestión de suscripción
+      </span>
+
+      <h1>
+        Historial de pagos
+      </h1>
+
+      <p>
+        Consulta los pagos asociados a la suscripción de tu barbería.
+      </p>
+
+    </header>
+
+
+    <!-- FILTROS -->
+
+    <section
+      class="filters-card"
+      aria-labelledby="filters-title">
+
+      <div class="section-title">
+
+        <h2 id="filters-title">
+          Filtros
+        </h2>
+
+      </div>
+
+
+      <div class="filters-grid">
+
+        <label>
+
+          <span>
+            Estado
+          </span>
+
+          <select
+            [ngModel]="selectedStatus()"
+            (ngModelChange)="onStatusChange($event)"
+            aria-label="Filtrar por estado">
+
+            <option value="">
+              Todos
+            </option>
+
+            @for (
+              option of paymentStatusOptions;
+              track option.value
+            ) {
+
+              <option
+                [value]="option.value">
+
+                {{ option.label }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </label>
+
+
+        <label>
+
+          <span>
+            Desde
+          </span>
+
+          <input
+            type="date"
+            [ngModel]="fromDate()"
+            (ngModelChange)="onFromDateChange($event)"
+            aria-label="Fecha inicial">
+
+        </label>
+
+
+        <label>
+
+          <span>
+            Hasta
+          </span>
+
+          <input
+            type="date"
+            [ngModel]="toDate()"
+            (ngModelChange)="onToDateChange($event)"
+            aria-label="Fecha final">
+
+        </label>
+
+
+        <div class="filter-actions">
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="applyFilters()">
+
+            Aplicar filtros
+
+          </button>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="clearFilters()">
+
+            Limpiar
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CARGANDO -->
+
+    @if (loading()) {
+
+      <div
+        class="state-card"
+        role="status"
+        aria-live="polite">
+
+        <div
+          class="spinner"
+          aria-hidden="true">
+        </div>
+
+        <p>
+          Cargando historial de pagos...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ERROR -->
+
+    @if (
+      !loading() &&
+      errorMessage()
+    ) {
+
+      <div
+        class="alert alert-error"
+        role="alert">
+
+        {{ errorMessage() }}
+
+      </div>
+
+    }
+
+
+    <!-- SIN RESULTADOS -->
+
+    @if (
+      !loading() &&
+      !errorMessage() &&
+      payments().length === 0
+    ) {
+
+      <div class="state-card empty-state">
+
+        <h2>
+          No hay pagos para mostrar
+        </h2>
+
+        <p>
+          No se encontraron pagos con los filtros seleccionados.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- TABLA -->
+
+    @if (
+      !loading() &&
+      !errorMessage() &&
+      payments().length > 0
+    ) {
+
+      <section
+        class="table-card"
+        aria-labelledby="payments-title">
+
+
+        <div class="table-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Registro
+            </span>
+
+            <h2 id="payments-title">
+              Pagos realizados
+            </h2>
+
+          </div>
+
+          <span class="total-count">
+
+            {{ totalElements() }}
+
+            registro{{ totalElements() === 1 ? '' : 's' }}
+
+          </span>
+
+        </div>
+
+
+        <div class="table-container">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th scope="col">
+                  Fecha
+                </th>
+
+                <th scope="col">
+                  Estado
+                </th>
+
+                <th scope="col">
+                  Valor
+                </th>
+
+                <th scope="col">
+                  Referencia de transacción
+                </th>
+
+                <th scope="col">
+                  Concepto
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                payment of payments();
+                track trackPayment($index, payment)
+              ) {
+
+                <tr>
+
+                  <td data-label="Fecha">
+
+                    {{ formatDate(payment.date) }}
+
+                  </td>
+
+
+                  <td data-label="Estado">
+
+                    <span
+                      [class]="
+                        'status status-' +
+                        payment.status.toLowerCase()
+                      ">
+
+                      {{
+                        getStatusLabel(
+                          payment.status
+                        )
+                      }}
+
+                    </span>
+
+                  </td>
+
+
+                  <td
+                    data-label="Valor"
+                    class="amount">
+
+                    {{
+                      formatCurrency(
+                        payment.amount,
+                        payment.currency
+                      )
+                    }}
+
+                  </td>
+
+
+                  <td
+                    data-label="Referencia"
+                    class="reference">
+
+                    {{
+                      payment.transactionReference
+                    }}
+
+                  </td>
+
+
+                  <td data-label="Concepto">
+
+                    {{ payment.description }}
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- PAGINACIÓN -->
+
+        <footer
+          class="pagination"
+          aria-label="Paginación del historial de pagos">
+
+          <button
+            type="button"
+            class="page-button"
+            [disabled]="
+              !hasPreviousPage() ||
+              loading()
+            "
+            (click)="previousPage()">
+
+            Anterior
+
+          </button>
+
+
+          <span
+            class="page-label"
+            aria-live="polite">
+
+            {{ pageLabel() }}
+
+          </span>
+
+
+          <button
+            type="button"
+            class="page-button"
+            [disabled]="
+              !hasNextPage() ||
+              loading()
+            "
+            (click)="nextPage()">
+
+            Siguiente
+
+          </button>
+
+        </footer>
+
+      </section>
+
+    }
+
+
+    <div class="back-link-wrapper">
+
+      <a
+        routerLink="../change-plan"
+        class="back-link">
+
+        Volver a gestión de plan
+
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
