@@ -44,10 +44,16 @@
       </ul>
     </nav>
 
-    <!-- Botón CTA principal -->
-    <a [routerLink]="['/barberShop']" class="btn nav-cta" (click)="closeMenu()">
-      Inicio / registro 
-    </a>
+   <!-- Botón CTA principal -->
+   <!-- Contenedor de los dos botones separados -->
+    <div class="auth-buttons-group">
+      <a [routerLink]="['/auth/login']" class="btn nav-cta" (click)="closeMenu()">
+        Inicio
+      </a>
+      <a [routerLink]="['/auth/register']" class="btn nav-cta" (click)="closeMenu()">
+        Registro
+      </a>
+    </div>
 
     <!-- Botón Hamburguesa para Mobile -->
     <button class="menu-toggle" type="button" (click)="toggleMenu()" aria-label="Abrir menú">

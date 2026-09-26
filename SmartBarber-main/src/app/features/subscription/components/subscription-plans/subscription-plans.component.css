@@ -170,7 +170,50 @@
   font-weight: bold;
   margin-right: 10px;
 }
+.barber-pole-banner {
+  background: #fdfbf7;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #c4ab80(197, 160, 89, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+  position: relative;
+}
 
+/* Creamos la onda o franja lateral formal en tono café (inspirado en tu referencia) */
+.barber-pole-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45%; 
+  background: linear-gradient(to bottom, #251a14 0%, #c4ab80 50%, #ffffff 100%);
+  border-bottom-left-radius: 50% 20px;
+  border-bottom-right-radius: 50% 20px;
+  z-index: 1;
+}
+
+/* Aseguramos que el GIF quede por encima del fondo decorativo */
+.pole-gif {
+  max-height: 280px;
+  width: auto;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  margin-top: 20px;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
+}
+
+@media (max-width: 900px) {
+  .barber-pole-banner {
+    display: none;
+  }
+}
 .btn-subscribe {
   width: 100%;
   padding: 14px 20px;

@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SubscriptionWsService } from '../../infrastructure/subscription-ws.service'; 
 
 @Component({
   selector: 'app-subscription-plans',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './subscription-plans.component.html',
   styleUrls: ['./subscription-plans.component.css']
 })
@@ -24,7 +25,9 @@ export class SubscriptionPlansComponent implements OnInit, OnDestroy {
   private wsSubscription!: Subscription;
   private timeoutHandle: any;
 
-  constructor(private subscriptionWs: SubscriptionWsService) {}
+  constructor(private subscriptionWs: SubscriptionWsService,
+              private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.wsSubscription = this.subscriptionWs.getMessages().subscribe({

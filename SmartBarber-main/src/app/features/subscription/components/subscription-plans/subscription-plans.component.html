@@ -1,7 +1,7 @@
 <section id="suscripcion" class="subscription-section">
   <div class="wrap">
     
-       <div class="showcase-head">
+    <div class="showcase-head">
       <div class="eyebrow">Soluciones para Profesionales</div>
       <h2>PLANES PARA BARBEROS</h2>
       <div class="showcase-divider">
@@ -16,25 +16,15 @@
       <p class="sub-lead">Potencia tu negocio, gestiona tus sucursales y llena tu agenda mes a mes</p>
     </div>
 
-    <!-- 3. TARJETAS DE PLANES -->
+    <!-- 3. TARJETAS DE PLANES CON EL GIF DEL POSTE DE BARBERO -->
     <div class="plans-grid">
       
-      <!-- PLAN BASICO -->
-      <div class="plan-card">
-        <span class="plan-badge">Independiente</span>
-        <h3>PLAN BASICO</h3>
-        <div class="plan-price">$30.000 <span>/ mes</span></div>
-        <p class="plan-desc">Plan básico para barberías con funciones esenciales.</p>
-        <ul class="plan-features">
-          <li>Gestión de citas online 24/7</li>
-          <li>Perfil profesional personalizado</li>
-          <li>Control de ingresos básicos</li>
-          <li>Recordatorios automáticos por WhatsApp</li>
-        </ul>
-        <button class="btn-subscribe" (click)="openPaymentModal('PLAN BASICO', 30000)">COMPRAR PLAN</button>
+      <!-- Lado Izquierdo: GIF del Poste de Barbero -->
+      <div class="barber-pole-banner">
+        <img src="/Barber-pole-01.gif" alt="Barber Pole" class="pole-gif" />
       </div>
 
-      <!-- PLAN PREMIUM -->
+      <!-- Centro: PLAN PREMIUM (Único plan activo) -->
       <div class="plan-card featured">
         <span class="plan-badge gold">Más Popular</span>
         <h3>PLAN PREMIUM</h3>
@@ -47,53 +37,15 @@
           <li>Panel de estadísticas avanzadas</li>
           <li>Soporte técnico prioritario</li>
         </ul>
-        <button class="btn-subscribe featured-btn" (click)="openPaymentModal('PLAN PREMIUM', 45000)">COMPRAR PLAN</button>
+          <a [routerLink]="['/auth/register']" class="btn-subscribe featured-btn">COMPRAR PLAN </a>
       </div>
 
-      <!-- PLAN PLATINUM -->
-      <div class="plan-card">
-        <span class="plan-badge">Multisucursal</span>
-        <h3>Plan Platinum</h3>
-        <div class="plan-price">$50.000 <span>/ mes</span></div>
-        <p class="plan-desc">Suscripción platinum para barberías con máxima capacidad.</p>
-        <ul class="plan-features">
-          <li>Sucursales ilimitadas</li>
-          <li>Barberos ilimitados por local</li>
-          <li>Multi-rol (Admin, Barbero, Caja)</li>
-          <li>API y reportes personalizados</li>
-          <li>Cuenta destacada en la plataforma</li>
-        </ul>
-        <button class="btn-subscribe" (click)="openPaymentModal('Plan Platinum', 50000)">COMPRAR PLAN</button>
+      <!-- Lado Derecho: GIF del Poste de Barbero -->
+      <div class="barber-pole-banner">
+        <img src="/Barber-pole-02.gif" alt="Barber Pole" class="pole-gif" />
       </div>
 
     </div>
-
-  </div>
-
-  <!-- MODAL DE SUSCRIPCIÓN Y PAGO -->
-  <div class="modal-overlay" *ngIf="isModalOpen">
-    <div class="modal-content">
-      <button class="modal-close" (click)="closePaymentModal()">&times;</button>
-      
-      <div class="modal-header">
-        <h3>GESTIÓN DE SUSCRIPCIÓN</h3>
-        <p class="selected-plan-text">Plan seleccionado: <strong>{{ selectedPlan }}</strong></p>
-      </div>
-
-      <form (ngSubmit)="submitPaymentForm()">
-        <div class="modal-grid">
-          <div class="modal-field" style="grid-column: 1 / -1;">
-            <label>Nombre de la Barbería</label>
-            <input type="text" [(ngModel)]="barberShopName" name="barberShopName" placeholder="Ej. SmartBarber Studio" required />
-          </div>
-        </div>
-
-        <button type="submit" class="btn-pay-submit" [disabled]="!barberShopName.trim() || isLoading">
-          {{ isLoading ? 'PROCESANDO...' : 'GUARDAR SUSCRIPCIÓN' }}
-        </button>
-      </form>
     </div>
-  </div>
-  
   <!-- <router-outlet></router-outlet> -->
 </section>

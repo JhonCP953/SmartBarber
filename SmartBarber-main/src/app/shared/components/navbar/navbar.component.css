@@ -246,3 +246,9 @@ nav ul li.has-dropdown:hover .dropdown-menu {
     border-left: 2px solid var(--brass);
   }
 }
+.auth-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 20px; 
+  flex-shrink: 0;
+}
