@@ -1,83 +1,112 @@
 import { Routes } from '@angular/router';
 
-import { ClientRegistrationRepository } from './domain/repositories/client-registration.repository';
-import { ClientRegistrationApiService } from './infrastructure/api/client-registration-api.service';
-import { RegisterClientUseCase } from './application/use-cases/register-client.use-case';
+import {
+    ClientRegistrationRepository
+} from './domain/repositories/client-registration.repository';
 
-import { AdminRegistrationRepository } from './domain/repositories/admin-registration.repository';
-import { AdminRegistrationApiService } from './infrastructure/api/admin-registration-api.service';
-import { RegisterAdminUseCase } from './application/use-cases/register-admin.use-case';
+import {
+    ClientRegistrationApiService
+} from './infrastructure/api/client-registration-api.service';
 
-import { AuthRepository } from './domain/repositories/auth.repository';
-import { AuthApiService } from './infrastructure/api/auth-api.service';
-import { LoginUseCase } from './application/use-cases/login.use-case';
+import {
+    RegisterClientUseCase
+} from './application/use-cases/register-client.use-case';
+
+
+import {
+    AdminRegistrationRepository
+} from './domain/repositories/admin-registration.repository';
+
+import {
+    AdminRegistrationApiService
+} from './infrastructure/api/admin-registration-api.service';
+
+import {
+    RegisterAdminUseCase
+} from './application/use-cases/register-admin.use-case';
+
+
+import {
+    LoginUseCase
+} from './application/use-cases/login.use-case';
+
 
 export const AUTHENTICATION_ROUTES: Routes = [
 
-  // =========================
-  // LOGIN
-  // =========================
+    // =========================
+    // LOGIN
+    // =========================
+    {
+        path: 'login',
+
+        providers: [
+            LoginUseCase
+        ],
+
+        loadComponent: () =>
+            import(
+                './pages/login/login.component'
+            ).then(
+                m => m.LoginComponent
+            )
+    },
 
 
-  {
-    path: 'login',
-    providers: [
-      {
-        provide: AuthRepository,
-        useClass: AuthApiService
-      },
-      LoginUseCase
-    ],
-    loadComponent: () =>
-      import('./pages/login/login.component')
-        .then(m => m.LoginComponent)
-  },
-  // =========================
-  // REGISTRO DE CLIENTE
-  // =========================
-  {
-    path: 'register',
+    // =========================
+    // REGISTRO DE CLIENTE
+    // =========================
+    {
+        path: 'register',
 
-    providers: [
+        providers: [
 
-      {
-        provide: ClientRegistrationRepository,
-        useClass: ClientRegistrationApiService
-      },
+            {
+                provide:
+                    ClientRegistrationRepository,
 
-      RegisterClientUseCase
+                useClass:
+                    ClientRegistrationApiService
+            },
 
-    ],
+            RegisterClientUseCase
 
-    loadComponent: () =>
-      import('./pages/register/register.component')
-        .then(
-          m => m.RegisterComponent
-        )
-  },
+        ],
 
-  // =========================
-  // REGISTRO DE ADMINISTRADOR
-  // =========================
-  {
-    path: 'register-admin',
+        loadComponent: () =>
+            import(
+                './pages/register/register.component'
+            ).then(
+                m => m.RegisterComponent
+            )
+    },
 
-    providers: [
 
-      {
-        provide: AdminRegistrationRepository,
-        useClass: AdminRegistrationApiService
-      },
+    // =========================
+    // REGISTRO DE ADMINISTRADOR
+    // =========================
+    {
+        path: 'register-admin',
 
-      RegisterAdminUseCase
+        providers: [
 
-    ],
+            {
+                provide:
+                    AdminRegistrationRepository,
 
-    loadComponent: () =>
-      import('./pages/register-admin/register-admin.component')
-        .then(
-          m => m.RegisterAdminComponent
-        )
-  }
+                useClass:
+                    AdminRegistrationApiService
+            },
+
+            RegisterAdminUseCase
+
+        ],
+
+        loadComponent: () =>
+            import(
+                './pages/register-admin/register-admin.component'
+            ).then(
+                m => m.RegisterAdminComponent
+            )
+    }
 
 ];

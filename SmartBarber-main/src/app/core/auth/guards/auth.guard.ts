@@ -1,22 +1,41 @@
-import { inject } from '@angular/core';
+import {
+    inject
+} from '@angular/core';
+
 import {
     CanActivateFn,
     Router
 } from '@angular/router';
 
-import { SessionService } from '../services/session.service';
+import {
+    SessionService
+} from '../services/session.service';
 
 export const authGuard: CanActivateFn = () => {
 
-    const sessionService = inject(SessionService);
-    const router = inject(Router);
+    const sessionService =
+        inject(SessionService);
+
+    const router =
+        inject(Router);
+
+
+    const session =
+        sessionService.currentSession;
+
 
     if (
-        sessionService.isAuthenticated() &&
-        sessionService.isActive()
+        session &&
+        session.status === 'ACTIVE'
     ) {
         return true;
     }
 
-    return router.createUrlTree(['/auth/login']);
+
+    sessionService.clearSession();
+
+
+    return router.createUrlTree([
+        '/auth/login'
+    ]);
 };

@@ -10,8 +10,11 @@ export type {
     UserStatus
 };
 
+
 export interface AuthProfileResponse {
+
     userId: string;
+    clientId?: string | null;
     firebaseUid: string;
     email: string;
     displayName: string;
@@ -19,4 +22,7 @@ export interface AuthProfileResponse {
     status: UserStatus;
     tenantId?: string | null;
     photoUrl?: string | null;
+    barberId?: string | null;
+    barbershopId?: string | null;
+    barbershopName?: string | null;
 }

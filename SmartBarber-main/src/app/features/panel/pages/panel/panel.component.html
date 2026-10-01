@@ -1,0 +1,482 @@
+<div class="panel-shell">
+
+    <!-- ========================================================= -->
+    <!-- MOBILE OVERLAY -->
+    <!-- ========================================================= -->
+
+    <div *ngIf="mobileMenuOpen()" class="mobile-overlay" (click)="closeMobileMenu()">
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================================================= -->
+
+    <aside class="panel-sidebar" [class.collapsed]="sidebarCollapsed()" [class.mobile-open]="mobileMenuOpen()">
+
+        <!-- LOGO -->
+
+        <div class="sidebar-brand">
+
+            <a routerLink="/panel" class="brand-link" (click)="closeMobileMenu()">
+
+                <img src="/logo.png" alt="SmartBarber" class="brand-logo">
+
+                <div class="brand-text" *ngIf="!sidebarCollapsed()">
+
+                    <strong>SMARTBARBER</strong>
+
+                    <span>
+                        Barbería &amp; Salón
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- USER -->
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+
+                {{ getInitials(summary()?.userName || '') }}
+
+            </div>
+
+            <div class="user-information" *ngIf="!sidebarCollapsed()">
+
+                <strong>
+                    {{ summary()?.userName }}
+                </strong>
+
+                <span>
+                    {{ summary()?.roleLabel }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="panel-navigation" aria-label="Panel de navegación">
+
+            <ng-container *ngFor="let group of navigationGroups()">
+
+                <div class="navigation-group">
+
+                    <div class="navigation-group-title" *ngIf="!sidebarCollapsed()">
+
+                        {{ group.label }}
+
+                    </div>
+
+
+                    <button *ngFor="let item of group.items" type="button" class="navigation-item"
+                        [class.active]="isCurrentRoute(item.route)" [class.coming-soon]="item.status === 'COMING_SOON'"
+                        [title]="sidebarCollapsed() ? item.label : ''" (click)="navigateToItem(item)">
+
+                        <span class="navigation-icon">
+                            {{ item.icon }}
+                        </span>
+
+                        <span class="navigation-label" *ngIf="!sidebarCollapsed()">
+
+                            {{ item.label }}
+
+                        </span>
+
+                        <span class="navigation-status" *ngIf="
+                !sidebarCollapsed() &&
+                item.status === 'COMING_SOON'
+              ">
+
+                            Próximamente
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </ng-container>
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <button type="button" class="sidebar-footer-button" (click)="logout()" [disabled]="logoutLoading()">
+
+                <span class="navigation-icon">
+                    ↪
+                </span>
+
+                <span *ngIf="!sidebarCollapsed()">
+
+                    {{ logoutLoading() ? 'Cerrando...' : 'Cerrar sesión' }}
+
+                </span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ========================================================= -->
+    <!-- MAIN -->
+    <!-- ========================================================= -->
+
+    <main class="panel-main">
+
+        <!-- TOPBAR -->
+
+        <header class="panel-topbar">
+
+            <div class="topbar-left">
+
+                <button type="button" class="sidebar-toggle" (click)="toggleSidebar()"
+                    aria-label="Mostrar u ocultar menú">
+
+                    {{ sidebarCollapsed() ? '→' : '←' }}
+
+                </button>
+
+                <button type="button" class="mobile-menu-button" (click)="toggleMobileMenu()" aria-label="Abrir menú">
+
+                    ☰
+
+                </button>
+
+                <div class="topbar-title">
+
+                    <span>
+                        PANEL SMARTBARBER
+                    </span>
+
+                    <strong>
+                        {{ summary()?.roleLabel }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <a routerLink="/profile" class="profile-shortcut">
+
+                    <span class="profile-shortcut-avatar">
+
+                        {{ getInitials(summary()?.userName || '') }}
+
+                    </span>
+
+                    <span class="profile-shortcut-name">
+
+                        {{ summary()?.userName }}
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <section class="panel-content">
+
+            <!-- WELCOME -->
+
+            <section class="welcome-card">
+
+                <div class="welcome-content">
+
+                    <span class="section-eyebrow">
+                        SMARTBARBER
+                    </span>
+
+                    <h1>
+                        {{ summary()?.title }}
+                    </h1>
+
+                    <p>
+                        {{ summary()?.subtitle }}
+                    </p>
+
+                </div>
+
+                <div class="welcome-decoration">
+                    SB
+                </div>
+
+            </section>
+
+
+            <!-- ACCOUNT INFORMATION -->
+
+            <section class="information-grid">
+
+                <article class="information-card">
+
+                    <span class="information-label">
+                        PERFIL
+                    </span>
+
+                    <strong>
+                        {{ summary()?.roleLabel }}
+                    </strong>
+
+                    <span>
+                        {{ summary()?.email }}
+                    </span>
+
+                </article>
+
+
+                <article class="information-card">
+
+                    <span class="information-label">
+                        ESTADO
+                    </span>
+
+                    <strong>
+                        {{ summary()?.statusLabel }}
+                    </strong>
+
+                    <span>
+                        Acceso habilitado en SmartBarber
+                    </span>
+
+                </article>
+
+
+                <article class="information-card">
+
+                    <span class="information-label">
+                        IDENTIFICACIÓN
+                    </span>
+
+                    <strong>
+                        {{ summary()?.userId }}
+                    </strong>
+
+                    <span>
+                        Identificador de usuario
+                    </span>
+
+                </article>
+
+
+                <article class="information-card" *ngIf="summary()?.barbershopId">
+
+                    <span class="information-label">
+                        BARBERÍA
+                    </span>
+
+                    <strong>
+                        {{ summary()?.barbershopName || 'Mi barbería' }}
+                    </strong>
+
+                    <span>
+                        Cuenta asociada
+                    </span>
+
+                </article>
+
+            </section>
+
+
+            <!-- QUICK ACCESS -->
+
+            <section class="panel-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-eyebrow">
+                            ACCESO RÁPIDO
+                        </span>
+
+                        <h2>
+                            Funciones disponibles
+                        </h2>
+
+                    </div>
+
+                    <span class="section-counter">
+                        {{ availableItemCount }} disponibles
+                    </span>
+
+                </div>
+
+
+                <div class="quick-access-grid">
+
+                    <ng-container *ngFor="let group of navigationGroups()">
+
+                        <ng-container *ngFor="let item of group.items">
+
+                            <button *ngIf="item.status === 'AVAILABLE'" type="button" class="quick-access-card"
+                                (click)="navigateToItem(item)">
+
+                                <span class="quick-icon">
+                                    {{ item.icon }}
+                                </span>
+
+                                <span class="quick-content">
+
+                                    <strong>
+                                        {{ item.label }}
+                                    </strong>
+
+                                    <span>
+                                        {{ item.description }}
+                                    </span>
+
+                                </span>
+
+                                <span class="quick-arrow">
+                                    →
+                                </span>
+
+                            </button>
+
+                        </ng-container>
+
+                    </ng-container>
+
+                </div>
+
+            </section>
+
+
+            <!-- FUTURE MODULES -->
+
+            <section class="panel-section future-section" *ngIf="comingSoonItemCount > 0">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-eyebrow">
+                            ROADMAP
+                        </span>
+
+                        <h2>
+                            Próximos módulos
+                        </h2>
+
+                    </div>
+
+                    <span class="section-counter">
+                        {{ comingSoonItemCount }} en desarrollo
+                    </span>
+
+                </div>
+
+
+                <div class="future-grid">
+
+                    <ng-container *ngFor="let group of navigationGroups()">
+
+                        <ng-container *ngFor="let item of group.items">
+
+                            <button *ngIf="item.status === 'COMING_SOON'" type="button" class="future-card"
+                                (click)="navigateToItem(item)">
+
+                                <span class="future-icon">
+                                    {{ item.icon }}
+                                </span>
+
+                                <span class="future-content">
+
+                                    <strong>
+                                        {{ item.label }}
+                                    </strong>
+
+                                    <span>
+                                        {{ item.description }}
+                                    </span>
+
+                                </span>
+
+                                <span class="future-badge">
+                                    Próximamente
+                                </span>
+
+                            </button>
+
+                        </ng-container>
+
+                    </ng-container>
+
+                </div>
+
+            </section>
+
+
+            <!-- CHILD ROUTES -->
+
+            <router-outlet></router-outlet>
+
+        </section>
+
+    </main>
+
+
+    <!-- ========================================================= -->
+    <!-- COMING SOON MODAL -->
+    <!-- ========================================================= -->
+
+    <div *ngIf="selectedComingSoon()" class="modal-backdrop" (click)="closeComingSoon()">
+
+        <div class="coming-soon-modal" (click)="$event.stopPropagation()">
+
+            <div class="modal-icon">
+
+                {{ selectedComingSoon()?.icon }}
+
+            </div>
+
+            <span class="section-eyebrow">
+                SMARTBARBER
+            </span>
+
+            <h2>
+                {{ selectedComingSoon()?.label }}
+            </h2>
+
+            <p>
+                {{ selectedComingSoon()?.description }}
+            </p>
+
+            <span class="modal-status">
+                Este módulo forma parte de la evolución del proyecto.
+            </span>
+
+            <button type="button" class="modal-button" (click)="closeComingSoon()">
+
+                Entendido
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
