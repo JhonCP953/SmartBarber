@@ -1,9 +1,6 @@
 import { Routes } from '@angular/router';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 
-import { authGuard } from './core/auth/guards/auth.guard';
-import { roleGuard } from './core/auth/guards/role.guard';
-
 export const routes: Routes = [
   {
     path: '',
@@ -41,10 +38,33 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/authentication/authentication.routes')
             .then(m => m.AUTHENTICATION_ROUTES)
-      }
+      },
+      {
+        path: 'profile',
 
+        loadChildren: () =>
+          import('./features/profile/profile.routes'
+          ).then(
+            m => m.PROFILE_ROUTES
+          )
+      }
     ]
   },
+
+  // ============================================================
+  // AUTHENTICATED PANEL
+  // ============================================================
+
+  {
+    path: 'panel',
+    loadChildren: () =>
+      import('./features/panel/panel.routes')
+        .then(m => m.PANEL_ROUTES)
+  },
+
+  // ============================================================
+  // FALLBACK
+  // ============================================================
 
 
   /*
@@ -61,6 +81,12 @@ export const routes: Routes = [
    *
    * No activar hasta confirmar el módulo/ruta real.
    */
+
+
+
+
+
+
 
   {
     path: '**',

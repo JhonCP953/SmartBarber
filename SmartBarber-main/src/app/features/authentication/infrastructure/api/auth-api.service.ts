@@ -1,22 +1,40 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+    Injectable,
+    inject
+} from '@angular/core';
 
-import { AuthRepository } from '../../domain/repositories/auth.repository';
-import { AuthProfileResponse } from '../../domain/models/auth-session.model';
+import {
+    HttpClient
+} from '@angular/common/http';
 
-@Injectable()
-export class AuthApiService implements AuthRepository {
+import {
+    Observable
+} from 'rxjs';
 
-    private readonly http = inject(HttpClient);
+import {
+    environment
+} from '../../../../../environments/environment';
 
-    /*
-     * Debe coincidir con la ruta que implemente/exponga
-     * el backend para consultar el perfil autenticado.
-     *
-     * No está confirmada en el Insomnia disponible.
-     */
-    private readonly apiUrl = '/api/auth/me';
+import {
+    AuthRepository
+} from '../../domain/repositories/auth.repository';
+
+import {
+    AuthProfileResponse
+} from '../../domain/models/auth-session.model';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthApiService
+    implements AuthRepository {
+
+    private readonly http =
+        inject(HttpClient);
+
+    private readonly apiUrl =
+        `${environment.apiUrl}/api/auth/me`;
+
 
     getAuthenticatedProfile():
         Observable<AuthProfileResponse> {

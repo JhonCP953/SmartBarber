@@ -1,4 +1,4 @@
-export type UserRole = 'CLIENT' | 'ADMIN';
+export type UserRole = 'CLIENT' | 'ADMIN' | 'BARBER';
 
 export type UserStatus =
     | 'ACTIVE'
@@ -7,6 +7,7 @@ export type UserStatus =
 
 export interface AuthSession {
     userId: string;
+    clientId: string | null;
     firebaseUid: string;
     email: string;
     displayName: string;
@@ -14,4 +15,6 @@ export interface AuthSession {
     status: UserStatus;
     tenantId: string | null;
     photoUrl: string | null;
+    barberId: string | null;
+    barbershopId: string | null;
 }

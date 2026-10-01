@@ -1,0 +1,680 @@
+<section class="profile-page">
+
+    <div class="profile-container">
+
+        <div class="profile-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    MI CUENTA
+                </p>
+
+                <h1>
+                    Mi perfil
+                </h1>
+
+                <p class="subtitle">
+                    Consulta la información de tu cuenta y actualiza los datos permitidos.
+                </p>
+
+            </div>
+
+
+            <button
+                *ngIf="
+                    profile() &&
+                    canEditProfile() &&
+                    !editing()
+                "
+                type="button"
+                class="primary-button header-action"
+                (click)="startEditing()">
+
+                Editar perfil
+
+            </button>
+
+        </div>
+
+
+        <!-- LOADING -->
+
+        <div
+            class="loading-state"
+            *ngIf="loading()">
+
+            <span class="loading-spinner"></span>
+
+            <p>
+                Cargando información del perfil...
+            </p>
+
+        </div>
+
+
+        <!-- ERROR DE CONSULTA -->
+
+        <div
+            class="profile-state error-state"
+            *ngIf="
+                !loading() &&
+                errorMessage() &&
+                !profile()
+            ">
+
+            <span class="state-icon">
+                !
+            </span>
+
+            <h2>
+                No fue posible cargar tu perfil
+            </h2>
+
+            <p>
+                {{ errorMessage() }}
+            </p>
+
+            <button
+                type="button"
+                class="primary-button"
+                (click)="loadProfile()">
+
+                Intentar nuevamente
+
+            </button>
+
+        </div>
+
+
+        <ng-container
+            *ngIf="
+                !loading() &&
+                profile() as currentProfile
+            ">
+
+
+            <!-- RESUMEN DE CUENTA -->
+
+            <div class="profile-card">
+
+                <div class="profile-summary">
+
+                    <div class="profile-avatar">
+
+                        <img
+                            *ngIf="currentProfile.photoUrl"
+                            [src]="currentProfile.photoUrl"
+                            alt="Foto de perfil" />
+
+                        <span
+                            *ngIf="!currentProfile.photoUrl">
+
+                            {{ getInitials() }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-content">
+
+                        <p class="card-eyebrow">
+                            Información de cuenta
+                        </p>
+
+                        <h2>
+
+                            {{
+                                currentProfile.name ||
+                                currentProfile.displayName ||
+                                'Usuario SmartBarber'
+                            }}
+
+                        </h2>
+
+                        <p>
+                            {{ currentProfile.email }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="account-badges">
+
+                        <span class="role-badge">
+
+                            {{
+                                getRoleLabel(
+                                    currentProfile.role
+                                )
+                            }}
+
+                        </span>
+
+
+                        <span
+                            class="status-badge"
+                            [class.status-active]="
+                                currentProfile.status === 'ACTIVE'
+                            "
+                            [class.status-blocked]="
+                                currentProfile.status === 'BLOCKED'
+                            "
+                            [class.status-inactive]="
+                                currentProfile.status === 'INACTIVE'
+                            ">
+
+                            {{
+                                getStatusLabel(
+                                    currentProfile.status
+                                )
+                            }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONSULTA DE INFORMACIÓN PERSONAL -->
+
+            <div
+                class="profile-card"
+                *ngIf="!editing()">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="card-eyebrow">
+                            Información personal
+                        </p>
+
+                        <h2>
+                            Datos personales
+                        </h2>
+
+                    </div>
+
+
+                    <button
+                        *ngIf="canEditProfile()"
+                        type="button"
+                        class="secondary-button"
+                        (click)="startEditing()">
+
+                        Editar
+
+                    </button>
+
+                </div>
+
+
+                <div class="information-grid">
+
+                    <div class="information-item">
+
+                        <span>
+                            Nombre completo
+                        </span>
+
+                        <strong>
+
+                            {{
+                                currentProfile.name ||
+                                currentProfile.displayName ||
+                                'No registrado'
+                            }}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="information-item">
+
+                        <span>
+                            Correo electrónico
+                        </span>
+
+                        <strong>
+                            {{
+                                currentProfile.email ||
+                                'No registrado'
+                            }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="information-item">
+
+                        <span>
+                            Documento
+                        </span>
+
+                        <strong>
+                            {{
+                                currentProfile.document ||
+                                'No registrado'
+                            }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="information-item">
+
+                        <span>
+                            Tipo de documento
+                        </span>
+
+                        <strong>
+                            {{
+                                currentProfile.documentType ||
+                                'No registrado'
+                            }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="information-item">
+
+                        <span>
+                            Teléfono
+                        </span>
+
+                        <strong>
+                            {{
+                                currentProfile.cell ||
+                                'No registrado'
+                            }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EDICIÓN -->
+
+            <div
+                class="profile-card"
+                *ngIf="editing()">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="card-eyebrow">
+                            Editar información
+                        </p>
+
+                        <h2>
+                            Actualizar perfil
+                        </h2>
+
+                        <p>
+                            Solo puedes modificar los datos habilitados para tu cuenta.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    [formGroup]="profileForm"
+                    (ngSubmit)="saveProfile()"
+                    novalidate>
+
+
+                    <div class="form-section">
+
+
+                        <!-- DOCUMENTO -->
+
+                        <div class="form-group">
+
+                            <label for="document">
+                                Documento
+                            </label>
+
+                            <input
+                                id="document"
+                                type="text"
+                                formControlName="document"
+                                readonly />
+
+                            <small class="readonly-message">
+                                Este campo no puede modificarse.
+                            </small>
+
+                        </div>
+
+
+                        <!-- TIPO DOCUMENTO -->
+
+                        <div class="form-group">
+
+                            <label for="documentType">
+                                Tipo de documento
+                            </label>
+
+                            <input
+                                id="documentType"
+                                type="text"
+                                formControlName="documentType"
+                                readonly />
+
+                            <small class="readonly-message">
+                                Este campo no puede modificarse.
+                            </small>
+
+                        </div>
+
+
+                        <!-- NOMBRE -->
+
+                        <div class="form-group">
+
+                            <label for="name">
+                                Nombre completo
+                            </label>
+
+                            <input
+                                id="name"
+                                type="text"
+                                formControlName="name"
+                                autocomplete="name"
+                                [class.invalid]="
+                                    nameControl.invalid &&
+                                    nameControl.touched
+                                " />
+
+
+                            <small
+                                class="field-error"
+                                *ngIf="
+                                    nameControl.hasError('required') &&
+                                    nameControl.touched
+                                ">
+
+                                El nombre es obligatorio.
+
+                            </small>
+
+
+                            <small
+                                class="field-error"
+                                *ngIf="
+                                    nameControl.hasError('minlength') &&
+                                    nameControl.touched
+                                ">
+
+                                El nombre debe tener al menos 3 caracteres.
+
+                            </small>
+
+
+                            <small
+                                class="field-error"
+                                *ngIf="
+                                    nameControl.hasError('maxlength') &&
+                                    nameControl.touched
+                                ">
+
+                                El nombre no puede superar los 100 caracteres.
+
+                            </small>
+
+                        </div>
+
+
+                        <!-- TELEFONO -->
+
+                        <div class="form-group">
+
+                            <label for="cell">
+                                Teléfono
+                            </label>
+
+                            <input
+                                id="cell"
+                                type="tel"
+                                formControlName="cell"
+                                autocomplete="tel"
+                                inputmode="numeric"
+                                maxlength="10"
+                                [class.invalid]="
+                                    cellControl.invalid &&
+                                    cellControl.touched
+                                " />
+
+
+                            <small
+                                class="field-error"
+                                *ngIf="
+                                    cellControl.hasError('required') &&
+                                    cellControl.touched
+                                ">
+
+                                El teléfono es obligatorio.
+
+                            </small>
+
+
+                            <small
+                                class="field-error"
+                                *ngIf="
+                                    cellControl.hasError('pattern') &&
+                                    cellControl.touched
+                                ">
+
+                                El teléfono debe contener exactamente 10 dígitos.
+
+                            </small>
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="form-group full-width">
+
+                            <label for="email">
+                                Correo electrónico
+                            </label>
+
+                            <input
+                                id="email"
+                                type="email"
+                                formControlName="email"
+                                readonly />
+
+                            <small class="readonly-message">
+                                El correo está asociado a tu cuenta de Google y no puede modificarse aquí.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ERROR -->
+
+                    <div
+                        class="message message-error"
+                        *ngIf="errorMessage()">
+
+                        {{ errorMessage() }}
+
+                    </div>
+
+
+                    <!-- SUCCESS -->
+
+                    <div
+                        class="message message-success"
+                        *ngIf="successMessage()">
+
+                        {{ successMessage() }}
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            [disabled]="saving()"
+                            (click)="cancelEditing()">
+
+                            Cancelar
+
+                        </button>
+
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                            [disabled]="saving()">
+
+                            {{
+                                saving()
+                                    ? 'Guardando...'
+                                    : 'Guardar cambios'
+                            }}
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- BARBERÍA -->
+
+            <div class="profile-card">
+
+                <div class="section-heading simple-heading">
+
+                    <div>
+
+                        <p class="card-eyebrow">
+                            Organización
+                        </p>
+
+                        <h2>
+                            Barbería asociada
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    *ngIf="
+                        hasBarbershop();
+                        else noBarbershop
+                    "
+                    class="barbershop-information">
+
+
+                    <div class="barbershop-icon">
+                        SB
+                    </div>
+
+
+                    <div>
+
+                        <span class="information-label">
+                            Barbería
+                        </span>
+
+                        <strong>
+
+                            {{
+                                currentProfile.barbershopName ||
+                                'Barbería asociada'
+                            }}
+
+                        </strong>
+
+
+                        <span
+                            class="technical-value"
+                            *ngIf="
+                                currentProfile.barbershopId
+                            ">
+
+                            {{
+                                currentProfile.barbershopId
+                            }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <ng-template #noBarbershop>
+
+                    <div class="empty-association">
+
+                        <p>
+                            Tu cuenta actualmente no tiene una barbería asociada.
+                        </p>
+
+                    </div>
+
+                </ng-template>
+
+            </div>
+
+
+            <!-- ERROR DURANTE EDICIÓN -->
+
+            <div
+                class="message message-error"
+                *ngIf="
+                    errorMessage() &&
+                    profile()
+                ">
+
+                {{ errorMessage() }}
+
+            </div>
+
+
+            <!-- SUCCESS -->
+
+            <div
+                class="message message-success"
+                *ngIf="
+                    successMessage() &&
+                    !editing()
+                ">
+
+                {{ successMessage() }}
+
+            </div>
+
+        </ng-container>
+
+    </div>
+</section>
