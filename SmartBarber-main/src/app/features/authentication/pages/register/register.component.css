@@ -1,8 +1,4 @@
-/* =====================================================
-   VARIABLES GLOBALES (Colores, Fuentes y Bordes)
-   ===================================================== */
 :root {
-  /* Colores principales */
   --color-charcoal: #141110;
   --color-charcoal-2: #1c1817;
   --color-border-dark: #2a2523;
@@ -13,18 +9,15 @@
   --color-ink: #0d0c0b;
   --color-white: #ffffff;
 
-  /* Fuentes importadas desde index.html */
   --font-display: 'Oswald', sans-serif;
   --font-body: 'Fraunces', serif;
   --font-label: 'Oswald', sans-serif;
 
-  /* Bordes y Sombras */
   --radius-sm: 4px;
   --radius-md: 8px;
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* Restablecimiento básico */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -70,7 +63,6 @@ body {
 
 .register-header {
   margin-bottom: 34px;
-
   text-align: center;
 }
 
@@ -97,7 +89,6 @@ body {
 
 .step {
   margin-top: 26px;
-
   padding-top: 26px;
 
   border-top: 1px solid var(--color-border-dark);
@@ -127,39 +118,91 @@ body {
 
 .google-button {
   width: 100%;
+  min-height: 56px;
 
-  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 
-  margin-top: 14px;
+  margin-top: 24px;
+  padding: 15px 24px;
 
-  border: 1px solid var(--color-border-dark);
-  border-radius: var(--radius-sm);
+  background: #b68a4e !important;
+  border: 1px solid #d4a76a !important;
+  border-radius: 6px;
 
-  background: var(--color-ivory);
+  color: #141110 !important;
 
-  color: var(--color-ink);
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
 
-  font-family: var(--font-label);
-  font-size: 13px;
-  font-weight: 500;
-
-  letter-spacing: 1.2px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 0 #76572f,
+    0 7px 18px rgba(0, 0, 0, 0.35);
+
   transition:
-    transform 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.google-button::before {
+  content: 'G';
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #4285f4;
+
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 .google-button:hover:not(:disabled) {
+  background: #d4a76a !important;
+
   transform: translateY(-2px);
 
-  background: var(--color-white);
+  box-shadow:
+    0 6px 0 #76572f,
+    0 10px 24px rgba(0, 0, 0, 0.45);
 }
 
-.google-button:disabled,
-.submit-button:disabled {
+.google-button:active:not(:disabled) {
+  transform: translateY(2px);
+
+  box-shadow:
+    0 2px 0 #76572f,
+    0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.google-button:disabled {
   opacity: 0.55;
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow:
+    0 3px 0 #76572f,
+    0 5px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* =====================================================
@@ -184,7 +227,6 @@ body {
 .google-account div {
   display: flex;
   flex-direction: column;
-
   gap: 3px;
 }
 
@@ -247,6 +289,8 @@ body {
 
   text-align: center;
 
+  cursor: pointer;
+
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -304,7 +348,6 @@ body {
 .field input,
 .field select {
   width: 100%;
-
   min-height: 48px;
 
   padding: 12px 14px;
@@ -356,39 +399,72 @@ body {
 }
 
 /* =====================================================
-   BOTÓN
+   BOTÓN PRINCIPAL
    ===================================================== */
 
 .submit-button {
   width: 100%;
+  min-height: 56px;
 
-  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  margin-top: 10px;
+  margin-top: 30px;
+  padding: 15px 24px;
 
-  border: 1px solid var(--color-brass);
-  border-radius: var(--radius-sm);
+  background: #b68a4e !important;
+  border: 1px solid #d4a76a !important;
+  border-radius: 6px;
 
-  background: var(--color-brass);
+  color: #141110 !important;
 
-  color: var(--color-ink);
-
-  font-family: var(--font-label);
-  font-size: 12px;
-  font-weight: 600;
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
 
   letter-spacing: 1.6px;
   text-transform: uppercase;
 
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 0 #76572f,
+    0 7px 18px rgba(0, 0, 0, 0.35);
+
   transition:
-    transform 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .submit-button:hover:not(:disabled) {
+  background: #d4a76a !important;
+
   transform: translateY(-2px);
 
-  background: var(--color-brass-light);
+  box-shadow:
+    0 6px 0 #76572f,
+    0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(2px);
+
+  box-shadow:
+    0 2px 0 #76572f,
+    0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.submit-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow:
+    0 3px 0 #76572f,
+    0 5px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* =====================================================
@@ -397,8 +473,7 @@ body {
 
 .message {
   margin-top: 20px;
-
-  padding: 14px 16px;
+  padding: 15px 16px;
 
   border-radius: var(--radius-md);
 
@@ -421,11 +496,7 @@ body {
   color: #9bc2a3;
 }
 
-/* =====================================================
-   RESPONSIVE
-   ===================================================== */
-
-@media (max-width: 650px) {
+@media (max-width: 600px) {
   .register-page {
     padding: 50px 14px;
   }
@@ -436,9 +507,5 @@ body {
 
   .role-options {
     grid-template-columns: 1fr;
-  }
-
-  .register-header h1 {
-    font-size: 30px;
   }
 }

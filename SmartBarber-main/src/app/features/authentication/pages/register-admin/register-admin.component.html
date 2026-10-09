@@ -1,250 +1,753 @@
-<section class="register-container">
+<section class="register-page">
 
-    <div class="register-card">
+  <div class="register-card">
 
-        <div class="header">
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
 
-            <h1>Crear cuenta de administrador</h1>
+    <header class="register-header">
 
-            <p>
-                Completa tus datos para administrar tu barbería
-                en SmartBarber.
-            </p>
+      <span class="eyebrow">
+        REGISTRO DE BARBERÍA
+      </span>
 
-        </div>
+      <h1>
+        Crea tu barbería en SmartBarber
+      </h1>
 
+      <p>
+        Primero registra los datos de tu barbería y después
+        completa la información del administrador.
+      </p>
 
-        @if (email()) {
-
-        <div class="google-account">
-
-            <strong>Cuenta de Google</strong>
-
-            <span>
-                {{ email() }}
-            </span>
-
-        </div>
-
-        }
+    </header>
 
 
-        @if (errorMessage()) {
+    <!-- =====================================================
+         CUENTA GOOGLE
+         ===================================================== -->
 
-        <div class="message error">
+    @if (firebaseUser) {
 
-            {{ errorMessage() }}
+      <div class="google-account">
 
-        </div>
+        @if (firebaseUser.photoURL) {
 
-        }
+          <img
+            [src]="firebaseUser.photoURL"
+            alt="Foto de perfil"
+            class="profile-image"
+          >
 
+        } @else {
 
-        @if (success()) {
-
-        <div class="message success">
-
-            <strong>¡Registro exitoso!</strong>
-
-            <p>
-                Tu cuenta de administrador y la barbería
-                fueron registradas correctamente.
-            </p>
-
-            <p>
-                Redireccionando...
-            </p>
-
-        </div>
+          <div class="profile-placeholder">
+            {{ firebaseUser.displayName?.charAt(0) || 'A' }}
+          </div>
 
         }
 
+        <div class="google-account-info">
 
-        @if (!success()) {
+          <strong>
+            {{ firebaseUser.displayName || 'Administrador' }}
+          </strong>
 
-        <form [formGroup]="adminForm" (ngSubmit)="submit()">
+          <span>
+            {{ firebaseUser.email }}
+          </span>
 
-            <h2>Datos del administrador</h2>
+        </div>
 
+        <span class="account-badge">
+          Google
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         INDICADOR DE PASOS
+         ===================================================== -->
+
+    <div class="steps-indicator">
+
+      <div
+        class="step-indicator"
+        [class.active]="currentStep() === 1"
+        [class.completed]="currentStep() > 1"
+      >
+
+        <span class="step-number">
+
+          @if (currentStep() > 1) {
+            ✓
+          } @else {
+            1
+          }
+
+        </span>
+
+        <div class="step-label">
+
+          <strong>
+            Barbería
+          </strong>
+
+          <span>
+            Datos del negocio
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="step-line"></div>
+
+
+      <div
+        class="step-indicator"
+        [class.active]="currentStep() === 2"
+      >
+
+        <span class="step-number">
+          2
+        </span>
+
+        <div class="step-label">
+
+          <strong>
+            Administrador
+          </strong>
+
+          <span>
+            Datos personales
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MENSAJE DE ERROR
+         ===================================================== -->
+
+    @if (errorMessage()) {
+
+      <div
+        class="message error"
+        role="alert"
+      >
+
+        <strong>
+          No pudimos continuar
+        </strong>
+
+        <span>
+          {{ errorMessage() }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         PASO 1 — BARBERÍA
+         ===================================================== -->
+
+    @if (currentStep() === 1) {
+
+      <div class="step-content">
+
+        <div class="step-heading">
+
+          <span class="step-eyebrow">
+            PASO 01
+          </span>
+
+          <h2>
+            Datos de la barbería
+          </h2>
+
+          <p>
+            Cuéntanos sobre el establecimiento que deseas
+            administrar en SmartBarber.
+          </p>
+
+        </div>
+
+
+        <form
+          [formGroup]="barberShopForm"
+          novalidate
+        >
+
+          <div class="form-grid">
+
+            <!-- Nombre -->
 
             <div class="field">
 
-                <label for="name">
-                    Nombre completo
-                </label>
+              <label for="barberShopName">
+                Nombre de la barbería
+              </label>
 
-                <input id="name" type="text" formControlName="name" placeholder="Nombre completo">
+              <input
+                id="barberShopName"
+                type="text"
+                formControlName="name"
+                autocomplete="organization"
+                placeholder="Ej. Smart Barber 15"
+              >
 
-                @if (
-                name.invalid &&
-                name.touched
-                ) {
+              @if (
+                barberShopName.invalid &&
+                barberShopName.touched
+              ) {
 
                 <small>
-                    El nombre es obligatorio y debe tener
-                    al menos 3 caracteres.
+                  Ingresa el nombre de la barbería.
                 </small>
 
-                }
+              }
 
             </div>
 
+
+            <!-- Razón social -->
 
             <div class="field">
 
-                <label for="email">
-                    Correo electrónico
-                </label>
+              <label for="companyName">
+                Razón social
+              </label>
 
-                <input id="email" type="email" [value]="email()" readonly>
+              <input
+                id="companyName"
+                type="text"
+                formControlName="companyName"
+                autocomplete="organization"
+                placeholder="Ej. Smart Barber S.A.S."
+              >
+
+              @if (
+                companyName.invalid &&
+                companyName.touched
+              ) {
 
                 <small>
-                    Este correo proviene de tu cuenta de Google.
+                  Ingresa la razón social.
                 </small>
+
+              }
 
             </div>
 
+
+            <!-- Tipo documento -->
 
             <div class="field">
 
-                <label for="cell">
-                    Teléfono
-                </label>
+              <label for="barberShopDocumentType">
+                Tipo de documento
+              </label>
 
-                <input id="cell" type="tel" formControlName="cell" maxlength="10" placeholder="3001234567">
+              <select
+                id="barberShopDocumentType"
+                formControlName="documentType"
+              >
 
-                @if (
-                cell.invalid &&
-                cell.touched
-                ) {
+                <option value="NIT">
+                  NIT
+                </option>
+
+                <option value="CC">
+                  Cédula de ciudadanía
+                </option>
+
+                <option value="CE">
+                  Cédula de extranjería
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- Documento -->
+
+            <div class="field">
+
+              <label for="barberShopDocument">
+                Número de documento
+              </label>
+
+              <input
+                id="barberShopDocument"
+                type="text"
+                formControlName="document"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="Ej. 901234567"
+              >
+
+              @if (
+                barberShopDocument.invalid &&
+                barberShopDocument.touched
+              ) {
 
                 <small>
-                    Ingresa un número de teléfono válido
-                    de 10 dígitos.
+                  Ingresa un documento válido.
                 </small>
 
-                }
+              }
 
             </div>
 
 
-            <h2>Datos de la barbería</h2>
+            <!-- Teléfono -->
 
+            <div class="field">
 
-            <div [formGroup]="barberShopForm">
+              <label for="phone">
+                Teléfono
+              </label>
 
-                <div class="field">
+              <input
+                id="phone"
+                type="tel"
+                formControlName="phone"
+                inputmode="numeric"
+                maxlength="10"
+                autocomplete="tel"
+                placeholder="3001234567"
+              >
 
-                    <label>
-                        Nombre de la barbería
-                    </label>
+              @if (
+                phone.invalid &&
+                phone.touched
+              ) {
 
-                    <input type="text" formControlName="name" placeholder="Nombre de la barbería">
+                <small>
+                  Ingresa un teléfono colombiano de 10 dígitos.
+                </small>
 
-                </div>
-
-
-                <div class="field">
-
-                    <label>
-                        Razón social
-                    </label>
-
-                    <input type="text" formControlName="companyName" placeholder="Razón social">
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
-                        Tipo de documento
-                    </label>
-
-                    <select formControlName="documentType">
-
-                        <option value="NIT">
-                            NIT
-                        </option>
-
-                        <option value="CC">
-                            Cédula de ciudadanía
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
-                        Documento
-                    </label>
-
-                    <input type="text" formControlName="document" placeholder="Número de documento">
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
-                        Teléfono de la barbería
-                    </label>
-
-                    <input type="tel" formControlName="phone" maxlength="10" placeholder="3001234567">
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
-                        Ubicación
-                    </label>
-
-                    <input type="text" formControlName="location" placeholder="Ciudad y dirección">
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
-                        Descripción
-                    </label>
-
-                    <textarea formControlName="description" rows="4"
-                        placeholder="Describe brevemente tu barbería"></textarea>
-
-                </div>
+              }
 
             </div>
 
 
-            <button type="submit" [disabled]="loading()">
+            <!-- Ubicación -->
 
-                @if (loading()) {
+            <div class="field">
 
-                <span>
-                    Registrando...
-                </span>
+              <label for="location">
+                Dirección / ubicación
+              </label>
 
-                } @else {
+              <input
+                id="location"
+                type="text"
+                formControlName="location"
+                autocomplete="street-address"
+                placeholder="Ej. Cra. 15 #93-47, Bogotá"
+              >
 
-                <span>
-                    Crear cuenta y barbería
-                </span>
+              @if (
+                location.invalid &&
+                location.touched
+              ) {
 
-                }
+                <small>
+                  Ingresa la ubicación de la barbería.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- Descripción -->
+
+            <div class="field full-width">
+
+              <label for="description">
+                Descripción
+              </label>
+
+              <textarea
+                id="description"
+                formControlName="description"
+                rows="4"
+                placeholder="Describe brevemente tu barbería, servicios o especialidad."
+              ></textarea>
+
+              @if (
+                barberShopDescription.invalid &&
+                barberShopDescription.touched
+              ) {
+
+                <small>
+                  La descripción es obligatoria.
+                </small>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- ACCIONES -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="secondary-button"
+              (click)="goBackToRegister()"
+            >
+              Volver
+            </button>
+
+            <button
+              type="button"
+              class="submit-button"
+              (click)="goToAdminStep()"
+            >
+
+              Continuar con administrador
+
+              <span aria-hidden="true">
+                →
+              </span>
 
             </button>
 
+          </div>
+
         </form>
 
-        }
+      </div>
 
-    </div>
+    }
+
+
+    <!-- =====================================================
+         PASO 2 — ADMINISTRADOR
+         ===================================================== -->
+
+    @if (currentStep() === 2) {
+
+      <div class="step-content">
+
+        <div class="step-heading">
+
+          <span class="step-eyebrow">
+            PASO 02
+          </span>
+
+          <h2>
+            Datos del administrador
+          </h2>
+
+          <p>
+            Esta persona será la responsable de administrar
+            la barbería registrada.
+          </p>
+
+        </div>
+
+
+        <form
+          [formGroup]="adminForm"
+          (ngSubmit)="submit()"
+          novalidate
+        >
+
+          <div class="form-grid">
+
+            <!-- Nombre -->
+
+            <div class="field full-width">
+
+              <label for="name">
+                Nombre completo
+              </label>
+
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                autocomplete="name"
+                placeholder="Ingresa el nombre completo"
+              >
+
+              @if (
+                name.invalid &&
+                name.touched
+              ) {
+
+                <small>
+                  El nombre debe tener al menos 3 caracteres.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- Correo -->
+
+            <div class="field full-width">
+
+              <label for="email">
+                Correo electrónico
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                [value]="email()"
+                readonly
+              >
+
+              <small class="help">
+                Este correo proviene de tu cuenta de Google.
+              </small>
+
+            </div>
+
+
+            <!-- Tipo documento -->
+
+            <div class="field">
+
+              <label for="documentType">
+                Tipo de documento
+              </label>
+
+              <select
+                id="documentType"
+                formControlName="documentType"
+              >
+
+                <option value="CC">
+                  Cédula de ciudadanía
+                </option>
+
+                <option value="CE">
+                  Cédula de extranjería
+                </option>
+
+                <option value="NIT">
+                  NIT
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- Documento -->
+
+            <div class="field">
+
+              <label for="document">
+                Número de documento
+              </label>
+
+              <input
+                id="document"
+                type="text"
+                formControlName="document"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="Número de documento"
+              >
+
+              @if (
+                document.invalid &&
+                document.touched
+              ) {
+
+                <small>
+                  Ingresa un número de documento válido.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- Teléfono -->
+
+            <div class="field full-width">
+
+              <label for="cell">
+                Teléfono celular
+              </label>
+
+              <input
+                id="cell"
+                type="tel"
+                formControlName="cell"
+                inputmode="numeric"
+                maxlength="10"
+                autocomplete="tel"
+                placeholder="3001234567"
+              >
+
+              @if (
+                cell.invalid &&
+                cell.touched
+              ) {
+
+                <small>
+                  Ingresa un número de celular colombiano válido.
+                </small>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- RESUMEN -->
+
+          <div class="registration-summary">
+
+            <div class="summary-title">
+              Resumen del registro
+            </div>
+
+            <div class="summary-row">
+
+              <span>
+                Barbería
+              </span>
+
+              <strong>
+                {{ barberShopName.value || 'Sin nombre' }}
+              </strong>
+
+            </div>
+
+            <div class="summary-row">
+
+              <span>
+                Administrador
+              </span>
+
+              <strong>
+                {{ name.value || 'Sin nombre' }}
+              </strong>
+
+            </div>
+
+            <div class="summary-row">
+
+              <span>
+                Cuenta
+              </span>
+
+              <strong>
+                {{ email() }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- ACCIONES -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="secondary-button"
+              [disabled]="loading()"
+              (click)="goToBarberShopStep()"
+            >
+              ← Volver
+            </button>
+
+            <button
+              type="submit"
+              class="submit-button"
+              [disabled]="loading()"
+            >
+
+              @if (loading()) {
+
+                <span class="spinner"></span>
+
+                Registrando...
+
+              } @else {
+
+                Crear barbería y cuenta
+
+                <span aria-hidden="true">
+                  →
+                </span>
+
+              }
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         SUCCESS
+         ===================================================== -->
+
+    @if (success()) {
+
+      <div class="success-panel">
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+        <span class="step-eyebrow">
+          REGISTRO COMPLETADO
+        </span>
+
+        <h2>
+          ¡Bienvenido a SmartBarber!
+        </h2>
+
+        <p>
+          Tu barbería y tu cuenta de administrador fueron
+          registradas correctamente.
+        </p>
+
+        <span class="success-loading">
+          Redirigiendo...
+        </span>
+
+      </div>
+
+    }
+
+  </div>
 
 </section>

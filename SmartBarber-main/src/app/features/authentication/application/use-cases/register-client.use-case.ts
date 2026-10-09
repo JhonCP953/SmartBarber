@@ -1,5 +1,14 @@
-import { Injectable, inject } from '@angular/core';
-import { Observable, switchMap, map } from 'rxjs';
+import {
+  Injectable,
+  inject
+} from '@angular/core';
+
+import {
+  Observable,
+  switchMap,
+  map,
+  throwError
+} from 'rxjs';
 
 import {
   ClientRegistrationForm,
@@ -7,87 +16,162 @@ import {
   CreateUserResponse
 } from '../../domain/models/client-registration.model';
 
-import { ClientRegistrationRepository } from '../../domain/repositories/client-registration.repository';
+import {
+  ClientRegistrationRepository
+} from '../../domain/repositories/client-registration.repository';
 
-import { FirebaseAuthService } from '../../../../core/auth/services/firebase-auth.service';
+import {
+  FirebaseAuthService
+} from '../../../../core/auth/services/firebase-auth.service';
+
+import {
+  SessionService
+} from '../../../../core/auth/services/session.service';
 
 @Injectable()
 export class RegisterClientUseCase {
 
   private readonly repository =
-    inject(ClientRegistrationRepository);
+    inject(
+      ClientRegistrationRepository
+    );
 
   private readonly firebaseAuth =
-    inject(FirebaseAuthService);
+    inject(
+      FirebaseAuthService
+    );
+
+  private readonly sessionService =
+    inject(
+      SessionService
+    );
 
   execute(
     form: ClientRegistrationForm
-  ): Observable<ClientRegistrationResult> {
+  ):
+    Observable<ClientRegistrationResult> {
 
     const firebaseUser =
       this.firebaseAuth.getCurrentUser();
 
     if (!firebaseUser) {
-      throw new Error(
-        'No authenticated Google user was found.'
+
+      return throwError(
+        () =>
+          new Error(
+            'No existe una sesión autenticada con Google.'
+          )
       );
     }
 
-    const createUserRequest = {
-      firebaseId: firebaseUser.uid
-    };
+    if (!firebaseUser.email) {
 
-    return this.repository.createUser(createUserRequest).pipe(
+      return throwError(
+        () =>
+          new Error(
+            'La cuenta de Google no tiene correo electrónico.'
+          )
+      );
+    }
 
-      switchMap((userResponse) => {
-
-        const userId =
-          this.extractUserId(userResponse);
-
-        if (!userId) {
-          throw new Error(
-            'The backend did not return the SmartBarber user ID.'
-          );
-        }
-
-        const createClientRequest = {
-          userId,
-          document: form.document.trim(),
-          documentType: form.documentType,
-          name: form.name.trim(),
-          cell: form.cell.trim(),
-          email: firebaseUser.email ?? ''
-        };
-
-        return this.repository.createClient(
-          createClientRequest
-        ).pipe(
-          map((clientResponse: any) => ({
-            userId,
-            clientId:
-              clientResponse?.id ??
-              clientResponse?.clientId,
-            message:
-              clientResponse?.message ??
-              'Client registered successfully.'
-          }))
-        );
+    return this.repository
+      .createUser({
+        roleId: 1
       })
-    );
-  }
 
-  private extractUserId(
-    response: CreateUserResponse
-  ): string | null {
+      .pipe(
 
-    if (response.userId) {
-      return response.userId;
-    }
+        switchMap(
+          (
+            user: CreateUserResponse
+          ) => {
 
-    if (response.id) {
-      return response.id;
-    }
+            const request = {
 
-    return null;
+              userId:
+                user.id,
+
+              name:
+                form.name.trim(),
+
+              document:
+                form.document.trim(),
+
+              documentType:
+                form.documentType,
+
+              cell:
+                form.cell.trim(),
+
+              email:
+                firebaseUser.email!
+                  .trim()
+                  .toLowerCase()
+            };
+
+            return this.repository
+              .createClient(
+                request
+              )
+
+              .pipe(
+
+                map(
+                  client => {
+
+                    this.sessionService
+                      .setSession({
+
+                        userId:
+                          user.id,
+
+                        clientId:
+                          client.id,
+
+                        firebaseUid:
+                          firebaseUser.uid,
+
+                        email:
+                          client.email,
+
+                        displayName:
+                          client.name,
+
+                        role:
+                          'CLIENT',
+
+                        status:
+                          'ACTIVE',
+
+                        tenantId:
+                          null,
+
+                        photoUrl:
+                          firebaseUser.photoURL,
+
+                        barberId:
+                          null,
+
+                        barbershopId:
+                          null
+                      });
+
+                    return {
+
+                      userId:
+                        user.id,
+
+                      clientId:
+                        client.id,
+
+                      message:
+                        'Cliente registrado correctamente.'
+                    };
+                  }
+                )
+              );
+          }
+        )
+      );
   }
 }

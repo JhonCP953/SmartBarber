@@ -1,26 +1,32 @@
 import { Observable } from 'rxjs';
 
 import {
-    CreateAdminRequest,
-    CreateAdminResponse
+  CreateUserRequest,
+  CreateUserResponse,
+  CreateAdminRequest,
+  CreateAdminResponse
 } from '../models/admin-registration.model';
 
 import {
-    BarberShopRegisterRequest,
-    BarberShopResponse
+  BarberShopRegisterRequest,
+  BarberShopResponse
 } from '../../../barber-shop/domain/models/barber-shop.model';
 
 export abstract class AdminRegistrationRepository {
 
-    abstract createUser(
-        firebaseId: string
-    ): Observable<any>;
+  abstract createBarberShop(
+    request: BarberShopRegisterRequest
+  ): Observable<BarberShopResponse | null>;
 
-    abstract createAdmin(
-        data: CreateAdminRequest
-    ): Observable<CreateAdminResponse>;
+  abstract findBarberShopByName(
+    name: string
+  ): Observable<BarberShopResponse>;
 
-    abstract createBarberShop(
-        data: BarberShopRegisterRequest
-    ): Observable<BarberShopResponse>;
+  abstract createUser(
+    request: CreateUserRequest
+  ): Observable<CreateUserResponse | null>;
+
+  abstract createAdmin(
+    request: CreateAdminRequest
+  ): Observable<CreateAdminResponse | null>;
 }

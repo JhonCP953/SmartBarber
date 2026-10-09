@@ -1,73 +1,82 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  Injectable,
+  inject
+} from '@angular/core';
 
 import {
-    CreateAdminRequest,
-    CreateAdminResponse
+  HttpClient
+} from '@angular/common/http';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  environment
+} from '../../../../../environments/environment';
+
+import {
+  AdminRegistrationRepository
+} from '../../domain/repositories/admin-registration.repository';
+
+import {
+  CreateAdminRequest,
+  CreateAdminResponse,
+  CreateUserRequest,
+  CreateUserResponse
 } from '../../domain/models/admin-registration.model';
 
 import {
-    BarberShopRegisterRequest,
-    BarberShopResponse
+  BarberShopRegisterRequest,
+  BarberShopResponse
 } from '../../../barber-shop/domain/models/barber-shop.model';
 
-import {
-    AdminRegistrationRepository
-} from '../../domain/repositories/admin-registration.repository';
-
-import { environment } from '../../../../../environments/environment';
-
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class AdminRegistrationApiService
-    extends AdminRegistrationRepository {
+  extends AdminRegistrationRepository {
 
-    private readonly userApiUrl =
-        `${environment.apiUrl}/user-service`;
+  private readonly http =
+    inject(HttpClient);
 
-    private readonly adminApiUrl =
-        `${environment.apiUrl}/admin-service`;
+  private readonly baseUrl =
+    environment.apiUrl;
 
-    private readonly barberApiUrl =
-        `${environment.apiUrl}/barber-service`;
+  override createBarberShop(
+    request: BarberShopRegisterRequest
+  ): Observable<BarberShopResponse | null> {
 
-    constructor(
-        private readonly http: HttpClient
-    ) {
-        super();
-    }
+    return this.http.post<BarberShopResponse | null>(
+      `${this.baseUrl}/barber-service/create-barber`,
+      request
+    );
+  }
 
-    override createUser(
-        firebaseId: string
-    ): Observable<any> {
+  override findBarberShopByName(
+    name: string
+  ): Observable<BarberShopResponse> {
 
-        return this.http.post(
-            `${this.userApiUrl}/crear-usuario`,
-            {
-                firebaseId
-            }
-        );
-    }
+    return this.http.get<BarberShopResponse>(
+      `${this.baseUrl}/barber-service/name/${encodeURIComponent(name)}`
+    );
+  }
 
-    override createAdmin(
-        data: CreateAdminRequest
-    ): Observable<CreateAdminResponse> {
+  override createUser(
+    request: CreateUserRequest
+  ): Observable<CreateUserResponse | null> {
 
-        return this.http.post<CreateAdminResponse>(
-            `${this.adminApiUrl}/crear-admin`,
-            data
-        );
-    }
+    return this.http.post<CreateUserResponse | null>(
+      `${this.baseUrl}/user-service/crear-usuario`,
+      request
+    );
+  }
 
-    override createBarberShop(
-        data: BarberShopRegisterRequest
-    ): Observable<BarberShopResponse> {
+  override createAdmin(
+    request: CreateAdminRequest
+  ): Observable<CreateAdminResponse | null> {
 
-        return this.http.post<BarberShopResponse>(
-            `${this.barberApiUrl}/create-barber`,
-            data
-        );
-    }
+    return this.http.post<CreateAdminResponse | null>(
+      `${this.baseUrl}/employee-service/crear-empleado`,
+      request
+    );
+  }
 }

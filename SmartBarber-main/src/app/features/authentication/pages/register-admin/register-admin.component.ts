@@ -1,271 +1,682 @@
 import {
-    Component,
-    computed,
-    inject,
-    signal
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal
 } from '@angular/core';
 
 import {
-    CommonModule
+  CommonModule
 } from '@angular/common';
 
 import {
-    FormBuilder,
-    ReactiveFormsModule,
-    Validators
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators
 } from '@angular/forms';
 
 import {
-    Router
+  Router
 } from '@angular/router';
 
 import {
-    RegisterAdminUseCase
+  RegisterAdminUseCase
 } from '../../application/use-cases/register-admin.use-case';
 
 import {
-    FirebaseAuthService
+  FirebaseAuthService
 } from '../../../../core/auth/services/firebase-auth.service';
 
+import {
+  DocumentType
+} from '../../../barber-shop/domain/models/barber-shop.model';
+
+
 @Component({
-    selector: 'app-register-admin',
-    standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule
-    ],
-    templateUrl: './register-admin.component.html',
-    styleUrl: './register-admin.component.css'
+  selector: 'app-register-admin',
+
+  standalone: true,
+
+  imports: [
+    CommonModule,
+    ReactiveFormsModule
+  ],
+
+  templateUrl:
+    './register-admin.component.html',
+
+  styleUrl:
+    './register-admin.component.css',
+
+  changeDetection:
+    ChangeDetectionStrategy.OnPush
 })
 export class RegisterAdminComponent {
 
-    private readonly fb = inject(FormBuilder);
+  private readonly fb =
+    inject(FormBuilder);
 
-    private readonly router = inject(Router);
+  private readonly router =
+    inject(Router);
 
-    private readonly registerAdminUseCase =
-        inject(RegisterAdminUseCase);
+  private readonly registerAdminUseCase =
+    inject(RegisterAdminUseCase);
 
-    private readonly firebaseAuthService =
-        inject(FirebaseAuthService);
+  private readonly firebaseAuthService =
+    inject(FirebaseAuthService);
 
-    readonly loading = signal(false);
 
-    readonly success = signal(false);
+  // =========================================================
+  // ESTADO
+  // =========================================================
 
-    readonly errorMessage = signal('');
+  readonly currentStep =
+    signal<1 | 2>(1);
 
-    readonly firebaseUser =
-        this.firebaseAuthService.getCurrentUser();
+  readonly loading =
+    signal(false);
 
-    readonly adminForm = this.fb.nonNullable.group({
+  readonly success =
+    signal(false);
 
-        name: [
-            '',
-            [
-                Validators.required,
-                Validators.minLength(3),
-                Validators.maxLength(100)
-            ]
-        ],
+  readonly errorMessage =
+    signal('');
 
-        cell: [
-            '',
-            [
-                Validators.required,
-                Validators.pattern(/^[0-9]{10}$/)
-            ]
-        ]
 
-    });
+  // =========================================================
+  // USUARIO FIREBASE
+  // =========================================================
 
-    readonly barberShopForm = this.fb.nonNullable.group({
+  readonly firebaseUser =
+    this.firebaseAuthService
+      .getCurrentUser();
 
-        name: [
-            '',
-            [
-                Validators.required,
-                Validators.minLength(3)
-            ]
-        ],
 
-        description: [
-            '',
-            [
-                Validators.required,
-                Validators.maxLength(500)
-            ]
-        ],
-
-        location: [
-            '',
-            [
-                Validators.required
-            ]
-        ],
-
-        phone: [
-            '',
-            [
-                Validators.required,
-                Validators.pattern(/^[0-9]{10}$/)
-            ]
-        ],
-
-        document: [
-            '',
-            [
-                Validators.required,
-                Validators.minLength(5)
-            ]
-        ],
-
-        documentType: [
-            'NIT',
-            [
-                Validators.required
-            ]
-        ],
-
-        companyName: [
-            '',
-            [
-                Validators.required,
-                Validators.minLength(3)
-            ]
-        ]
-
-    });
-
-    readonly email = computed(
-        () => this.firebaseUser?.email ?? ''
+  readonly email =
+    computed(
+      () =>
+        this.firebaseUser?.email ?? ''
     );
 
-    get name() {
-        return this.adminForm.controls.name;
+
+  // =========================================================
+  // FORMULARIO BARBERÍA
+  // =========================================================
+
+  readonly barberShopForm =
+    this.fb.nonNullable.group({
+
+      name: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(120)
+        ]
+
+      ],
+
+      description: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(500)
+        ]
+
+      ],
+
+      location: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(200)
+        ]
+
+      ],
+
+      phone: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.pattern(
+            /^3[0-9]{9}$/
+          )
+        ]
+
+      ],
+
+      document: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.pattern(
+            /^[0-9]{5,20}$/
+          )
+        ]
+
+      ],
+
+      documentType: [
+
+        'NIT' as DocumentType,
+
+        [
+          Validators.required
+        ]
+
+      ],
+
+      companyName: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(150)
+        ]
+
+      ]
+
+    });
+
+
+  // =========================================================
+  // FORMULARIO ADMINISTRADOR
+  // =========================================================
+
+  readonly adminForm =
+    this.fb.nonNullable.group({
+
+      name: [
+
+        this.firebaseUser?.displayName ?? '',
+
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(100)
+        ]
+
+      ],
+
+      document: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.pattern(
+            /^[0-9]{6,20}$/
+          )
+        ]
+
+      ],
+
+      documentType: [
+
+        'CC' as DocumentType,
+
+        [
+          Validators.required
+        ]
+
+      ],
+
+      cell: [
+
+        '',
+
+        [
+          Validators.required,
+          Validators.pattern(
+            /^3[0-9]{9}$/
+          )
+        ]
+
+      ]
+
+    });
+
+
+  // =========================================================
+  // GETTERS ADMIN
+  // =========================================================
+
+  get name() {
+
+    return this.adminForm
+      .controls
+      .name;
+
+  }
+
+
+  get document() {
+
+    return this.adminForm
+      .controls
+      .document;
+
+  }
+
+
+  get documentType() {
+
+    return this.adminForm
+      .controls
+      .documentType;
+
+  }
+
+
+  get cell() {
+
+    return this.adminForm
+      .controls
+      .cell;
+
+  }
+
+
+  // =========================================================
+  // GETTERS BARBERÍA
+  // =========================================================
+
+  get barberShopName() {
+
+    return this.barberShopForm
+      .controls
+      .name;
+
+  }
+
+
+  get barberShopDescription() {
+
+    return this.barberShopForm
+      .controls
+      .description;
+
+  }
+
+
+  get location() {
+
+    return this.barberShopForm
+      .controls
+      .location;
+
+  }
+
+
+  get phone() {
+
+    return this.barberShopForm
+      .controls
+      .phone;
+
+  }
+
+
+  get barberShopDocument() {
+
+    return this.barberShopForm
+      .controls
+      .document;
+
+  }
+
+
+  get barberShopDocumentType() {
+
+    return this.barberShopForm
+      .controls
+      .documentType;
+
+  }
+
+
+  get companyName() {
+
+    return this.barberShopForm
+      .controls
+      .companyName;
+
+  }
+
+
+  // =========================================================
+  // PASO 1 → PASO 2
+  // =========================================================
+
+  goToAdminStep(): void {
+
+    this.errorMessage.set('');
+
+    if (
+      this.barberShopForm.invalid
+    ) {
+
+      this.barberShopForm
+        .markAllAsTouched();
+
+      this.errorMessage.set(
+        'Completa correctamente los datos de la barbería antes de continuar.'
+      );
+
+      return;
     }
 
-    get cell() {
-        return this.adminForm.controls.cell;
+    this.currentStep.set(2);
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  }
+
+
+  // =========================================================
+  // PASO 2 → PASO 1
+  // =========================================================
+
+  goToBarberShopStep(): void {
+
+    if (this.loading()) {
+      return;
     }
 
-    get barberShopName() {
-        return this.barberShopForm.controls.name;
+    this.errorMessage.set('');
+
+    this.currentStep.set(1);
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  }
+
+
+  // =========================================================
+  // VOLVER AL REGISTRO GENERAL
+  // =========================================================
+
+  goBackToRegister(): void {
+
+    if (this.loading()) {
+      return;
     }
 
-    get barberShopDescription() {
-        return this.barberShopForm.controls.description;
+    this.router.navigate([
+      '/auth/register'
+    ]);
+
+  }
+
+
+  // =========================================================
+  // REGISTRO FINAL
+  // =========================================================
+
+  submit(): void {
+
+    this.errorMessage.set('');
+
+    if (this.loading()) {
+      return;
     }
 
-    get location() {
-        return this.barberShopForm.controls.location;
+
+    // -------------------------------------------------------
+    // FIREBASE
+    // -------------------------------------------------------
+
+    if (!this.firebaseUser) {
+
+      this.errorMessage.set(
+        'Debes iniciar sesión con Google antes de registrar la barbería.'
+      );
+
+      return;
     }
 
-    get phone() {
-        return this.barberShopForm.controls.phone;
+
+    if (!this.firebaseUser.email) {
+
+      this.errorMessage.set(
+        'No fue posible obtener el correo de tu cuenta de Google.'
+      );
+
+      return;
     }
 
-    get document() {
-        return this.barberShopForm.controls.document;
+
+    // -------------------------------------------------------
+    // VALIDAR ADMINISTRADOR
+    // -------------------------------------------------------
+
+    if (
+      this.adminForm.invalid
+    ) {
+
+      this.adminForm
+        .markAllAsTouched();
+
+      this.errorMessage.set(
+        'Completa correctamente los datos del administrador.'
+      );
+
+      return;
     }
 
-    get documentType() {
-        return this.barberShopForm.controls.documentType;
+
+    // -------------------------------------------------------
+    // VALIDAR BARBERÍA
+    // -------------------------------------------------------
+
+    if (
+      this.barberShopForm.invalid
+    ) {
+
+      this.currentStep.set(1);
+
+      this.barberShopForm
+        .markAllAsTouched();
+
+      this.errorMessage.set(
+        'Revisa los datos de la barbería.'
+      );
+
+      return;
     }
 
-    get companyName() {
-        return this.barberShopForm.controls.companyName;
-    }
 
-    submit(): void {
+    this.loading.set(true);
 
-        this.errorMessage.set('');
 
-        if (this.loading()) {
-            return;
+    const adminData =
+      this.adminForm.getRawValue();
+
+
+    const barberShopData =
+      this.barberShopForm.getRawValue();
+
+
+    // -------------------------------------------------------
+    // EJECUTAR FLUJO
+    //
+    // 1. Barbería
+    // 2. Usuario roleId = 4
+    // 3. Administrador
+    // -------------------------------------------------------
+
+    this.registerAdminUseCase
+      .execute(
+        adminData,
+        barberShopData
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.loading.set(false);
+
+          this.success.set(true);
+
+          this.errorMessage.set('');
+
+          setTimeout(
+            () => {
+
+              this.router.navigate([
+                '/'
+              ]);
+
+            },
+            2200
+          );
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Error durante el registro del administrador:',
+            error
+          );
+
+          this.loading.set(false);
+
+          this.errorMessage.set(
+            this.getErrorMessage(error)
+          );
+
         }
 
-        if (
-            this.adminForm.invalid ||
-            this.barberShopForm.invalid
-        ) {
+      });
 
-            this.adminForm.markAllAsTouched();
+  }
 
-            this.barberShopForm.markAllAsTouched();
 
-            this.errorMessage.set(
-                'Por favor completa correctamente todos los campos obligatorios.'
-            );
+  // =========================================================
+  // MENSAJE DE ERROR
+  // =========================================================
 
-            return;
-        }
+  private getErrorMessage(
+    error: unknown
+  ): string {
 
-        if (!this.firebaseUser) {
+    const httpError =
+      error as {
 
-            this.errorMessage.set(
-                'Debes iniciar sesión con Google antes de continuar.'
-            );
+        status?: number;
 
-            return;
-        }
+        error?: {
+          message?: string;
+        };
 
-        this.loading.set(true);
+        message?: string;
 
-        const adminData = this.adminForm.getRawValue();
+      };
 
-        const barberShopData =
-            this.barberShopForm.getRawValue();
 
-        this.registerAdminUseCase
-            .execute(
-                adminData,
-                barberShopData
-            )
-            .subscribe({
+    if (
+      httpError?.status === 400
+    ) {
 
-                next: () => {
+      return (
+        httpError.error?.message ??
+        'Los datos enviados no son válidos.'
+      );
 
-                    this.loading.set(false);
-
-                    this.success.set(true);
-
-                    setTimeout(() => {
-                        this.router.navigate(['/']);
-                    }, 2000);
-                },
-
-                error: (error) => {
-
-                    console.error(
-                        'Error durante el registro del administrador:',
-                        error
-                    );
-
-                    this.loading.set(false);
-
-                    this.errorMessage.set(
-                        this.getErrorMessage(error)
-                    );
-                }
-
-            });
     }
 
-    private getErrorMessage(error: any): string {
 
-        if (
-            error?.error?.message
-        ) {
-            return error.error.message;
-        }
+    if (
+      httpError?.status === 401
+    ) {
 
-        if (
-            error?.message
-        ) {
-            return error.message;
-        }
+      return (
+        'La sesión de Google no es válida. Inicia sesión nuevamente.'
+      );
 
-        return 'No fue posible completar el registro. Intenta nuevamente.';
     }
+
+
+    if (
+      httpError?.status === 403
+    ) {
+
+      return (
+        'No tienes autorización para realizar este registro.'
+      );
+
+    }
+
+
+    if (
+      httpError?.status === 409
+    ) {
+
+      return (
+        httpError.error?.message ??
+        'Ya existe información registrada con estos datos.'
+      );
+
+    }
+
+
+    if (
+      httpError?.status &&
+      httpError.status >= 500
+    ) {
+
+      return (
+        'El servidor no pudo completar el registro. Inténtalo nuevamente más tarde.'
+      );
+
+    }
+
+
+    if (
+      httpError?.error?.message
+    ) {
+
+      return httpError.error.message;
+
+    }
+
+
+    if (
+      httpError?.message
+    ) {
+
+      return httpError.message;
+
+    }
+
+
+    return (
+      'No fue posible completar el registro. Inténtalo nuevamente.'
+    );
+
+  }
+
 }

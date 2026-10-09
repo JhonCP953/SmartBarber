@@ -20,11 +20,12 @@ import {
 } from '../../domain/repositories/auth.repository';
 
 import {
-    AuthProfileResponse
+    BackendRole
 } from '../../domain/models/auth-session.model';
 
 import {
-    AuthSession
+    AuthSession,
+    UserRole
 } from '../../../../core/auth/model/auth-session.model';
 
 @Injectable({
@@ -41,7 +42,6 @@ export class AuthSessionBootstrapService {
     private readonly authRepository =
         inject(AuthRepository);
 
-
     async restore(): Promise<void> {
 
         const firebaseUser =
@@ -56,39 +56,71 @@ export class AuthSessionBootstrapService {
 
         try {
 
-            const profile =
+            const backendRole =
                 await firstValueFrom(
                     this.authRepository
-                        .getAuthenticatedProfile()
+                        .verifyAuthentication()
                 );
 
+            const role =
+                this.mapRole(
+                    backendRole
+                );
 
-            if (
-                profile.status !== 'ACTIVE' ||
-                !this.isValidRole(profile.role) ||
-                (
-                    profile.firebaseUid &&
-                    profile.firebaseUid !==
-                    firebaseUser.uid
-                )
-            ) {
+            const previousSession =
+                this.sessionService.currentSession;
 
-                await this.firebaseAuth.logout();
+            const sameFirebaseUser =
+                previousSession?.firebaseUid ===
+                firebaseUser.uid;
 
-                this.sessionService.clearSession();
+            const session: AuthSession = {
 
-                return;
-            }
+                userId:
+                    sameFirebaseUser
+                        ? previousSession?.userId ?? ''
+                        : '',
 
+                clientId:
+                    sameFirebaseUser
+                        ? previousSession?.clientId ?? null
+                        : null,
+
+                firebaseUid:
+                    firebaseUser.uid,
+
+                email:
+                    firebaseUser.email ?? '',
+
+                displayName:
+                    firebaseUser.displayName ?? '',
+
+                role,
+
+                status:
+                    'ACTIVE',
+
+                tenantId:
+                    sameFirebaseUser
+                        ? previousSession?.tenantId ?? null
+                        : null,
+
+                photoUrl:
+                    firebaseUser.photoURL ?? null,
+
+                barberId:
+                    sameFirebaseUser
+                        ? previousSession?.barberId ?? null
+                        : null,
+
+                barbershopId:
+                    sameFirebaseUser
+                        ? previousSession?.barbershopId ?? null
+                        : null
+            };
 
             this.sessionService.setSession(
-                this.toSession(
-                    profile,
-                    firebaseUser.uid,
-                    firebaseUser.email,
-                    firebaseUser.displayName,
-                    firebaseUser.photoURL
-                )
+                session
             );
 
         } catch {
@@ -97,65 +129,20 @@ export class AuthSessionBootstrapService {
         }
     }
 
+    private mapRole(
+        role: BackendRole
+    ): UserRole {
 
-    private isValidRole(
-        role: AuthProfileResponse['role']
-    ): boolean {
+        switch (role) {
 
-        return (
-            role === 'CLIENT' ||
-            role === 'ADMIN' ||
-            role === 'BARBER'
-        );
-    }
+            case 'Cliente':
+                return 'CLIENT';
 
+            case 'Barbero':
+                return 'BARBER';
 
-    private toSession(
-        profile: AuthProfileResponse,
-        firebaseUid: string,
-        firebaseEmail: string | null,
-        firebaseDisplayName: string | null,
-        firebasePhotoUrl: string | null
-    ): AuthSession {
-
-        return {
-
-            userId:
-                profile.userId,
-
-            clientId:
-                profile.clientId ?? null,
-
-            firebaseUid,
-
-            email:
-                profile.email ||
-                firebaseEmail ||
-                '',
-
-            displayName:
-                profile.displayName ||
-                firebaseDisplayName ||
-                '',
-
-            role:
-                profile.role,
-
-            status:
-                profile.status,
-
-            tenantId:
-                profile.tenantId ?? null,
-
-            photoUrl:
-                profile.photoUrl ??
-                firebasePhotoUrl,
-
-            barberId:
-                profile.barberId ?? null,
-
-            barbershopId:
-                profile.barbershopId ?? null
-        };
+            case 'Administrador':
+                return 'ADMIN';
+        }
     }
 }

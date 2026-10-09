@@ -12,7 +12,6 @@ import {
     RegisterClientUseCase
 } from './application/use-cases/register-client.use-case';
 
-
 import {
     AdminRegistrationRepository
 } from './domain/repositories/admin-registration.repository';
@@ -25,16 +24,14 @@ import {
     RegisterAdminUseCase
 } from './application/use-cases/register-admin.use-case';
 
-
 import {
     LoginUseCase
 } from './application/use-cases/login.use-case';
 
-
 export const AUTHENTICATION_ROUTES: Routes = [
 
     // =========================
-    // LOGIN
+    // INICIO O LOGIN
     // =========================
     {
         path: 'login',
@@ -51,10 +48,10 @@ export const AUTHENTICATION_ROUTES: Routes = [
             )
     },
 
-
     // =========================
     // REGISTRO DE CLIENTE
     // =========================
+
     {
         path: 'register',
 
@@ -80,10 +77,10 @@ export const AUTHENTICATION_ROUTES: Routes = [
             )
     },
 
-
     // =========================
     // REGISTRO DE ADMINISTRADOR
     // =========================
+
     {
         path: 'register-admin',
 

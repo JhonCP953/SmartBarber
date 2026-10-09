@@ -15,20 +15,22 @@ import {
 })
 export class SessionService {
 
+    private readonly storageKey =
+        'smartbarber.session';
+
     private readonly sessionSubject =
         new BehaviorSubject<AuthSession | null>(
-            null
+            this.loadStoredSession()
         );
 
     readonly session$ =
         this.sessionSubject.asObservable();
 
-
-    get currentSession(): AuthSession | null {
+    get currentSession():
+        AuthSession | null {
 
         return this.sessionSubject.value;
     }
-
 
     setSession(
         session: AuthSession
@@ -37,16 +39,26 @@ export class SessionService {
         this.sessionSubject.next(
             session
         );
-    }
 
+        this.persistSession(
+            session
+        );
+    }
 
     clearSession(): void {
 
         this.sessionSubject.next(
             null
         );
-    }
 
+        try {
+            localStorage.removeItem(
+                this.storageKey
+            );
+        } catch {
+            // Storage unavailable.
+        }
+    }
 
     isAuthenticated(): boolean {
 
@@ -55,7 +67,6 @@ export class SessionService {
         );
     }
 
-
     isActive(): boolean {
 
         return (
@@ -63,7 +74,6 @@ export class SessionService {
             'ACTIVE'
         );
     }
-
 
     hasRole(
         role: string
@@ -75,7 +85,6 @@ export class SessionService {
         );
     }
 
-
     getUserId(): string | null {
 
         return (
@@ -83,7 +92,6 @@ export class SessionService {
             null
         );
     }
-
 
     getClientId(): string | null {
 
@@ -93,7 +101,6 @@ export class SessionService {
         );
     }
 
-
     getBarberId(): string | null {
 
         return (
@@ -102,12 +109,51 @@ export class SessionService {
         );
     }
 
-
     getBarbershopId(): string | null {
 
         return (
             this.currentSession?.barbershopId ??
             null
         );
+    }
+
+    private persistSession(
+        session: AuthSession
+    ): void {
+
+        try {
+
+            localStorage.setItem(
+                this.storageKey,
+                JSON.stringify(session)
+            );
+
+        } catch {
+            // Storage unavailable.
+        }
+    }
+
+    private loadStoredSession():
+        AuthSession | null {
+
+        try {
+
+            const stored =
+                localStorage.getItem(
+                    this.storageKey
+                );
+
+            if (!stored) {
+                return null;
+            }
+
+            return JSON.parse(
+                stored
+            ) as AuthSession;
+
+        } catch {
+
+            return null;
+        }
     }
 }

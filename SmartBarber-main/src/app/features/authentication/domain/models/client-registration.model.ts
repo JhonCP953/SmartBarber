@@ -1,43 +1,80 @@
+export type DocumentType =
+    | 'CC'
+    | 'CE'
+    | 'NIT';
+
 export interface ClientRegistrationForm {
-  document: string;
-  documentType: string;
-  name: string;
-  cell: string;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    name: string;
+
+    cell: string;
 }
 
 export interface CreateUserRequest {
-  firebaseId: string;
+
+    roleId: 1;
 }
 
 export interface CreateUserResponse {
-  id?: string;
-  userId?: string;
-  firebaseId?: string;
+
+    id: string;
+
+    firebaseId: string;
+
+    status: string;
+
+    createAt: string;
+
+    updateAt: string | null;
+
+    roleId: number;
 }
 
 export interface CreateClientRequest {
-  userId: string;
-  document: string;
-  documentType: string;
-  name: string;
-  cell: string;
-  email: string;
+
+    userId: string;
+
+    name: string;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    cell: string;
+
+    email: string;
 }
 
 export interface CreateClientResponse {
-  id: string;
-  userId: string;
-  documento: string;
-  tipoDocumento: string;
-  nombre: string;
-  celular: string;
-  correo: string;
-  fechaCreacion: string;
-  fechaModificacion: string;
+
+    id: string;
+
+    userId: string;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    name: string;
+
+    cell: string;
+
+    email: string;
+
+    createAt: string;
+
+    updateAt: string | null;
 }
 
 export interface ClientRegistrationResult {
-  userId: string;
-  clientId?: string;
-  message?: string;
+
+    userId: string;
+
+    clientId: string;
+
+    message: string;
 }

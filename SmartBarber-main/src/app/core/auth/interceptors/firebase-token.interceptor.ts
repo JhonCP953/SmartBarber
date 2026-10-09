@@ -1,29 +1,57 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import {
+  HttpInterceptorFn
+} from '@angular/common/http';
 
-import { inject } from '@angular/core';
-import { FirebaseAuthService } from '../services/firebase-auth.service';
+import {
+  inject
+} from '@angular/core';
 
-export const firebaseTokenInterceptor: HttpInterceptorFn =
+import {
+  from
+} from 'rxjs';
+
+import {
+  switchMap
+} from 'rxjs/operators';
+
+import {
+  FirebaseAuthService
+} from '../services/firebase-auth.service';
+
+export const firebaseTokenInterceptor:
+  HttpInterceptorFn =
   (req, next) => {
 
-    const authService = inject(FirebaseAuthService);
+    const auth =
+      inject(FirebaseAuthService);
 
-    return from(authService.getIdToken()).pipe(
-      switchMap((token) => {
+    return from(
+      auth.getIdToken()
+    )
+    .pipe(
+
+      switchMap(token => {
 
         if (!token) {
           return next(req);
         }
 
-        const authenticatedRequest = req.clone({
-          setHeaders: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        if (
+          req.headers.has(
+            'Authorization'
+          )
+        ) {
+          return next(req);
+        }
 
-        return next(authenticatedRequest);
+        return next(
+          req.clone({
+            setHeaders: {
+              Authorization:
+                `Bearer ${token}`
+            }
+          })
+        );
       })
     );
   };

@@ -20,8 +20,13 @@ import {
 } from '../../domain/repositories/auth.repository';
 
 import {
-    AuthSession
+    AuthSession,
+    UserRole
 } from '../../../../core/auth/model/auth-session.model';
+
+import {
+    BackendRole
+} from '../../domain/models/auth-session.model';
 
 @Injectable()
 export class LoginUseCase {
@@ -35,127 +40,96 @@ export class LoginUseCase {
     private readonly authRepository =
         inject(AuthRepository);
 
-
-    async execute(): Promise<AuthSession> {
+    async execute():
+        Promise<AuthSession> {
 
         const firebaseUser =
             await this.firebaseAuth.signInWithGoogle();
 
-
-        const profile =
+        const backendRole =
             await firstValueFrom(
                 this.authRepository
-                    .getAuthenticatedProfile()
+                    .verifyAuthentication()
             );
 
-
-        if (
-            profile.status === 'BLOCKED'
-        ) {
-
-            await this.firebaseAuth.logout();
-
-            this.sessionService.clearSession();
-
-            throw new Error(
-                'USER_BLOCKED'
+        const role =
+            this.mapRole(
+                backendRole
             );
-        }
 
+        const previousSession =
+            this.sessionService.currentSession;
 
-        if (
-            profile.status !== 'ACTIVE'
-        ) {
-
-            await this.firebaseAuth.logout();
-
-            this.sessionService.clearSession();
-
-            throw new Error(
-                'USER_INACTIVE'
-            );
-        }
-
-
-        if (
-            profile.firebaseUid &&
-            profile.firebaseUid !==
-            firebaseUser.uid
-        ) {
-
-            await this.firebaseAuth.logout();
-
-            this.sessionService.clearSession();
-
-            throw new Error(
-                'FIREBASE_UID_MISMATCH'
-            );
-        }
-
-
-        if (
-            profile.role !== 'CLIENT' &&
-            profile.role !== 'ADMIN' &&
-            profile.role !== 'BARBER'
-        ) {
-
-            await this.firebaseAuth.logout();
-
-            this.sessionService.clearSession();
-
-            throw new Error(
-                'INVALID_ROLE'
-            );
-        }
-
+        const sameUser =
+            previousSession?.firebaseUid ===
+            firebaseUser.uid;
 
         const session: AuthSession = {
 
             userId:
-                profile.userId,
+                sameUser
+                    ? previousSession?.userId ?? ''
+                    : '',
 
             clientId:
-                profile.clientId ?? null,
+                sameUser
+                    ? previousSession?.clientId ?? null
+                    : null,
 
             firebaseUid:
                 firebaseUser.uid,
 
             email:
-                profile.email ||
-                firebaseUser.email ||
-                '',
+                firebaseUser.email ?? '',
 
             displayName:
-                profile.displayName ||
-                firebaseUser.displayName ||
-                '',
+                firebaseUser.displayName ?? '',
 
-            role:
-                profile.role,
+            role,
 
             status:
-                profile.status,
+                'ACTIVE',
 
             tenantId:
-                profile.tenantId ?? null,
+                sameUser
+                    ? previousSession?.tenantId ?? null
+                    : null,
 
             photoUrl:
-                profile.photoUrl ??
-                firebaseUser.photoURL,
+                firebaseUser.photoURL ?? null,
 
             barberId:
-                profile.barberId ?? null,
+                sameUser
+                    ? previousSession?.barberId ?? null
+                    : null,
 
             barbershopId:
-                profile.barbershopId ?? null
+                sameUser
+                    ? previousSession?.barbershopId ?? null
+                    : null
         };
-
 
         this.sessionService.setSession(
             session
         );
 
-
         return session;
+    }
+
+    private mapRole(
+        role: BackendRole
+    ): UserRole {
+
+        switch (role) {
+
+            case 'Cliente':
+                return 'CLIENT';
+
+            case 'Barbero':
+                return 'BARBER';
+
+            case 'Administrador':
+                return 'ADMIN';
+        }
     }
 }

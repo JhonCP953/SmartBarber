@@ -20,7 +20,7 @@ import {
 } from '../../domain/repositories/auth.repository';
 
 import {
-    AuthProfileResponse
+    BackendRole
 } from '../../domain/models/auth-session.model';
 
 @Injectable({
@@ -33,14 +33,14 @@ export class AuthApiService
         inject(HttpClient);
 
     private readonly apiUrl =
-        `${environment.apiUrl}/api/auth/me`;
+        `${environment.apiUrl}/auth/verify`;
 
+    verifyAuthentication():
+        Observable<BackendRole> {
 
-    getAuthenticatedProfile():
-        Observable<AuthProfileResponse> {
-
-        return this.http.get<AuthProfileResponse>(
-            this.apiUrl
+        return this.http.post<BackendRole>(
+            this.apiUrl,
+            null
         );
     }
 }

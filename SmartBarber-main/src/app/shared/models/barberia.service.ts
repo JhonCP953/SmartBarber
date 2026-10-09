@@ -13,7 +13,7 @@ export class BarberiaService {
 
   // Petición POST enviando BarberShopRegisterRequest y esperando BarberShopResponse
   crearBarberia(barberiaData: BarberShopRegisterRequest): Observable<BarberShopResponse> {
-    return this.http.post<BarberShopResponse>(`${this.apiUrl}/crear-barberia`, barberiaData);
+    return this.http.post<BarberShopResponse>(`${this.apiUrl}/create-barber`, barberiaData);
   }
 
   // Petición GET devolviendo un arreglo de BarberShopResponse

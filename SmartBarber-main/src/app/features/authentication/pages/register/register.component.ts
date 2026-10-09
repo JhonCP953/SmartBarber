@@ -19,6 +19,9 @@ import { CommonModule } from '@angular/common';
 import { FirebaseAuthService } from '../../../../core/auth/services/firebase-auth.service';
 
 import { RegisterClientUseCase } from '../../application/use-cases/register-client.use-case';
+import {
+    DocumentType
+} from '../../../barber-shop/domain/models/barber-shop.model';
 
 @Component({
     selector: 'app-register',
@@ -79,12 +82,13 @@ export class RegisterComponent {
                 ]
             ],
 
-            documentType: [
-                'CC',
-                [
-                    Validators.required
-                ]
-            ],
+            documentType:
+                this.formBuilder.nonNullable.control<DocumentType>(
+                    'CC',
+                    [
+                        Validators.required
+                    ]
+                ),
 
             document: [
                 '',
@@ -102,6 +106,7 @@ export class RegisterComponent {
                 ]
             ]
         });
+
 
     async continueWithGoogle(): Promise<void> {
 

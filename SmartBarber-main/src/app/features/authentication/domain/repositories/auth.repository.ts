@@ -1,7 +1,11 @@
 import { Observable } from 'rxjs';
-import { AuthProfileResponse } from '../models/auth-session.model';
+
+import {
+    BackendRole
+} from '../models/auth-session.model';
 
 export abstract class AuthRepository {
-    abstract getAuthenticatedProfile():
-        Observable<AuthProfileResponse>;
+
+    abstract verifyAuthentication():
+        Observable<BackendRole>;
 }
