@@ -11,11 +11,11 @@ import { BarberShopApiService as BarberConfigApiService } from '../../infrastruc
   styleUrls: ['./config.component.css']
 })
 export class BarberConfigComponent implements OnInit {
-  barberId = 1;
+  barberId = '1';
   isEditing = false;
   barberList: any[] = [];
   searchTerm = '';
-  selectedBarberName = ''; 
+  selectedBarberName = '';
   infoForm!: FormGroup;
   holidays: any[] = [];
   newHolidayDate = '';
@@ -53,11 +53,11 @@ export class BarberConfigComponent implements OnInit {
   }
 
   loadBarberList(): void {
-    this.configApiService.obtenerBarberias().subscribe({
+    this.configApiService.obtenerBarberias(this.barberId).subscribe({
       next: (res: any[]) => {
         if (res && res.length > 0) {
           this.barberList = res;
-          this.barberId = this.barberList[0].id || 1;
+          this.barberId = String(this.barberList[0].id ?? '1');
           this.selectedBarberName = this.barberList[0].name || '';
           this.loadHolidays();
         } else {
@@ -89,7 +89,7 @@ export class BarberConfigComponent implements OnInit {
         description: 'Tradición y modernidad.'
       }
     ];
-    this.barberId = this.barberList[0].id;
+    this.barberId = String(this.barberList[0].id ?? '1');
     this.selectedBarberName = this.barberList[0].name;
     this.loadHolidays();
   }
@@ -105,8 +105,8 @@ export class BarberConfigComponent implements OnInit {
 
   selectForEdit(item: any): void {
     this.isEditing = true;
-    this.barberId = item.id || this.barberId;
-    this.selectedBarberName = item.name || ''; 
+    this.barberId = String(item.id ?? this.barberId);
+    this.selectedBarberName = item.name || '';
     this.infoForm.patchValue({
       name: item.name,
       phone: item.phone,
@@ -118,8 +118,8 @@ export class BarberConfigComponent implements OnInit {
 
   selectForView(item: any): void {
     this.isEditing = false;
-    this.barberId = item.id || this.barberId;
-    this.selectedBarberName = item.name || ''; 
+    this.barberId = String(item.id ?? this.barberId);
+    this.selectedBarberName = item.name || '';
     alert(`Visualizando detalles de: ${item.name}`);
     this.loadHolidays();
   }
@@ -129,7 +129,9 @@ export class BarberConfigComponent implements OnInit {
   }
 
   loadHolidays(): void {
-    this.configApiService.obtenerDiasNoLaborables(this.barberId).subscribe({
+    const barberId = Number(this.barberId);
+
+    this.configApiService.obtenerDiasNoLaborables(barberId).subscribe({
       next: (res: any[]) => { this.holidays = res || []; },
       error: (err: any) => console.error('Error al cargar festivos', err)
     });
@@ -139,7 +141,8 @@ export class BarberConfigComponent implements OnInit {
     if (this.infoForm.invalid) return;
 
     const formValue = this.infoForm.value;
-    
+    const barberId = Number(this.barberId);
+
     const infoPayload = {
       name: formValue.name,
       phone: formValue.phone,
@@ -147,7 +150,7 @@ export class BarberConfigComponent implements OnInit {
       description: formValue.description
     };
 
-    this.configApiService.actualizarConfiguracionBarberia(this.barberId, infoPayload).subscribe({
+    this.configApiService.actualizarConfiguracionBarberia(barberId, infoPayload).subscribe({
       next: () => {
         alert('¡Información actualizada con éxito!');
         this.isEditing = false;
@@ -156,7 +159,7 @@ export class BarberConfigComponent implements OnInit {
       error: () => alert('Error al actualizar la información.')
     });
 
-    this.configApiService.actualizarHorarios(this.barberId, formValue.hours).subscribe({
+    this.configApiService.actualizarHorarios(barberId, formValue.hours).subscribe({
       next: () => console.log('Horarios actualizados'),
       error: () => console.error('Error al actualizar horarios')
     });
@@ -170,7 +173,7 @@ export class BarberConfigComponent implements OnInit {
       description: this.newHolidayDesc || 'Día no laborable'
     };
 
-    this.configApiService.agregarDiaNoLaborable(this.barberId, payload).subscribe({
+    this.configApiService.agregarDiaNoLaborable(Number(this.barberId), payload).subscribe({
       next: () => {
         this.newHolidayDate = '';
         this.newHolidayDesc = '';

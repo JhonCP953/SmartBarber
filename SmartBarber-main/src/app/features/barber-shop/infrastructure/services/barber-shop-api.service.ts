@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BarberShopRegisterRequest, BarberShopResponse } from '../../domain/models/barber-shop.model';
@@ -53,7 +53,7 @@ export class BarberShopApiService {
         );
     }
 
-    obtenerBarberias(): Observable<BarberShopResponse[]> {
+    obtenerBarberias(companyName: string): Observable<BarberShopResponse[]> {
 
         return this.http.get<BarberShopResponse[]>(
             `${this.apiUrl}/company-name/${encodeURIComponent(companyName)}`

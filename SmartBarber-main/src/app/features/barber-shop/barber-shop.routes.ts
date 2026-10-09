@@ -11,33 +11,24 @@ import {
 } from '../../core/auth/guards/role.guard';
 
 export const BARBER_SHOP_ROUTES: Routes = [
-<<<<<<< HEAD
-
     {
         path: '',
-
         canActivate: [
             authGuard,
             roleGuard
         ],
-
         data: {
             roles: [
                 'ADMIN'
             ]
         },
-
         loadComponent: () =>
-            import(
-                './components/branch-register/branch-register.component'
-            )
+            import('./components/branch-register/branch-register.component')
             .then(
                 m =>
                     m.BranchRegisterComponent
             )
-    }
-
-=======
+    }, // 👈 Aquí faltaba la coma para separar los elementos del array de rutas
   {
     path: '',
     loadComponent: () =>
@@ -50,5 +41,4 @@ export const BARBER_SHOP_ROUTES: Routes = [
       import('./components/config/config.component')
         .then(m => m.BarberConfigComponent)
   }
->>>>>>> 6ff7c7f ( edicion y consulta de barberias)
 ];
