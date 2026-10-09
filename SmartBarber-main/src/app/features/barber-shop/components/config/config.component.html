@@ -1,0 +1,192 @@
+<div class="vintage-container">
+  <!-- Cabecera estilo cartel vintage -->
+  <header class="vintage-header">
+    <div class="barber-poles left"></div>
+    <div class="header-titles">
+      <span class="subtitle-top">GESTIÓN DE BARBERÍAS</span>
+      <h1>Administración de Sedes & Estética Clásica</h1>
+      <span class="sub-script">Panel de Consulta y Edición </span>
+    </div>
+    <div class="barber-poles right"></div>
+  </header>
+
+  <!-- Contenedor Principal en 2 Columnas -->
+  <div class="crud-layout">
+    
+    <!-- COLUMNA IZQUIERDA: Formulario (Se muestra sólo al dar click en Editar) -->
+    <div class="vintage-card form-column" *ngIf="isEditing">
+      <div class="card-header-banner">
+        <h2>Editar Información</h2>
+        <p>Modificando registro seleccionado</p>
+      </div>
+
+      <form [formGroup]="infoForm" (ngSubmit)="saveGeneralConfig()" class="vintage-form">
+        <div class="form-group">
+          <label>Nombre del Establecimiento</label>
+          <input type="text" formControlName="name" placeholder="Ej. Barbería El Capo" />
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono de Contacto</label>
+          <input type="text" formControlName="phone" placeholder="Ej. 3001234567" />
+        </div>
+
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" formControlName="address" placeholder="Ej. Calle Principal #12-34" />
+        </div>
+
+        <div class="form-group">
+          <label>Descripción / Slogan</label>
+          <textarea formControlName="description" rows="3" placeholder="Especialistas en cortes clásicos..."></textarea>
+        </div>
+
+        <div class="form-actions-flex">
+          <button type="submit" class="vintage-btn gold" [disabled]="infoForm.invalid">
+            💾 Guardar Cambios
+          </button>
+          <button type="button" class="vintage-btn cancel" (click)="cancelEdit()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Mensaje de instrucción cuando no se está editando -->
+    <div class="vintage-card form-column placeholder-card" *ngIf="!isEditing">
+      <div class="card-header-banner">
+        <h2>Panel de Edición</h2>
+      </div>
+      <div class="helper-text-box">
+        <p>💡 <strong>Instrucción:</strong> Selecciona el icono de editar (✏️) en la tabla de la derecha para desplegar y modificar la información del establecimiento seleccionado.</p>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: Tabla Estilo Dashboard -->
+    <div class="vintage-card table-column">
+      <div class="table-top-bar">
+        <div class="count-info">
+          <span>Total de registros: <strong>{{ barberList.length }}</strong></span>
+        </div>
+        <div class="search-box">
+          <label>Buscar:</label>
+          <input type="text" [(ngModel)]="searchTerm" placeholder="Filtrar..." class="vintage-input-sm" />
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="vintage-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of barberList; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td><strong>{{ item.name }}</strong></td>
+              <td>{{ item.phone }}</td>
+              <td>{{ item.address }}</td>
+              <td class="actions-cell">
+                <button type="button" class="btn-action view" title="Consultar" (click)="selectForView(item)">
+                  🔍
+                </button>
+                <button type="button" class="btn-action edit" title="Editar" (click)="selectForEdit(item)">
+                  ✏️
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="barberList.length === 0">
+              <td colspan="5" class="empty-row">Cargando registros desde el backend...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer-pagination">
+        <span>Mostrando registros del 1 al {{ barberList.length }} de un total de {{ barberList.length }}</span>
+        <div class="pagination-buttons">
+          <button type="button" class="page-btn active">1</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<!-- SECCIÓN INFERIOR: Horarios y Festivos -->
+  <div class="bottom-sections-grid">
+    
+    <!-- HORARIOS DE ATENCIÓN (PS-32) -->
+    <div class="vintage-card">
+      <div class="card-header-banner">
+        <h2>Horarios de Atención</h2>
+        <p>PS-32: Gestión semanal</p>
+      </div>
+      
+      <!-- Selector de sede ubicado exactamente debajo de la línea divisoria -->
+      <div class="card-subheader-selector">
+        <label>Sede Activa:</label>
+        <select class="vintage-select-sm" [(ngModel)]="barberId" (change)="onBarberSelectionChange()">
+          <option *ngFor="let b of barberList" [value]="b.id">{{ b.name }}</option>
+        </select>
+      </div>
+
+      <form [formGroup]="infoForm">
+        <div formArrayName="hours" class="hours-scroll-container">
+          <div class="hour-row" *ngFor="let hourGroup of hoursArray.controls; let i = index" [formGroupName]="i">
+            <span class="day-label">{{ daysOfWeek[i] }}</span>
+            <label class="switch-container">
+              <input type="checkbox" formControlName="isOpen" />
+              <span class="slider"></span>
+            </label>
+            
+            <div class="time-inputs" *ngIf="hourGroup.get('isOpen')?.value">
+              <input type="time" formControlName="openTime" />
+              <span>a</span>
+              <input type="time" formControlName="closeTime" />
+            </div>
+            <span class="closed-text" *ngIf="!hourGroup.get('isOpen')?.value">Cerrado</span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- DÍAS NO LABORABLES Y FESTIVOS (PS-33) -->
+    <div class="vintage-card">
+      <div class="card-header-banner">
+        <h2>Días No Laborables & Festivos</h2>
+        <p>PS-33: Configuración de Excepciones</p>
+      </div>
+
+      <!-- Selector de sede ubicado exactamente debajo de la línea divisoria -->
+      <div class="card-subheader-selector">
+        <label>Sede Activa:</label>
+        <select class="vintage-select-sm" [(ngModel)]="barberId" (change)="onBarberSelectionChange()">
+          <option *ngFor="let b of barberList" [value]="b.id">{{ b.name }}</option>
+        </select>
+      </div>
+
+      <div class="holiday-add-box">
+        <input type="date" [(ngModel)]="newHolidayDate" class="vintage-input" />
+        <input type="text" [(ngModel)]="newHolidayDesc" placeholder="Motivo (ej. Mantenimiento)" class="vintage-input" />
+        <button type="button" class="vintage-btn gold-sm" (click)="addHoliday()">Agregar</button>
+      </div>
+
+      <div class="holidays-list">
+        <div class="holiday-item" *ngFor="let h of holidays">
+          <div class="holiday-info">
+            <strong>📅 {{ h.date }}</strong>
+            <span>{{ h.description }}</span>
+          </div>
+          <button type="button" class="btn-delete" (click)="removeHoliday(h.id)">❌</button>
+        </div>
+        <p class="empty-msg" *ngIf="holidays.length === 0">No hay días no laborables registrados para esta sede.</p>
+      </div>
+    </div>
+
+  </div>
+</div>

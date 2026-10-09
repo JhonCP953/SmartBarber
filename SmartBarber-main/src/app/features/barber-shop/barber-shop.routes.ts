@@ -11,6 +11,7 @@ import {
 } from '../../core/auth/guards/role.guard';
 
 export const BARBER_SHOP_ROUTES: Routes = [
+<<<<<<< HEAD
 
     {
         path: '',
@@ -36,4 +37,18 @@ export const BARBER_SHOP_ROUTES: Routes = [
             )
     }
 
+=======
+  {
+    path: '',
+    loadComponent: () =>
+      import('./components/branch-register/branch-register.component')
+        .then(m => m.BranchRegisterComponent)
+  },
+  {
+    path: 'configuracion',
+    loadComponent: () =>
+      import('./components/config/config.component')
+        .then(m => m.BarberConfigComponent)
+  }
+>>>>>>> 6ff7c7f ( edicion y consulta de barberias)
 ];
