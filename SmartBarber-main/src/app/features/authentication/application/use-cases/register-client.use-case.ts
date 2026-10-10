@@ -28,6 +28,10 @@ import {
   SessionService
 } from '../../../../core/auth/services/session.service';
 
+import {
+  USER_ROLE_IDS
+} from '../../domain/models/user-role.model';
+
 @Injectable()
 export class RegisterClientUseCase {
 
@@ -76,7 +80,10 @@ export class RegisterClientUseCase {
 
     return this.repository
       .createUser({
-        roleId: 1
+
+        roleId:
+          USER_ROLE_IDS.CLIENT
+
       })
 
       .pipe(

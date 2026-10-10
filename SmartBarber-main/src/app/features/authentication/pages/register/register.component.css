@@ -1,511 +1,1198 @@
-:root {
-  --color-charcoal: #141110;
-  --color-charcoal-2: #1c1817;
-  --color-border-dark: #2a2523;
-  --color-ivory: #e2d8c4;
-  --color-text-light: #a39b8c;
-  --color-brass: #b68a4e;
-  --color-brass-light: #d4a76a;
-  --color-ink: #0d0c0b;
-  --color-white: #ffffff;
+/* ============================================================
+   SMARTBARBER — REGISTER CLIENT
+   Mismo lenguaje visual que REGISTER ADMIN
+   ============================================================ */
 
-  --font-display: 'Oswald', sans-serif;
-  --font-body: 'Fraunces', serif;
-  --font-label: 'Oswald', sans-serif;
-
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+:host {
+  display: block;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
-body {
-  background-color: var(--color-charcoal);
-  color: var(--color-ivory);
-  font-family: var(--font-body);
-}
+/* ============================================================
+   VARIABLES
+   ============================================================ */
 
 .register-page {
-  min-height: 100vh;
+
+  --color-charcoal: #141110;
+  --color-charcoal-2: #1c1817;
+  --color-charcoal-3: #211d1b;
+
+  --color-border-dark: rgba(239, 231, 216, 0.12);
+  --color-border-hover: rgba(182, 138, 78, 0.42);
+
+  --color-ivory: #efe7d8;
+  --color-ivory-dim: #e2d8c4;
+
+  --color-text-light: #a39b8c;
+  --color-text-muted: #766f65;
+
+  --color-brass: #b68a4e;
+  --color-brass-light: #d4a76a;
+
+  --color-ink: #0d0c0b;
+
+  --color-error: #e5a39a;
+  --color-success: #9bc2a3;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Inter', sans-serif;
+
+  min-height: calc(100vh - 90px);
 
   display: flex;
-  align-items: center;
+
   justify-content: center;
 
-  padding: 80px 20px;
+  padding:
+    72px 24px 90px;
 
   background:
-    radial-gradient(circle at top right,
+
+    radial-gradient(circle at 10% 0%,
       rgba(182, 138, 78, 0.12),
-      transparent 35%),
+      transparent 30%),
+
+    radial-gradient(circle at 90% 20%,
+      rgba(156, 59, 44, 0.06),
+      transparent 28%),
+
     var(--color-charcoal);
+
+  color:
+    var(--color-ivory);
+
 }
+
+
+/* ============================================================
+   CARD
+   ============================================================ */
 
 .register-card {
-  width: min(100%, 720px);
 
-  padding: 42px;
+  width:
+    min(100%, 960px);
 
-  background: var(--color-charcoal-2);
+  padding:
+    58px 64px;
 
-  border: 1px solid var(--color-border-dark);
-  border-radius: var(--radius-md);
+  background:
+    linear-gradient(145deg,
+      rgba(43, 38, 35, 0.96),
+      rgba(28, 24, 23, 0.98));
 
-  box-shadow: var(--shadow-lg);
+  border:
+    1px solid var(--color-border-dark);
 
-  color: var(--color-ivory);
+  border-radius:
+    6px;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.42);
+
 }
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
 
 .register-header {
-  margin-bottom: 34px;
-  text-align: center;
+
+  margin-bottom:
+    36px;
+
+  text-align:
+    center;
+
 }
+
+
+/*
+   Creamos visualmente el eyebrow sin tocar el HTML.
+*/
+
+.register-header::before {
+
+  content:
+    'REGISTRO DE CLIENTE';
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  margin-bottom:
+    13px;
+
+  color:
+    var(--color-brass-light);
+
+  font-family:
+    var(--font-label);
+
+  font-size:
+    11px;
+
+  font-weight:
+    600;
+
+  letter-spacing:
+    2px;
+
+}
+
+
+.register-header::after {
+
+  content:
+    '';
+
+  display:
+    block;
+
+  width:
+    28px;
+
+  height:
+    1px;
+
+  margin:
+    16px auto 0;
+
+  background:
+    var(--color-brass);
+
+}
+
 
 .register-header h1 {
-  margin-bottom: 12px;
 
-  color: var(--color-ivory);
+  margin:
+    0 0 14px;
 
-  font-family: var(--font-display);
-  font-size: clamp(30px, 4vw, 42px);
-  font-weight: 500;
+  color:
+    var(--color-ivory);
+
+  font-family:
+    var(--font-display);
+
+  font-size:
+    clamp(36px, 3.2vw, 52px);
+
+  font-weight:
+    600;
+
+  line-height:
+    1.15;
+
+  letter-spacing:
+    0.2px;
+
 }
+
 
 .register-header p {
-  max-width: 520px;
 
-  margin-inline: auto;
+  max-width:
+    680px;
 
-  color: var(--color-text-light);
+  margin:
+    0 auto;
 
-  font-family: var(--font-body);
-  font-size: 14px;
+  color:
+    var(--color-text-light);
+
+  font-family:
+    var(--font-body);
+
+  font-size:
+    15px;
+
+  line-height:
+    1.75;
+
 }
+
+
+/* ============================================================
+   PASOS
+   ============================================================ */
 
 .step {
-  margin-top: 26px;
-  padding-top: 26px;
 
-  border-top: 1px solid var(--color-border-dark);
+  margin-top:
+    28px;
+
+  padding:
+    30px;
+
+  background:
+    rgba(20, 17, 16, 0.34);
+
+  border:
+    1px solid var(--color-border-dark);
+
+  border-radius:
+    4px;
+
 }
+
 
 .step h2 {
-  margin-bottom: 10px;
 
-  color: var(--color-ivory);
+  margin:
+    0 0 10px;
 
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 500;
+  color:
+    var(--color-ivory);
+
+  font-family:
+    var(--font-display);
+
+  font-size:
+    28px;
+
+  font-weight:
+    600;
+
+  line-height:
+    1.25;
+
 }
+
 
 .step>p {
-  margin-bottom: 20px;
 
-  color: var(--color-text-light);
+  margin:
+    0 0 24px;
 
-  font-size: 14px;
+  color:
+    var(--color-text-light);
+
+  font-family:
+    var(--font-body);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.7;
+
 }
 
-/* =====================================================
+
+/* ============================================================
    GOOGLE
-   ===================================================== */
+   ============================================================ */
 
 .google-button {
-  width: 100%;
-  min-height: 56px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  width:
+    100%;
 
-  margin-top: 24px;
-  padding: 15px 24px;
+  min-height:
+    52px;
 
-  background: #b68a4e !important;
-  border: 1px solid #d4a76a !important;
-  border-radius: 6px;
+  display:
+    flex;
 
-  color: #141110 !important;
+  align-items:
+    center;
 
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
+  justify-content:
+    center;
 
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  gap:
+    12px;
 
-  cursor: pointer;
+  margin-top:
+    22px;
+
+  padding:
+    13px 22px;
+
+  background:
+    var(--color-brass) !important;
+
+  border:
+    1px solid var(--color-brass-light) !important;
+
+  border-radius:
+    4px;
+
+  color:
+    var(--color-ink) !important;
+
+  font-family:
+    var(--font-label);
+
+  font-size:
+    11px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    1.4px;
+
+  text-transform:
+    uppercase;
+
+  cursor:
+    pointer;
 
   box-shadow:
-    0 4px 0 #76572f,
-    0 7px 18px rgba(0, 0, 0, 0.35);
+    0 5px 0 #76572f,
+    0 9px 20px rgba(0, 0, 0, 0.30);
 
   transition:
-    background 0.2s ease,
     transform 0.15s ease,
+    background 0.2s ease,
     box-shadow 0.15s ease;
+
 }
+
 
 .google-button::before {
-  content: 'G';
 
-  width: 28px;
-  height: 28px;
+  content:
+    'G';
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width:
+    27px;
 
-  border-radius: 50%;
+  height:
+    27px;
 
-  background: #ffffff;
+  display:
+    flex;
 
-  color: #4285f4;
+  align-items:
+    center;
 
-  font-family: Arial, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
+  justify-content:
+    center;
 
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-}
+  border-radius:
+    50%;
 
-.google-button:hover:not(:disabled) {
-  background: #d4a76a !important;
+  background:
+    #ffffff;
 
-  transform: translateY(-2px);
+  color:
+    #4285f4;
+
+  font-family:
+    Arial,
+    sans-serif;
+
+  font-size:
+    14px;
+
+  font-weight:
+    700;
 
   box-shadow:
-    0 6px 0 #76572f,
-    0 10px 24px rgba(0, 0, 0, 0.45);
+    0 1px 4px rgba(0, 0, 0, 0.25);
+
 }
 
+
+.google-button:hover:not(:disabled) {
+
+  background:
+    var(--color-brass-light) !important;
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 7px 0 #76572f,
+    0 12px 25px rgba(0, 0, 0, 0.38);
+
+}
+
+
 .google-button:active:not(:disabled) {
-  transform: translateY(2px);
+
+  transform:
+    translateY(2px);
 
   box-shadow:
     0 2px 0 #76572f,
-    0 4px 10px rgba(0, 0, 0, 0.3);
+    0 5px 12px rgba(0, 0, 0, 0.25);
+
 }
+
 
 .google-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
 
-  transform: none;
+  opacity:
+    0.55;
 
-  box-shadow:
-    0 3px 0 #76572f,
-    0 5px 12px rgba(0, 0, 0, 0.25);
+  cursor:
+    not-allowed;
+
+  transform:
+    none;
+
 }
 
-/* =====================================================
+
+/* ============================================================
    CUENTA GOOGLE
-   ===================================================== */
+   ============================================================ */
 
 .google-account {
-  display: flex;
-  align-items: center;
 
-  gap: 14px;
+  display:
+    flex;
 
-  margin-bottom: 28px;
-  padding: 16px;
+  align-items:
+    center;
 
-  background: rgba(239, 231, 216, 0.05);
+  gap:
+    14px;
 
-  border: 1px solid var(--color-border-dark);
-  border-radius: var(--radius-md);
+  margin-bottom:
+    28px;
+
+  padding:
+    16px 18px;
+
+  background:
+    rgba(239, 231, 216, 0.035);
+
+  border:
+    1px solid var(--color-border-dark);
+
+  border-radius:
+    4px;
+
 }
+
 
 .google-account div {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+
+  min-width:
+    0;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    3px;
+
 }
+
 
 .google-account strong {
-  color: var(--color-ivory);
 
-  font-family: var(--font-body);
-  font-size: 14px;
+  overflow:
+    hidden;
+
+  color:
+    var(--color-ivory);
+
+  font-family:
+    var(--font-body);
+
+  font-size:
+    14px;
+
+  font-weight:
+    600;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+
 }
+
 
 .google-account span {
-  color: var(--color-text-light);
 
-  font-size: 13px;
+  overflow:
+    hidden;
+
+  color:
+    var(--color-text-light);
+
+  font-size:
+    13px;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+
 }
+
 
 .profile-image {
-  width: 48px;
-  height: 48px;
 
-  border-radius: 50%;
+  width:
+    48px;
 
-  object-fit: cover;
+  height:
+    48px;
 
-  border: 1px solid var(--color-brass);
+  flex-shrink:
+    0;
+
+  border:
+    1px solid var(--color-brass);
+
+  border-radius:
+    50%;
+
+  object-fit:
+    cover;
+
 }
 
-/* =====================================================
-   ROLES
-   ===================================================== */
+
+/* ============================================================
+   OPCIONES DE ROL
+   ============================================================ */
 
 .role-options {
-  display: grid;
 
-  grid-template-columns: repeat(2, 1fr);
+  display:
+    grid;
 
-  gap: 18px;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
 
-  margin-top: 24px;
+  gap:
+    16px;
+
+  margin-top:
+    24px;
+
 }
+
 
 .role-card {
-  min-height: 190px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  min-height:
+    190px;
 
-  gap: 10px;
+  display:
+    flex;
 
-  padding: 24px;
+  flex-direction:
+    column;
 
-  border: 1px solid var(--color-border-dark);
-  border-radius: var(--radius-md);
+  align-items:
+    flex-start;
 
-  background: rgba(239, 231, 216, 0.035);
+  justify-content:
+    center;
 
-  color: var(--color-ivory);
+  padding:
+    24px;
 
-  text-align: center;
+  background:
+    rgba(20, 17, 16, 0.55);
 
-  cursor: pointer;
+  border:
+    1px solid var(--color-border-dark);
+
+  border-radius:
+    4px;
+
+  color:
+    var(--color-ivory);
+
+  text-align:
+    left;
+
+  cursor:
+    pointer;
 
   transition:
-    transform 0.2s ease,
+    transform 0.18s ease,
+    background 0.2s ease,
     border-color 0.2s ease,
-    background 0.2s ease;
+    box-shadow 0.2s ease;
+
 }
+
 
 .role-card:hover {
-  transform: translateY(-4px);
 
-  border-color: var(--color-brass);
+  background:
+    rgba(182, 138, 78, 0.07);
 
-  background: rgba(182, 138, 78, 0.08);
+  border-color:
+    var(--color-border-hover);
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.25);
+
 }
 
-.role-card strong {
-  font-family: var(--font-display);
-  font-size: 21px;
-}
-
-.role-card span:last-child {
-  color: var(--color-text-light);
-
-  font-size: 13px;
-  line-height: 1.5;
-}
 
 .role-icon {
-  font-size: 30px;
+
+  width:
+    44px;
+
+  height:
+    44px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  margin-bottom:
+    16px;
+
+  background:
+    rgba(182, 138, 78, 0.10);
+
+  border:
+    1px solid rgba(182, 138, 78, 0.35);
+
+  border-radius:
+    50%;
+
+  color:
+    var(--color-brass-light);
+
+  font-size:
+    20px;
+
 }
 
-/* =====================================================
+
+.role-card strong {
+
+  margin-bottom:
+    7px;
+
+  color:
+    var(--color-ivory);
+
+  font-family:
+    var(--font-display);
+
+  font-size:
+    21px;
+
+  font-weight:
+    600;
+
+}
+
+
+.role-card>span:last-child {
+
+  color:
+    var(--color-text-light);
+
+  font-family:
+    var(--font-body);
+
+  font-size:
+    12px;
+
+  line-height:
+    1.6;
+
+}
+
+
+/* ============================================================
    FORMULARIO
-   ===================================================== */
+   ============================================================ */
+
+.step form {
+
+  margin-top:
+    26px;
+
+}
+
 
 .field {
-  display: flex;
-  flex-direction: column;
 
-  margin-bottom: 20px;
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  margin-bottom:
+    20px;
+
 }
+
 
 .field label {
-  margin-bottom: 7px;
 
-  color: var(--color-brass-light);
+  margin-bottom:
+    8px;
 
-  font-family: var(--font-label);
-  font-size: 11px;
-  font-weight: 500;
+  color:
+    var(--color-brass-light);
 
-  letter-spacing: 1.3px;
-  text-transform: uppercase;
+  font-family:
+    var(--font-label);
+
+  font-size:
+    10px;
+
+  font-weight:
+    600;
+
+  letter-spacing:
+    1.4px;
+
+  text-transform:
+    uppercase;
+
 }
+
 
 .field input,
 .field select {
-  width: 100%;
-  min-height: 48px;
 
-  padding: 12px 14px;
+  width:
+    100%;
 
-  border: 1px solid var(--color-border-dark);
-  border-radius: var(--radius-sm);
+  min-height:
+    50px;
 
-  background: rgba(20, 17, 16, 0.7);
+  padding:
+    13px 14px;
 
-  color: var(--color-ivory);
+  background:
+    rgba(20, 17, 16, 0.72);
 
-  font-family: var(--font-body);
-  font-size: 14px;
+  border:
+    1px solid var(--color-border-dark);
+
+  border-radius:
+    3px;
+
+  color:
+    var(--color-ivory);
+
+  font-family:
+    var(--font-body);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.4;
 
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
 }
 
+
 .field input::placeholder {
-  color: rgba(226, 216, 196, 0.42);
+
+  color:
+    rgba(226, 216, 196, 0.38);
+
 }
+
+
+.field input:hover,
+.field select:hover {
+
+  border-color:
+    var(--color-border-hover);
+
+}
+
 
 .field input:focus,
 .field select:focus {
-  outline: none;
 
-  border-color: var(--color-brass);
+  outline:
+    none;
+
+  border-color:
+    var(--color-brass);
+
+  background:
+    rgba(20, 17, 16, 0.9);
 
   box-shadow:
-    0 0 0 3px rgba(182, 138, 78, 0.12);
+    0 0 0 3px rgba(182, 138, 78, 0.10);
+
 }
+
 
 .field input[readonly] {
-  color: var(--color-text-light);
-  cursor: default;
+
+  color:
+    var(--color-text-light);
+
+  cursor:
+    default;
+
 }
+
+
+.field input[readonly]:focus {
+
+  border-color:
+    var(--color-border-dark);
+
+  box-shadow:
+    none;
+
+}
+
+
+.field select {
+
+  cursor:
+    pointer;
+
+}
+
+
+.field select option {
+
+  background:
+    var(--color-charcoal-2);
+
+  color:
+    var(--color-ivory);
+
+}
+
 
 .field small {
-  margin-top: 6px;
 
-  color: #d58b80;
+  margin-top:
+    6px;
 
-  font-size: 12px;
+  color:
+    var(--color-error);
+
+  font-family:
+    var(--font-body);
+
+  font-size:
+    11px;
+
+  line-height:
+    1.4;
+
 }
 
-.field .help {
-  color: var(--color-text-light);
+
+.field small.help {
+
+  color:
+    var(--color-text-light);
+
 }
 
-/* =====================================================
-   BOTÓN PRINCIPAL
-   ===================================================== */
+
+/* ============================================================
+   BOTÓN SUBMIT
+   ============================================================ */
 
 .submit-button {
-  width: 100%;
-  min-height: 56px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width:
+    100%;
 
-  margin-top: 30px;
-  padding: 15px 24px;
+  min-height:
+    52px;
 
-  background: #b68a4e !important;
-  border: 1px solid #d4a76a !important;
-  border-radius: 6px;
+  display:
+    inline-flex;
 
-  color: #141110 !important;
+  align-items:
+    center;
 
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
+  justify-content:
+    center;
 
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
+  gap:
+    10px;
 
-  cursor: pointer;
+  margin-top:
+    10px;
+
+  padding:
+    13px 22px;
+
+  background:
+    var(--color-brass);
+
+  border:
+    1px solid var(--color-brass);
+
+  border-radius:
+    3px;
+
+  color:
+    var(--color-ink);
+
+  font-family:
+    var(--font-label);
+
+  font-size:
+    11px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    1.3px;
+
+  text-transform:
+    uppercase;
+
+  cursor:
+    pointer;
 
   box-shadow:
-    0 4px 0 #76572f,
-    0 7px 18px rgba(0, 0, 0, 0.35);
+    0 5px 0 #76572f,
+    0 8px 18px rgba(0, 0, 0, 0.28);
 
   transition:
-    background 0.2s ease,
     transform 0.15s ease,
+    background 0.2s ease,
     box-shadow 0.15s ease;
+
 }
+
 
 .submit-button:hover:not(:disabled) {
-  background: #d4a76a !important;
 
-  transform: translateY(-2px);
+  background:
+    var(--color-brass-light);
+
+  border-color:
+    var(--color-brass-light);
+
+  transform:
+    translateY(-2px);
 
   box-shadow:
-    0 6px 0 #76572f,
-    0 10px 24px rgba(0, 0, 0, 0.45);
+    0 7px 0 #76572f,
+    0 12px 24px rgba(0, 0, 0, 0.36);
+
 }
 
+
 .submit-button:active:not(:disabled) {
-  transform: translateY(2px);
+
+  transform:
+    translateY(2px);
 
   box-shadow:
     0 2px 0 #76572f,
-    0 4px 10px rgba(0, 0, 0, 0.3);
+    0 5px 12px rgba(0, 0, 0, 0.25);
+
 }
+
 
 .submit-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
 
-  transform: none;
+  opacity:
+    0.5;
 
-  box-shadow:
-    0 3px 0 #76572f,
-    0 5px 12px rgba(0, 0, 0, 0.25);
+  cursor:
+    not-allowed;
+
+  transform:
+    none;
+
 }
 
-/* =====================================================
+
+/* ============================================================
    MENSAJES
-   ===================================================== */
+   ============================================================ */
 
 .message {
-  margin-top: 20px;
-  padding: 15px 16px;
 
-  border-radius: var(--radius-md);
+  display:
+    flex;
 
-  font-size: 13px;
+  flex-direction:
+    column;
+
+  gap:
+    3px;
+
+  margin-top:
+    22px;
+
+  padding:
+    14px 16px;
+
+  border-radius:
+    4px;
+
+  font-family:
+    var(--font-body);
+
+  font-size:
+    12px;
+
+  line-height:
+    1.5;
+
 }
+
 
 .message.error {
-  background: rgba(165, 72, 60, 0.13);
 
-  border: 1px solid rgba(165, 72, 60, 0.35);
+  background:
+    rgba(165, 72, 60, 0.12);
 
-  color: #e5a39a;
+  border:
+    1px solid rgba(165, 72, 60, 0.32);
+
+  color:
+    var(--color-error);
+
 }
+
 
 .message.success {
-  background: rgba(77, 122, 89, 0.13);
 
-  border: 1px solid rgba(77, 122, 89, 0.35);
+  background:
+    rgba(90, 130, 96, 0.12);
 
-  color: #9bc2a3;
+  border:
+    1px solid rgba(155, 194, 163, 0.28);
+
+  color:
+    var(--color-success);
+
 }
 
-@media (max-width: 600px) {
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
   .register-page {
-    padding: 50px 14px;
+
+    padding:
+      42px 14px 60px;
+
   }
+
 
   .register-card {
-    padding: 28px 20px;
+
+    padding:
+      34px 24px;
+
   }
 
+
   .role-options {
-    grid-template-columns: 1fr;
+
+    grid-template-columns:
+      1fr;
+
   }
+
+
+  .step {
+
+    padding:
+      24px 20px;
+
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .register-card {
+
+    padding:
+      28px 18px;
+
+  }
+
+
+  .register-header h1 {
+
+    font-size:
+      31px;
+
+  }
+
+
+  .step h2 {
+
+    font-size:
+      24px;
+
+  }
+
+
+  .google-account {
+
+    padding:
+      13px;
+
+  }
+
+
+  .profile-image {
+
+    width:
+      42px;
+
+    height:
+      42px;
+
+  }
+
+
+  .field input,
+  .field select {
+
+    font-size:
+      13px;
+
+  }
+
 }

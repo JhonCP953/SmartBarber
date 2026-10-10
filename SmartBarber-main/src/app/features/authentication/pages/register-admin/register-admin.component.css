@@ -12,7 +12,6 @@
    ============================================================ */
 
 .register-page {
-
   --color-charcoal: #141110;
   --color-charcoal-2: #1c1817;
   --color-charcoal-3: #211d1b;
@@ -41,25 +40,19 @@
   display: flex;
   justify-content: center;
 
-  padding:
-    72px
-    24px
-    90px;
+  padding: 72px 24px 90px;
 
   background:
-
     radial-gradient(
       circle at 10% 0%,
       rgba(182, 138, 78, 0.12),
       transparent 30%
     ),
-
     radial-gradient(
       circle at 90% 20%,
       rgba(156, 59, 44, 0.06),
       transparent 28%
     ),
-
     var(--color-charcoal);
 
   color: var(--color-ivory);
@@ -71,7 +64,6 @@
    ============================================================ */
 
 .register-card {
-
   width: min(100%, 900px);
 
   padding: 48px;
@@ -83,15 +75,11 @@
       rgba(28, 24, 23, 0.98)
     );
 
-  border:
-    1px solid
-    var(--color-border-dark);
+  border: 1px solid var(--color-border-dark);
 
   border-radius: 6px;
 
-  box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.42);
-
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
 }
 
 
@@ -100,91 +88,56 @@
    ============================================================ */
 
 .register-header {
-
   text-align: center;
-
   margin-bottom: 38px;
-
 }
-
 
 .eyebrow,
 .step-eyebrow {
-
   display: inline-flex;
-
   align-items: center;
-
   gap: 10px;
 
   color: var(--color-brass-light);
 
   font-family: var(--font-label);
-
   font-size: 11px;
-
   font-weight: 600;
-
   letter-spacing: 2px;
-
   text-transform: uppercase;
-
 }
 
-
 .eyebrow::before {
-
   content: '';
 
   width: 28px;
-
   height: 1px;
 
-  background:
-    var(--color-brass);
-
+  background: var(--color-brass);
 }
 
-
 .register-header h1 {
-
-  margin:
-    12px
-    0
-    14px;
+  margin: 12px 0 14px;
 
   color: var(--color-ivory);
 
   font-family: var(--font-display);
-
-  font-size:
-    clamp(32px, 5vw, 46px);
-
+  font-size: clamp(32px, 5vw, 46px);
   font-weight: 600;
-
   line-height: 1.15;
-
   letter-spacing: 0.3px;
-
 }
 
-
 .register-header p {
-
   max-width: 600px;
 
-  margin:
-    0
-    auto;
+  margin: 0 auto;
 
   color: var(--color-text-light);
 
   font-family: var(--font-body);
-
   font-size: 14px;
-
   line-height: 1.75;
-
 }
 
 
@@ -193,63 +146,41 @@
    ============================================================ */
 
 .google-account {
-
   display: flex;
-
   align-items: center;
-
   gap: 14px;
 
   margin-bottom: 36px;
-
   padding: 16px 18px;
 
-  background:
-    rgba(239, 231, 216, 0.035);
+  background: rgba(239, 231, 216, 0.035);
 
-  border:
-    1px solid
-    var(--color-border-dark);
-
+  border: 1px solid var(--color-border-dark);
   border-radius: 4px;
-
 }
 
-
 .google-account-info {
-
   min-width: 0;
 
   display: flex;
-
   flex-direction: column;
-
   gap: 3px;
-
 }
 
-
 .google-account-info strong {
-
   overflow: hidden;
 
   color: var(--color-ivory);
 
   font-family: var(--font-body);
-
   font-size: 14px;
-
   font-weight: 600;
 
   text-overflow: ellipsis;
-
   white-space: nowrap;
-
 }
 
-
 .google-account-info span {
-
   overflow: hidden;
 
   color: var(--color-text-light);
@@ -257,83 +188,51 @@
   font-size: 13px;
 
   text-overflow: ellipsis;
-
   white-space: nowrap;
-
 }
-
 
 .profile-image,
 .profile-placeholder {
-
   width: 48px;
-
   height: 48px;
 
   flex-shrink: 0;
 
+  border: 1px solid var(--color-brass);
   border-radius: 50%;
-
-  border:
-    1px solid
-    var(--color-brass);
-
 }
-
 
 .profile-image {
-
   object-fit: cover;
-
 }
 
-
 .profile-placeholder {
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
-  background:
-    rgba(182, 138, 78, 0.14);
+  background: rgba(182, 138, 78, 0.14);
 
   color: var(--color-brass-light);
 
   font-family: var(--font-display);
-
   font-size: 20px;
-
 }
 
-
 .account-badge {
-
   margin-left: auto;
+  padding: 5px 9px;
 
-  padding:
-    5px
-    9px;
-
-  border:
-    1px solid
-    rgba(182, 138, 78, 0.35);
-
+  border: 1px solid rgba(182, 138, 78, 0.35);
   border-radius: 999px;
 
   color: var(--color-brass-light);
 
   font-family: var(--font-label);
-
   font-size: 9px;
-
   font-weight: 600;
-
   letter-spacing: 1px;
-
   text-transform: uppercase;
-
 }
 
 
@@ -342,157 +241,95 @@
    ============================================================ */
 
 .steps-indicator {
-
   display: flex;
-
   align-items: center;
 
   margin-bottom: 42px;
-
 }
 
-
 .step-indicator {
-
   display: flex;
-
   align-items: center;
-
   gap: 12px;
 
   opacity: 0.48;
 
-  transition:
-    opacity 0.2s ease;
-
+  transition: opacity 0.2s ease;
 }
-
 
 .step-indicator.active,
 .step-indicator.completed {
-
   opacity: 1;
-
 }
 
-
 .step-number {
-
   width: 38px;
-
   height: 38px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   flex-shrink: 0;
 
-  border:
-    1px solid
-    var(--color-border-dark);
-
+  border: 1px solid var(--color-border-dark);
   border-radius: 50%;
 
   color: var(--color-text-light);
 
   font-family: var(--font-label);
-
   font-size: 12px;
-
   font-weight: 600;
 
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
     color 0.2s ease;
-
 }
-
 
 .step-indicator.active .step-number {
+  background: var(--color-brass);
+  border-color: var(--color-brass);
 
-  background:
-    var(--color-brass);
-
-  border-color:
-    var(--color-brass);
-
-  color:
-    var(--color-ink);
-
+  color: var(--color-ink);
 }
-
 
 .step-indicator.completed .step-number {
+  background: rgba(182, 138, 78, 0.14);
+  border-color: var(--color-brass);
 
-  background:
-    rgba(182, 138, 78, 0.14);
-
-  border-color:
-    var(--color-brass);
-
-  color:
-    var(--color-brass-light);
-
+  color: var(--color-brass-light);
 }
-
 
 .step-label {
-
   display: flex;
-
   flex-direction: column;
-
   gap: 2px;
-
 }
-
 
 .step-label strong {
+  color: var(--color-ivory);
 
-  color:
-    var(--color-ivory);
-
-  font-family:
-    var(--font-label);
-
+  font-family: var(--font-label);
   font-size: 11px;
-
   font-weight: 600;
-
   letter-spacing: 1px;
-
   text-transform: uppercase;
-
 }
-
 
 .step-label span {
-
-  color:
-    var(--color-text-muted);
-
+  color: var(--color-text-muted);
   font-size: 11px;
-
 }
 
-
 .step-line {
-
   flex: 1;
 
   height: 1px;
 
-  margin:
-    0
-    24px;
+  margin: 0 24px;
 
-  background:
-    var(--color-border-dark);
-
+  background: var(--color-border-dark);
 }
 
 
@@ -501,168 +338,114 @@
    ============================================================ */
 
 .step-content {
-
-  animation:
-    step-in 0.25s ease;
-
+  animation: step-in 0.25s ease;
 }
 
-
 @keyframes step-in {
-
   from {
-
     opacity: 0;
-
-    transform:
-      translateY(6px);
-
+    transform: translateY(6px);
   }
 
   to {
-
     opacity: 1;
-
-    transform:
-      translateY(0);
-
+    transform: translateY(0);
   }
-
 }
-
 
 .step-heading {
-
   margin-bottom: 30px;
-
 }
-
 
 .step-heading h2 {
+  margin: 8px 0;
 
-  margin:
-    8px
-    0
-    8px;
+  color: var(--color-ivory);
 
-  color:
-    var(--color-ivory);
-
-  font-family:
-    var(--font-display);
-
-  font-size:
-    clamp(25px, 4vw, 32px);
-
+  font-family: var(--font-display);
+  font-size: clamp(25px, 4vw, 32px);
   font-weight: 600;
-
   line-height: 1.2;
-
 }
 
-
 .step-heading p {
-
-  color:
-    var(--color-text-light);
+  color: var(--color-text-light);
 
   font-size: 13px;
-
   line-height: 1.7;
-
 }
 
 
 /* ============================================================
-   GRID
+   GRID DEL FORMULARIO
    ============================================================ */
 
 .form-grid {
-
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-  gap:
-    20px
-    18px;
-
+  /* Actualizado: mayor separación entre campos */
+  gap: 24px;
 }
 
-
 .full-width {
-
-  grid-column:
-    1 / -1;
-
+  grid-column: 1 / -1;
 }
 
 
 /* ============================================================
-   CAMPOS
+   CAMPOS DEL FORMULARIO
    ============================================================ */
 
 .field {
-
   display: flex;
-
   flex-direction: column;
 
-}
+  /* Actualizado: espacio vertical entre campos */
+  margin-bottom: 22px;
 
+  min-width: 0;
+}
 
 .field label {
+  /* Actualizado: mayor separación entre etiqueta y control */
+  margin-bottom: 9px;
 
-  margin-bottom: 8px;
+  color: var(--color-brass-light);
 
-  color:
-    var(--color-brass-light);
+  font-family: var(--font-label);
 
-  font-family:
-    var(--font-label);
-
-  font-size: 10px;
+  /* Actualizado: tamaño de etiqueta */
+  font-size: 11px;
 
   font-weight: 600;
-
   letter-spacing: 1.4px;
-
   text-transform: uppercase;
-
 }
-
 
 .field input,
 .field select,
 .field textarea {
-
   width: 100%;
+  box-sizing: border-box;
 
-  min-height: 48px;
+  /* Actualizado: mayor altura para los controles */
+  min-height: 56px;
 
-  padding:
-    12px
-    14px;
+  /* Actualizado: más espacio interior */
+  padding: 15px 16px;
 
-  background:
-    rgba(20, 17, 16, 0.72);
+  background: rgba(20, 17, 16, 0.72);
 
-  border:
-    1px solid
-    var(--color-border-dark);
-
+  border: 1px solid var(--color-border-dark);
   border-radius: 3px;
 
-  color:
-    var(--color-ivory);
+  color: var(--color-ivory);
 
-  font-family:
-    var(--font-body);
+  font-family: var(--font-body);
 
+  /* Actualizado: tamaño de texto de los controles */
   font-size: 14px;
 
   line-height: 1.4;
@@ -671,117 +454,68 @@
     border-color 0.2s ease,
     box-shadow 0.2s ease,
     background 0.2s ease;
-
 }
 
-
 .field textarea {
-
+  /* Se conserva la altura especial de los campos multilínea */
   min-height: 112px;
 
   resize: vertical;
-
 }
-
 
 .field input::placeholder,
 .field textarea::placeholder {
-
-  color:
-    rgba(226, 216, 196, 0.38);
-
+  color: rgba(226, 216, 196, 0.38);
 }
-
 
 .field input:hover,
 .field select:hover,
 .field textarea:hover {
-
-  border-color:
-    rgba(182, 138, 78, 0.38);
-
+  border-color: rgba(182, 138, 78, 0.38);
 }
-
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-
   outline: none;
 
-  border-color:
-    var(--color-brass);
+  border-color: var(--color-brass);
 
-  background:
-    rgba(20, 17, 16, 0.9);
+  background: rgba(20, 17, 16, 0.9);
 
-  box-shadow:
-    0 0 0 3px
-    rgba(182, 138, 78, 0.1);
-
+  box-shadow: 0 0 0 3px rgba(182, 138, 78, 0.1);
 }
-
 
 .field input[readonly] {
-
-  color:
-    var(--color-text-light);
-
-  cursor:
-    default;
-
+  color: var(--color-text-light);
+  cursor: default;
 }
-
 
 .field input[readonly]:focus {
-
-  border-color:
-    var(--color-border-dark);
-
-  box-shadow:
-    none;
-
+  border-color: var(--color-border-dark);
+  box-shadow: none;
 }
-
 
 .field select {
-
-  cursor:
-    pointer;
-
+  cursor: pointer;
 }
-
 
 .field select option {
-
-  background:
-    var(--color-charcoal-2);
-
-  color:
-    var(--color-ivory);
-
+  background: var(--color-charcoal-2);
+  color: var(--color-ivory);
 }
-
 
 .field small {
-
   margin-top: 6px;
 
-  color:
-    var(--color-error);
+  color: var(--color-error);
 
   font-size: 11px;
-
   line-height: 1.4;
-
 }
 
-
 .field small.help {
-
-  color:
-    var(--color-text-light);
-
+  color: var(--color-text-light);
 }
 
 
@@ -790,102 +524,59 @@
    ============================================================ */
 
 .registration-summary {
-
   margin-top: 30px;
-
   padding: 18px;
 
-  background:
-    rgba(182, 138, 78, 0.055);
+  background: rgba(182, 138, 78, 0.055);
 
-  border:
-    1px solid
-    rgba(182, 138, 78, 0.18);
-
+  border: 1px solid rgba(182, 138, 78, 0.18);
   border-radius: 4px;
-
 }
-
 
 .summary-title {
-
   margin-bottom: 14px;
 
-  color:
-    var(--color-brass-light);
+  color: var(--color-brass-light);
 
-  font-family:
-    var(--font-label);
-
+  font-family: var(--font-label);
   font-size: 10px;
-
   font-weight: 600;
-
   letter-spacing: 1.5px;
-
   text-transform: uppercase;
-
 }
-
 
 .summary-row {
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   gap: 20px;
 
-  padding:
-    9px
-    0;
+  padding: 9px 0;
 
-  border-bottom:
-    1px solid
-    rgba(239, 231, 216, 0.06);
-
+  border-bottom: 1px solid rgba(239, 231, 216, 0.06);
 }
-
 
 .summary-row:last-child {
-
-  border-bottom:
-    none;
-
+  border-bottom: none;
 }
-
 
 .summary-row span {
-
-  color:
-    var(--color-text-muted);
-
+  color: var(--color-text-muted);
   font-size: 12px;
-
 }
 
-
 .summary-row strong {
-
   max-width: 60%;
-
   overflow: hidden;
 
-  color:
-    var(--color-ivory);
+  color: var(--color-ivory);
 
   font-size: 12px;
-
   font-weight: 500;
-
   text-align: right;
 
   text-overflow: ellipsis;
-
   white-space: nowrap;
-
 }
 
 
@@ -894,40 +585,26 @@
    ============================================================ */
 
 .form-actions {
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   gap: 16px;
 
   margin-top: 34px;
-
 }
-
 
 .secondary-button,
 .submit-button {
-
   min-height: 50px;
 
-  padding:
-    13px
-    22px;
+  padding: 13px 22px;
 
   border-radius: 3px;
 
-  font-family:
-    var(--font-label);
-
+  font-family: var(--font-label);
   font-size: 11px;
-
   font-weight: 600;
-
   letter-spacing: 1.3px;
-
   text-transform: uppercase;
 
   cursor: pointer;
@@ -937,105 +614,59 @@
     background 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
-
 }
-
 
 .secondary-button {
+  background: transparent;
 
-  background:
-    transparent;
+  border: 1px solid rgba(239, 231, 216, 0.2);
 
-  border:
-    1px solid
-    rgba(239, 231, 216, 0.2);
-
-  color:
-    var(--color-ivory);
-
+  color: var(--color-ivory);
 }
-
 
 .secondary-button:hover:not(:disabled) {
+  border-color: var(--color-brass);
 
-  border-color:
-    var(--color-brass);
+  color: var(--color-brass-light);
 
-  color:
-    var(--color-brass-light);
-
-  transform:
-    translateY(-1px);
-
+  transform: translateY(-1px);
 }
 
-
 .submit-button {
-
   min-width: 260px;
 
   display: inline-flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 12px;
 
-  background:
-    var(--color-brass);
+  background: var(--color-brass);
 
-  border:
-    1px solid
-    var(--color-brass);
+  border: 1px solid var(--color-brass);
 
-  color:
-    var(--color-ink);
+  color: var(--color-ink);
 
-  box-shadow:
-    0 5px 16px
-    rgba(0, 0, 0, 0.28);
-
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.28);
 }
-
 
 .submit-button:hover:not(:disabled) {
+  background: var(--color-brass-light);
+  border-color: var(--color-brass-light);
 
-  background:
-    var(--color-brass-light);
+  transform: translateY(-2px);
 
-  border-color:
-    var(--color-brass-light);
-
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 8px 22px
-    rgba(0, 0, 0, 0.34);
-
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34);
 }
-
 
 .submit-button:active:not(:disabled) {
-
-  transform:
-    translateY(1px);
-
+  transform: translateY(1px);
 }
-
 
 .secondary-button:disabled,
 .submit-button:disabled {
-
   opacity: 0.5;
-
-  cursor:
-    not-allowed;
-
-  transform:
-    none;
-
+  cursor: not-allowed;
+  transform: none;
 }
 
 
@@ -1044,35 +675,20 @@
    ============================================================ */
 
 .spinner {
-
   width: 15px;
-
   height: 15px;
 
-  border:
-    2px solid
-    rgba(13, 12, 11, 0.25);
-
-  border-top-color:
-    var(--color-ink);
-
+  border: 2px solid rgba(13, 12, 11, 0.25);
+  border-top-color: var(--color-ink);
   border-radius: 50%;
 
-  animation:
-    spin 0.7s linear infinite;
-
+  animation: spin 0.7s linear infinite;
 }
 
-
 @keyframes spin {
-
   to {
-
-    transform:
-      rotate(360deg);
-
+    transform: rotate(360deg);
   }
-
 }
 
 
@@ -1081,47 +697,29 @@
    ============================================================ */
 
 .message {
-
   display: flex;
-
   flex-direction: column;
-
   gap: 3px;
 
   margin-bottom: 28px;
-
-  padding:
-    14px
-    16px;
+  padding: 14px 16px;
 
   border-radius: 4px;
 
   font-size: 12px;
-
   line-height: 1.5;
-
 }
-
 
 .message strong {
-
   font-size: 12px;
-
 }
 
-
 .message.error {
+  background: rgba(165, 72, 60, 0.12);
 
-  background:
-    rgba(165, 72, 60, 0.12);
+  border: 1px solid rgba(165, 72, 60, 0.32);
 
-  border:
-    1px solid
-    rgba(165, 72, 60, 0.32);
-
-  color:
-    var(--color-error);
-
+  color: var(--color-error);
 }
 
 
@@ -1130,331 +728,181 @@
    ============================================================ */
 
 .success-panel {
-
   min-height: 360px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
-  padding:
-    40px
-    20px;
+  padding: 40px 20px;
 
   text-align: center;
 
-  animation:
-    step-in 0.35s ease;
-
+  animation: step-in 0.35s ease;
 }
 
-
 .success-icon {
-
   width: 70px;
-
   height: 70px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   margin-bottom: 22px;
 
-  border:
-    1px solid
-    var(--color-brass);
-
+  border: 1px solid var(--color-brass);
   border-radius: 50%;
 
-  background:
-    rgba(182, 138, 78, 0.1);
+  background: rgba(182, 138, 78, 0.1);
 
-  color:
-    var(--color-brass-light);
+  color: var(--color-brass-light);
 
   font-size: 30px;
-
 }
-
 
 .success-panel h2 {
+  margin: 10px 0 12px;
 
-  margin:
-    10px
-    0
-    12px;
+  color: var(--color-ivory);
 
-  color:
-    var(--color-ivory);
-
-  font-family:
-    var(--font-display);
-
-  font-size:
-    clamp(27px, 4vw, 36px);
-
+  font-family: var(--font-display);
+  font-size: clamp(27px, 4vw, 36px);
 }
-
 
 .success-panel p {
-
   max-width: 480px;
 
-  color:
-    var(--color-text-light);
+  color: var(--color-text-light);
 
   font-size: 14px;
-
   line-height: 1.7;
-
 }
 
-
 .success-loading {
-
   margin-top: 24px;
 
-  color:
-    var(--color-text-muted);
+  color: var(--color-text-muted);
 
   font-size: 11px;
-
   letter-spacing: 0.8px;
-
 }
 
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE — TABLETAS Y MÓVILES
    ============================================================ */
 
 @media (max-width: 760px) {
-
   .register-page {
-
-    padding:
-      48px
-      16px
-      70px;
-
+    padding: 48px 16px 70px;
   }
-
 
   .register-card {
-
-    padding:
-      34px
-      24px;
-
+    padding: 34px 24px;
   }
-
 
   .form-grid {
-
-    grid-template-columns:
-      1fr;
-
+    grid-template-columns: 1fr;
   }
-
 
   .full-width {
-
-    grid-column:
-      auto;
-
+    grid-column: auto;
   }
-
 
   .steps-indicator {
-
-    align-items:
-      flex-start;
-
+    align-items: flex-start;
   }
-
 
   .step-label span {
-
-    display:
-      none;
-
+    display: none;
   }
-
 
   .step-line {
-
-    margin:
-      0
-      14px;
-
+    margin: 0 14px;
   }
-
 
   .form-actions {
-
-    flex-direction:
-      column-reverse;
-
-    align-items:
-      stretch;
-
+    flex-direction: column-reverse;
+    align-items: stretch;
   }
-
 
   .secondary-button,
   .submit-button {
-
-    width:
-      100%;
-
+    width: 100%;
   }
-
 
   .submit-button {
-
-    min-width:
-      0;
-
+    min-width: 0;
   }
-
 }
 
 
+/* ============================================================
+   RESPONSIVE — MÓVILES PEQUEÑOS
+   ============================================================ */
+
 @media (max-width: 500px) {
-
   .register-page {
-
-    padding:
-      30px
-      10px
-      50px;
-
+    padding: 30px 10px 50px;
   }
-
 
   .register-card {
-
-    padding:
-      28px
-      18px;
-
-    border-radius:
-      4px;
-
+    padding: 28px 18px;
+    border-radius: 4px;
   }
-
 
   .register-header {
-
-    margin-bottom:
-      28px;
-
+    margin-bottom: 28px;
   }
-
 
   .register-header h1 {
-
-    font-size:
-      30px;
-
+    font-size: 30px;
   }
-
 
   .google-account {
-
-    padding:
-      13px;
-
+    padding: 13px;
   }
-
 
   .account-badge {
-
-    display:
-      none;
-
+    display: none;
   }
-
 
   .profile-image,
   .profile-placeholder {
-
-    width:
-      42px;
-
-    height:
-      42px;
-
+    width: 42px;
+    height: 42px;
   }
-
 
   .step-number {
-
-    width:
-      34px;
-
-    height:
-      34px;
-
+    width: 34px;
+    height: 34px;
   }
-
 
   .step-line {
-
-    margin:
-      0
-      8px;
-
+    margin: 0 8px;
   }
-
 
   .step-heading h2 {
-
-    font-size:
-      26px;
-
+    font-size: 26px;
   }
 
-
+  /* Se conserva el tamaño móvil original de los controles */
   .field input,
   .field select,
   .field textarea {
-
-    font-size:
-      13px;
-
+    font-size: 13px;
   }
-
 
   .summary-row {
-
-    align-items:
-      flex-start;
-
-    flex-direction:
-      column;
-
-    gap:
-      4px;
-
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
-
 
   .summary-row strong {
-
-    max-width:
-      100%;
-
-    text-align:
-      left;
-
+    max-width: 100%;
+    text-align: left;
   }
-
 }

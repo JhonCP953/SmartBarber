@@ -589,7 +589,15 @@ export class RegisterAdminComponent {
         status?: number;
 
         error?: {
+
+          data?: {
+
+            message?: string;
+
+          };
+
           message?: string;
+
         };
 
         message?: string;
@@ -597,12 +605,18 @@ export class RegisterAdminComponent {
       };
 
 
+    const message =
+      httpError?.error?.data?.message ??
+      httpError?.error?.message ??
+      httpError?.message;
+
+
     if (
       httpError?.status === 400
     ) {
 
       return (
-        httpError.error?.message ??
+        message ??
         'Los datos enviados no son válidos.'
       );
 
@@ -636,7 +650,7 @@ export class RegisterAdminComponent {
     ) {
 
       return (
-        httpError.error?.message ??
+        message ??
         'Ya existe información registrada con estos datos.'
       );
 
@@ -655,27 +669,11 @@ export class RegisterAdminComponent {
     }
 
 
-    if (
-      httpError?.error?.message
-    ) {
-
-      return httpError.error.message;
-
-    }
-
-
-    if (
-      httpError?.message
-    ) {
-
-      return httpError.message;
-
-    }
-
-
     return (
+      message ??
       'No fue posible completar el registro. Inténtalo nuevamente.'
     );
+
 
   }
 

@@ -1,8 +1,19 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  Injectable,
+  inject
+} from '@angular/core';
 
-import { environment } from '../../../../../environments/environment';
+import {
+  HttpClient
+} from '@angular/common/http';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  environment
+} from '../../../../../environments/environment';
 
 import {
   CreateClientRequest,
@@ -11,19 +22,22 @@ import {
   CreateUserResponse
 } from '../../domain/models/client-registration.model';
 
-import { ClientRegistrationRepository } from '../../domain/repositories/client-registration.repository';
+import {
+  ClientRegistrationRepository
+} from '../../domain/repositories/client-registration.repository';
 
 @Injectable()
 export class ClientRegistrationApiService
   extends ClientRegistrationRepository {
 
-  private readonly http = inject(HttpClient);
+  private readonly http =
+    inject(HttpClient);
 
   private readonly userApiUrl =
-    `${environment.apiUrl}/user-service`;
+    `${environment.apiUrl}/public/user-service`;
 
   private readonly clientApiUrl =
-    `${environment.apiUrl}/client-service`;
+    `${environment.apiUrl}/public/client-service`;
 
   override createUser(
     request: CreateUserRequest

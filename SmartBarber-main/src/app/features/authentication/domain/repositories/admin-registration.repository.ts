@@ -1,4 +1,6 @@
-import { Observable } from 'rxjs';
+import {
+  Observable
+} from 'rxjs';
 
 import {
   CreateUserRequest,
@@ -16,17 +18,13 @@ export abstract class AdminRegistrationRepository {
 
   abstract createBarberShop(
     request: BarberShopRegisterRequest
-  ): Observable<BarberShopResponse | null>;
-
-  abstract findBarberShopByName(
-    name: string
   ): Observable<BarberShopResponse>;
 
   abstract createUser(
     request: CreateUserRequest
-  ): Observable<CreateUserResponse | null>;
+  ): Observable<CreateUserResponse>;
 
   abstract createAdmin(
     request: CreateAdminRequest
-  ): Observable<CreateAdminResponse | null>;
+  ): Observable<CreateAdminResponse>;
 }

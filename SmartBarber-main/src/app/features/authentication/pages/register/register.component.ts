@@ -275,32 +275,60 @@ export class RegisterComponent {
         }
     }
 
-    getBackendErrorMessage(error: any): string {
+    getBackendErrorMessage(
+        error: any
+    ): string {
 
-        const status = error?.status;
+        const status =
+            error?.status;
+
+        const message =
+            error?.error?.data?.message ??
+            error?.error?.message ??
+            error?.message;
 
         if (status === 400) {
-            return 'La información del cliente proporcionada no es válida.';
+
+            return (
+                message ??
+                'La información del cliente proporcionada no es válida.'
+            );
         }
 
         if (status === 409) {
-            return 'Ya existe un cliente con esta información.';
+
+            return (
+                message ??
+                'Ya existe un cliente con esta información.'
+            );
         }
 
         if (status === 401) {
-            return 'La sesión de autenticación no es válida.';
+
+            return (
+                'La sesión de autenticación no es válida.'
+            );
         }
 
         if (status === 403) {
-            return 'No tienes autorización para realizar esta operación.';
+
+            return (
+                'No tienes autorización para realizar esta operación.'
+            );
         }
 
-        if (status >= 500) {
-            return 'El servidor no pudo completar el registro. Inténtalo nuevamente más tarde.';
+        if (
+            status &&
+            status >= 500
+        ) {
+
+            return (
+                'El servidor no pudo completar el registro. Inténtalo nuevamente más tarde.'
+            );
         }
 
         return (
-            error?.error?.message ??
+            message ??
             'Ocurrió un error inesperado durante el registro.'
         );
     }

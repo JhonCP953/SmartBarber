@@ -5,8 +5,7 @@ import {
 import {
   Observable,
   map,
-  throwError,
-  of
+  throwError
 } from 'rxjs';
 
 import {
@@ -28,12 +27,16 @@ import {
 
 import {
   BarberShopRegisterRequest,
-  BarberShopResponse,
+  BarberShopResponse
 } from '../../../barber-shop/domain/models/barber-shop.model';
 
 import {
   AdminRegistrationRepository
 } from '../../domain/repositories/admin-registration.repository';
+
+import {
+  USER_ROLE_IDS
+} from '../../domain/models/user-role.model';
 
 @Injectable()
 export class RegisterAdminUseCase {
@@ -83,69 +86,14 @@ export class RegisterAdminUseCase {
      * CREAR BARBERÍA
      * =====================================================
      */
+
     return this.repository
-      .createBarberShop(barberShopData)
+      .createBarberShop(
+        barberShopData
+      )
 
       .pipe(
 
-        /*
-         * Si el backend devuelve la barbería correctamente
-         * se utiliza directamente.
-         *
-         * Si devuelve null o no devuelve ID,
-         * se consulta nuevamente por nombre.
-         */
-        switchMap(
-          (barberShop: BarberShopResponse | null ) => {
-
-            // ==========================================
-            // BARBERÍA CREADA CORRECTAMENTE
-            // ==========================================
-
-            if (barberShop?.id) {
-              return of(barberShop);
-            }
-
-            // ==========================================
-            // FALLBACK:
-            // BUSCAR LA BARBERÍA POR NOMBRE
-            // ==========================================
-
-            return this.repository
-              .findBarberShopByName(
-                barberShopData.name.trim()
-              )
-              .pipe(
-
-                switchMap(
-                  (foundBarberShop: BarberShopResponse | null) => {
-
-                    // ==========================================
-                    // BARBERÍA ENCONTRADA CON ID
-                    // ==========================================
-
-                    if (foundBarberShop?.id) {
-                      return of(foundBarberShop);
-                    }
-
-                    // ==========================================
-                    // NO SE PUDO OBTENER EL ID
-                    // ==========================================
-
-                    return throwError(
-                      () =>
-                        new Error(
-                          'La barbería fue creada, pero el backend no devolvió su ID.'
-                        )
-                    );
-                  }
-                )
-
-              );
-          }
-        ),
-
-      
         switchMap(
           (
             barberShop:
@@ -160,13 +108,15 @@ export class RegisterAdminUseCase {
               return throwError(
                 () =>
                   new Error(
-                    'La barbería fue creada, pero el backend no devolvió su ID.'
+                    'El backend no devolvió el ID de la barbería.'
                   )
               );
             }
 
             const barberShopId =
-              String(barberShop.id);
+              String(
+                barberShop.id
+              );
 
             /*
              * =====================================================
@@ -174,19 +124,23 @@ export class RegisterAdminUseCase {
              * CREAR USUARIO ADMINISTRADOR
              * =====================================================
              */
+
             return this.repository
               .createUser({
-                roleId: 4
+
+                roleId:
+                  USER_ROLE_IDS.ADMIN
+
               })
 
               .pipe(
 
                 switchMap(
-                  (
-                    userResponse
-                  ) => {
+                  userResponse => {
 
-                    if (!userResponse) {
+                    if (
+                      !userResponse
+                    ) {
 
                       return throwError(
                         () =>
@@ -197,8 +151,7 @@ export class RegisterAdminUseCase {
                     }
 
                     const userId =
-                      userResponse.id ??
-                      userResponse.userId;
+                      userResponse.id;
 
                     if (!userId) {
 
@@ -213,10 +166,10 @@ export class RegisterAdminUseCase {
                     /*
                      * =====================================================
                      * PASO 3
-                     * CREAR ADMINISTRADOR Y ASOCIARLO
-                     * A LA BARBERÍA
+                     * CREAR ADMINISTRADOR
                      * =====================================================
                      */
+
                     return this.repository
                       .createAdmin({
 
@@ -253,11 +206,11 @@ export class RegisterAdminUseCase {
                       .pipe(
 
                         map(
-                          (
-                            adminResponse
-                          ) => {
+                          adminResponse => {
 
-                            if (!adminResponse) {
+                            if (
+                              !adminResponse
+                            ) {
 
                               throw new Error(
                                 'El backend no devolvió información del administrador.'
@@ -265,8 +218,7 @@ export class RegisterAdminUseCase {
                             }
 
                             const adminId =
-                              adminResponse.id ??
-                              adminResponse.adminId;
+                              adminResponse.id;
 
                             if (!adminId) {
 
@@ -280,6 +232,7 @@ export class RegisterAdminUseCase {
                              * SESIÓN
                              * =====================================================
                              */
+
                             this.sessionService
                               .setSession({
 

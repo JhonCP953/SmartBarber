@@ -43,39 +43,30 @@ export class AdminRegistrationApiService
 
   override createBarberShop(
     request: BarberShopRegisterRequest
-  ): Observable<BarberShopResponse | null> {
-
-    return this.http.post<BarberShopResponse | null>(
-      `${this.baseUrl}/barber-service/create-barber`,
-      request
-    );
-  }
-
-  override findBarberShopByName(
-    name: string
   ): Observable<BarberShopResponse> {
 
-    return this.http.get<BarberShopResponse>(
-      `${this.baseUrl}/barber-service/name/${encodeURIComponent(name)}`
+    return this.http.post<BarberShopResponse>(
+      `${this.baseUrl}/public/barber-service/create-barber`,
+      request
     );
   }
 
   override createUser(
     request: CreateUserRequest
-  ): Observable<CreateUserResponse | null> {
+  ): Observable<CreateUserResponse> {
 
-    return this.http.post<CreateUserResponse | null>(
-      `${this.baseUrl}/user-service/crear-usuario`,
+    return this.http.post<CreateUserResponse>(
+      `${this.baseUrl}/public/user-service/crear-usuario`,
       request
     );
   }
 
   override createAdmin(
     request: CreateAdminRequest
-  ): Observable<CreateAdminResponse | null> {
+  ): Observable<CreateAdminResponse> {
 
-    return this.http.post<CreateAdminResponse | null>(
-      `${this.baseUrl}/employee-service/crear-empleado`,
+    return this.http.post<CreateAdminResponse>(
+      `${this.baseUrl}/public/employee-service/crear-empleado`,
       request
     );
   }
