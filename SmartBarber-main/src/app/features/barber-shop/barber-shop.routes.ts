@@ -28,7 +28,7 @@ export const BARBER_SHOP_ROUTES: Routes = [
                 m =>
                     m.BranchRegisterComponent
             )
-    }, // 👈 Aquí faltaba la coma para separar los elementos del array de rutas
+    },
   {
     path: '',
     loadComponent: () =>
@@ -38,7 +38,7 @@ export const BARBER_SHOP_ROUTES: Routes = [
   {
     path: 'configuracion',
     loadComponent: () =>
-      import('./components/config/config.component')
+      import('./components/config-servicios/config.component')
         .then(m => m.BarberConfigComponent)
   }
 ];

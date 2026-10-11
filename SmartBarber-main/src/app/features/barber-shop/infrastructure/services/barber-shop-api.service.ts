@@ -4,17 +4,16 @@ import { Observable } from 'rxjs';
 import { BarberShopRegisterRequest, BarberShopResponse } from '../../domain/models/barber-shop.model';
 import { environment } from '../../../../../environments/environment';
 
-
 @Injectable({
     providedIn: 'root'
 })
 export class BarberShopApiService {
 
-    private readonly http =
-        inject(HttpClient);
-
-    private readonly apiUrl =
-  `${environment.apiUrl}/barber-service`;
+    private readonly http = inject(HttpClient);
+    private readonly apiUrl = `${environment.apiUrl}/barber-service`;
+    
+    // URL específica para el microservicio de horarios que probaste en Insomnia
+    private readonly scheduleUrl = `${environment.apiUrl}/schedule-service`;
 
     /**
      * Crear barbería
@@ -29,16 +28,10 @@ export class BarberShopApiService {
     }
 
     /**
-     * Obtener todas las barberías
-     *
-     * Backend esperado:
-     * GET /barber-service
+     * Obtener todas las barberías (Método necesario para listar en la tabla)
      */
     getAll(): Observable<BarberShopResponse[]> {
-
-        return this.http.get<BarberShopResponse[]>(
-            this.apiUrl
-        );
+        return this.http.get<BarberShopResponse[]>(this.apiUrl);
     }
 
     /**
@@ -47,14 +40,12 @@ export class BarberShopApiService {
     getById(
         id: string
     ): Observable<BarberShopResponse> {
-
         return this.http.get<BarberShopResponse>(
             `${this.apiUrl}/id/${id}`
         );
     }
 
     obtenerBarberias(companyName: string): Observable<BarberShopResponse[]> {
-
         return this.http.get<BarberShopResponse[]>(
             `${this.apiUrl}/company-name/${encodeURIComponent(companyName)}`
         );
@@ -67,36 +58,41 @@ export class BarberShopApiService {
         id: string,
         request: BarberShopRegisterRequest
     ): Observable<BarberShopResponse> {
-
         return this.http.put<BarberShopResponse>(
             `${this.apiUrl}/update-barber/${id}`,
             request
         );
     }
 
-    // --- Métodos agregados para Configuración, Horarios y Días No Laborables (PS-30 a PS-33) ---
+    // --- Métodos de Configuración, Horarios y Días No Laborables ---
 
-    obtenerConfiguracionBarberia(barberId: number): Observable<any> {
+    obtenerConfiguracionBarberia(barberId: number | string): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/configuracion/${barberId}`);
     }
 
-    actualizarConfiguracionBarberia(barberId: number, data: any): Observable<any> {
+    actualizarConfiguracionBarberia(barberId: number | string, data: any): Observable<any> {
         return this.http.put<any>(`${this.apiUrl}/configuracion/${barberId}`, data);
     }
 
-    obtenerHorarios(barberId: number): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/horarios/${barberId}`);
+    obtenerHorarios(barberId: number | string): Observable<any[]> {
+        return this.http.get<any[]>(`${this.scheduleUrl}/obtener-schedule/${barberId}`);
     }
 
-    actualizarHorarios(barberId: number, horarios: any[]): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}/horarios/${barberId}`, horarios);
+    /**
+     * Conectado al endpoint POST /schedule-service/crear-schedule que validaste en Insomnia
+     */
+    actualizarHorarios(barberId: number | string, horarios: any[]): Observable<any> {
+        return this.http.post<any>(`${this.scheduleUrl}/crear-schedule`, {
+            id_barberia: barberId,
+            horarios: horarios
+        });
     }
 
-    obtenerDiasNoLaborables(barberId: number): Observable<any[]> {
+    obtenerDiasNoLaborables(barberId: number | string): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/festivos/${barberId}`);
     }
 
-    agregarDiaNoLaborable(barberId: number, festivo: any): Observable<any> {
+    agregarDiaNoLaborable(barberId: number | string, festivo: any): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/festivos/${barberId}`, festivo);
     }
 
@@ -104,3 +100,5 @@ export class BarberShopApiService {
         return this.http.delete<any>(`${this.apiUrl}/festivos/${festivoId}`);
     }
 }
+
+export { BarberShopResponse };

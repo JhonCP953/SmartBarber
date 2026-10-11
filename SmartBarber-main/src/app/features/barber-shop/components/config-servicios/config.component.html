@@ -5,15 +5,14 @@
     <div class="header-titles">
       <span class="subtitle-top">GESTIÓN DE BARBERÍAS</span>
       <h1>Administración de Sedes & Estética Clásica</h1>
-      <span class="sub-script">Panel de Consulta y Edición </span>
+      <span class="sub-script">Panel de Consulta completa de establecimientos disponibles</span>
     </div>
     <div class="barber-poles right"></div>
   </header>
-
-  <!-- Contenedor Principal en 2 Columnas -->
+<!-- Contenedor Principal en 2 Columnas -->
   <div class="crud-layout">
     
-    <!-- COLUMNA IZQUIERDA: Formulario (Se muestra sólo al dar click en Editar) -->
+    <!-- COLUMNA IZQUIERDA: Formulario de Edición -->
     <div class="vintage-card form-column" *ngIf="isEditing">
       <div class="card-header-banner">
         <h2>Editar Información</h2>
@@ -23,22 +22,43 @@
       <form [formGroup]="infoForm" (ngSubmit)="saveGeneralConfig()" class="vintage-form">
         <div class="form-group">
           <label>Nombre del Establecimiento</label>
-          <input type="text" formControlName="name" placeholder="Ej. Barbería El Capo" />
+          <input type="text" formControlName="nombre" placeholder="Ej. Barbería El Capo" />
         </div>
 
         <div class="form-group">
-          <label>Teléfono de Contacto</label>
-          <input type="text" formControlName="phone" placeholder="Ej. 3001234567" />
+          <label>Razón Social</label>
+          <input type="text" formControlName="razon_social" placeholder="Ej. Inversiones Barber S.A.S." />
+        </div>
+
+        <div class="form-group" style="display: flex; gap: 10px;">
+          <div style="flex: 1;">
+            <label>Tipo de Documento</label>
+            <input type="text" formControlName="tipo_documento" placeholder="Ej. NIT" />
+          </div>
+          <div style="flex: 2;">
+            <label>Número de Documento</label>
+            <input type="text" formControlName="documento" placeholder="Ej. 900123456-1" />
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Dirección</label>
-          <input type="text" formControlName="address" placeholder="Ej. Calle Principal #12-34" />
+          <label>Teléfono / Celular</label>
+          <input type="text" formControlName="celular" placeholder="Ej. 3001234567" />
+        </div>
+
+        <div class="form-group">
+          <label>Ubicación / Dirección</label>
+          <input type="text" formControlName="ubicacion" placeholder="Ej. Calle Principal #12-34" />
         </div>
 
         <div class="form-group">
           <label>Descripción / Slogan</label>
-          <textarea formControlName="description" rows="3" placeholder="Especialistas en cortes clásicos..."></textarea>
+          <textarea formControlName="descripcion" rows="2" placeholder="Especialistas en cortes clásicos..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <input type="text" formControlName="estado" placeholder="Ej. ACTIVO" />
         </div>
 
         <div class="form-actions-flex">
@@ -62,8 +82,8 @@
       </div>
     </div>
 
-    <!-- COLUMNA DERECHA: Tabla Estilo Dashboard -->
-    <div class="vintage-card table-column">
+    <!-- COLUMNA DERECHA: Tabla Estilo Dashboard con todos los campos -->
+    <div class="vintage-card table-column" style="flex: 2;">
       <div class="table-top-bar">
         <div class="count-info">
           <span>Total de registros: <strong>{{ barberList.length }}</strong></span>
@@ -80,17 +100,27 @@
             <tr>
               <th>#</th>
               <th>Nombre</th>
+              <th>Razón Social</th>
+              <th>Doc.</th>
               <th>Teléfono</th>
-              <th>Dirección</th>
+              <th>Ubicación</th>
+              <th>Estado</th>
+              <th>Creación</th>
+              <th>Modificación</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of barberList; let i = index">
               <td>{{ i + 1 }}</td>
-              <td><strong>{{ item.name }}</strong></td>
-              <td>{{ item.phone }}</td>
-              <td>{{ item.address }}</td>
+              <td><strong>{{ item.nombre }}</strong></td>
+              <td>{{ item.razon_social || 'N/A' }}</td>
+              <td>{{ item.tipo_documento }}: {{ item.documento }}</td>
+              <td>{{ item.celular }}</td>
+              <td>{{ item.ubicacion }}</td>
+              <td>{{ item.estado || 'ACTIVO' }}</td>
+              <td>{{ item.fecha_creacion ? (item.fecha_creacion | date:'short') : 'N/A' }}</td>
+              <td>{{ item.fecha_modificacion ? (item.fecha_modificacion | date:'short') : 'N/A' }}</td>
               <td class="actions-cell">
                 <button type="button" class="btn-action view" title="Consultar" (click)="selectForView(item)">
                   🔍
@@ -101,7 +131,7 @@
               </td>
             </tr>
             <tr *ngIf="barberList.length === 0">
-              <td colspan="5" class="empty-row">Cargando registros desde el backend...</td>
+              <td colspan="10" class="empty-row">Cargando registros desde el backend...</td>
             </tr>
           </tbody>
         </table>
@@ -116,15 +146,14 @@
     </div>
 
   </div>
-
 <!-- SECCIÓN INFERIOR: Horarios y Festivos -->
-  <div class="bottom-sections-grid">
+<div class="bottom-sections-grid">
     
     <!-- HORARIOS DE ATENCIÓN (PS-32) -->
     <div class="vintage-card">
       <div class="card-header-banner">
         <h2>Horarios de Atención</h2>
-        <p>PS-32: Gestión semanal</p>
+        <p>Gestión semanal</p>
       </div>
       
       <!-- Selector de sede ubicado exactamente debajo de la línea divisoria -->
@@ -135,7 +164,7 @@
         </select>
       </div>
 
-      <form [formGroup]="infoForm">
+      <form [formGroup]="infoForm" (ngSubmit)="saveGeneralConfig()">
         <div formArrayName="hours" class="hours-scroll-container">
           <div class="hour-row" *ngFor="let hourGroup of hoursArray.controls; let i = index" [formGroupName]="i">
             <span class="day-label">{{ daysOfWeek[i] }}</span>
@@ -152,14 +181,18 @@
             <span class="closed-text" *ngIf="!hourGroup.get('isOpen')?.value">Cerrado</span>
           </div>
         </div>
+
+        <!-- Botón para guardar los horarios -->
+        <div class="card-footer-action" style="margin-top: 15px; text-align: right;">
+          <button type="submit" class="vintage-btn">GUARDAR HORARIOS</button>
+        </div>
       </form>
     </div>
-
     <!-- DÍAS NO LABORABLES Y FESTIVOS (PS-33) -->
     <div class="vintage-card">
       <div class="card-header-banner">
         <h2>Días No Laborables & Festivos</h2>
-        <p>PS-33: Configuración de Excepciones</p>
+        <p>Configuración de Excepciones</p>
       </div>
 
       <!-- Selector de sede ubicado exactamente debajo de la línea divisoria -->
