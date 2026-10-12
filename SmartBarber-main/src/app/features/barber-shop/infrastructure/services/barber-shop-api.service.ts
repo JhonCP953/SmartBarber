@@ -8,8 +8,11 @@ import { environment } from '../../../../../environments/environment';
     providedIn: 'root'
 })
 export class BarberShopApiService {
-
     private readonly http = inject(HttpClient);
+
+    getEmpleados(): Observable<any[]> {
+        return this.http.get<any[]>(`${environment.apiUrl}/employee-service`);
+    }
     private readonly apiUrl = `${environment.apiUrl}/barber-service`;
     
     // URL específica para el microservicio de horarios que probaste en Insomnia
@@ -30,8 +33,9 @@ export class BarberShopApiService {
     /**
      * Obtener todas las barberías (Método necesario para listar en la tabla)
      */
-    getAll(): Observable<BarberShopResponse[]> {
-        return this.http.get<BarberShopResponse[]>(this.apiUrl);
+     getAll(): Observable<any> {
+        // Asegúrate de que apunte al endpoint correcto de tu backend para listar
+        return this.http.get<any>(`${environment.apiUrl}/barber-service`); 
     }
 
     /**
@@ -43,6 +47,15 @@ export class BarberShopApiService {
         return this.http.get<BarberShopResponse>(
             `${this.apiUrl}/id/${id}`
         );
+    }
+   // Obtener empleado por su ID o UUID exacto según la colección de Insomnia
+    getEmpleadoPorId(id: string): Observable<any> {
+        return this.http.get<any>(`${environment.apiUrl}/employee-service/id/${id}`);
+    }
+
+    // O si prefieres buscar por documento como se ve en tu Insomnia:
+    getEmpleadoPorDocumento(documento: string): Observable<any> {
+        return this.http.get<any>(`${environment.apiUrl}/employee-service/documento/${documento}`);
     }
 
     obtenerBarberias(companyName: string): Observable<BarberShopResponse[]> {
@@ -64,29 +77,24 @@ export class BarberShopApiService {
         );
     }
 
-    // --- Métodos de Configuración, Horarios y Días No Laborables ---
+ // --- Métodos para el Schedule Service / Horario Empleado ---
 
-    obtenerConfiguracionBarberia(barberId: number | string): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/configuracion/${barberId}`);
+  // Obtener horario de empleado por su ID numérico (ej: /schedule-service/id/3)
+    obtenerHorarioEmpleadoPorId(id: number | string): Observable<any> {
+        return this.http.get<any>(`${environment.apiUrl}/schedule-service/id/${id}`);
     }
 
-    actualizarConfiguracionBarberia(barberId: number | string, data: any): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}/configuracion/${barberId}`, data);
+    // Crear horario de empleado (POST que ya tienes en Insomnia)
+    crearHorarioEmpleado(payload: any): Observable<any> {
+        return this.http.post<any>(`${environment.apiUrl}/schedule-service/crear-schedule`, payload);
     }
 
-    obtenerHorarios(barberId: number | string): Observable<any[]> {
-        return this.http.get<any[]>(`${this.scheduleUrl}/obtener-schedule/${barberId}`);
+    actualizarHorarioEmpleado(id: number | string, payload: any): Observable<any> {
+        return this.http.put<any>(`${environment.apiUrl}/schedule-service/actualizar-schedule/${id}`, payload);
     }
 
-    /**
-     * Conectado al endpoint POST /schedule-service/crear-schedule que validaste en Insomnia
-     */
-    actualizarHorarios(barberId: number | string, horarios: any[]): Observable<any> {
-        return this.http.post<any>(`${this.scheduleUrl}/crear-schedule`, {
-            id_barberia: barberId,
-            horarios: horarios
-        });
-    }
+
+    //Dias festivos 
 
     obtenerDiasNoLaborables(barberId: number | string): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/festivos/${barberId}`);
