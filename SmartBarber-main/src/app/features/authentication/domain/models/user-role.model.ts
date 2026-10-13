@@ -5,11 +5,11 @@ export type UserRole =
 
 export const USER_ROLE_IDS = {
 
-    CLIENT: 1,
+    CLIENT: 3,
 
     BARBER: 2,
 
-    ADMIN: 4
+    ADMIN: 1
 
 } as const;
 

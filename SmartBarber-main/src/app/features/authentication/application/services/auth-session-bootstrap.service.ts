@@ -20,7 +20,7 @@ import {
 } from '../../domain/repositories/auth.repository';
 
 import {
-    BackendRole
+    BackendRoleResponse
 } from '../../domain/models/auth-session.model';
 
 import {
@@ -28,33 +28,57 @@ import {
     UserRole
 } from '../../../../core/auth/model/auth-session.model';
 
+
 @Injectable({
     providedIn: 'root'
 })
 export class AuthSessionBootstrapService {
 
+
     private readonly firebaseAuth =
         inject(FirebaseAuthService);
+
 
     private readonly sessionService =
         inject(SessionService);
 
+
     private readonly authRepository =
         inject(AuthRepository);
 
-    async restore(): Promise<void> {
+
+    async restore():
+        Promise<void> {
+
+
+        /*
+         * =====================================================
+         * ESPERAR ESTADO DE FIREBASE
+         * =====================================================
+         */
 
         const firebaseUser =
-            await this.firebaseAuth.waitForAuthState();
+            await this.firebaseAuth
+                .waitForAuthState();
+
 
         if (!firebaseUser) {
 
-            this.sessionService.clearSession();
+            this.sessionService
+                .clearSession();
 
             return;
         }
 
+
         try {
+
+
+            /*
+             * =================================================
+             * VALIDAR USUARIO CONTRA BACKEND
+             * =================================================
+             */
 
             const backendRole =
                 await firstValueFrom(
@@ -62,19 +86,25 @@ export class AuthSessionBootstrapService {
                         .verifyAuthentication()
                 );
 
+
             const role =
                 this.mapRole(
                     backendRole
                 );
 
+
             const previousSession =
-                this.sessionService.currentSession;
+                this.sessionService
+                    .currentSession;
+
 
             const sameFirebaseUser =
                 previousSession?.firebaseUid ===
                 firebaseUser.uid;
 
-            const session: AuthSession = {
+
+            const session:
+                AuthSession = {
 
                 userId:
                     sameFirebaseUser
@@ -117,32 +147,79 @@ export class AuthSessionBootstrapService {
                     sameFirebaseUser
                         ? previousSession?.barbershopId ?? null
                         : null
+
             };
 
-            this.sessionService.setSession(
-                session
-            );
+
+            this.sessionService
+                .setSession(
+                    session
+                );
+
 
         } catch {
 
-            this.sessionService.clearSession();
+            /*
+             * Si Firebase tiene sesión pero el usuario no
+             * existe en SmartBarber, no debemos mantener una
+             * sesión interna falsa.
+             */
+
+            this.sessionService
+                .clearSession();
+
         }
+
     }
 
+
     private mapRole(
-        role: BackendRole
-    ): UserRole {
+        role: BackendRoleResponse
+    ):
+        UserRole {
+
 
         switch (role) {
 
-            case 'Cliente':
+
+            case 'CUSTOMER':
+
                 return 'CLIENT';
 
-            case 'Barbero':
+
+            case 'BARBER':
+
                 return 'BARBER';
 
-            case 'Administrador':
+
+            case 'ADMIN':
+
                 return 'ADMIN';
+
+
+            case 'Cliente':
+
+                return 'CLIENT';
+
+
+            case 'Barbero':
+
+                return 'BARBER';
+
+
+            case 'Administrador':
+
+                return 'ADMIN';
+
+
+            default:
+
+                throw new Error(
+                    'INVALID_ROLE'
+                );
+
         }
+
     }
+
 }

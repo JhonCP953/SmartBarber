@@ -1,184 +1,202 @@
 import {
-  Injectable,
-  inject
+    Injectable,
+    inject
 } from '@angular/core';
 
 import {
-  Observable,
-  switchMap,
-  map,
-  throwError
+    Observable,
+    map,
+    throwError
 } from 'rxjs';
 
 import {
-  ClientRegistrationForm,
-  ClientRegistrationResult,
-  CreateUserResponse
+    ClientRegistrationForm,
+    ClientRegistrationResult
 } from '../../domain/models/client-registration.model';
 
 import {
-  ClientRegistrationRepository
+    ClientRegistrationRepository
 } from '../../domain/repositories/client-registration.repository';
 
 import {
-  FirebaseAuthService
+    FirebaseAuthService
 } from '../../../../core/auth/services/firebase-auth.service';
 
 import {
-  SessionService
+    SessionService
 } from '../../../../core/auth/services/session.service';
 
 import {
-  USER_ROLE_IDS
+    USER_ROLE_IDS
 } from '../../domain/models/user-role.model';
+
 
 @Injectable()
 export class RegisterClientUseCase {
 
-  private readonly repository =
-    inject(
-      ClientRegistrationRepository
-    );
 
-  private readonly firebaseAuth =
-    inject(
-      FirebaseAuthService
-    );
+    private readonly repository =
+        inject(
+            ClientRegistrationRepository
+        );
 
-  private readonly sessionService =
-    inject(
-      SessionService
-    );
 
-  execute(
-    form: ClientRegistrationForm
-  ):
-    Observable<ClientRegistrationResult> {
+    private readonly firebaseAuth =
+        inject(
+            FirebaseAuthService
+        );
 
-    const firebaseUser =
-      this.firebaseAuth.getCurrentUser();
 
-    if (!firebaseUser) {
+    private readonly sessionService =
+        inject(
+            SessionService
+        );
 
-      return throwError(
-        () =>
-          new Error(
-            'No existe una sesión autenticada con Google.'
-          )
-      );
-    }
 
-    if (!firebaseUser.email) {
+    execute(
+        form: ClientRegistrationForm
+    ):
+        Observable<ClientRegistrationResult> {
 
-      return throwError(
-        () =>
-          new Error(
-            'La cuenta de Google no tiene correo electrónico.'
-          )
-      );
-    }
 
-    return this.repository
-      .createUser({
+        const firebaseUser =
+            this.firebaseAuth.getCurrentUser();
 
-        roleId:
-          USER_ROLE_IDS.CLIENT
 
-      })
+        if (!firebaseUser) {
 
-      .pipe(
+            return throwError(
+                () =>
+                    new Error(
+                        'No existe una sesión autenticada con Google.'
+                    )
+            );
+        }
 
-        switchMap(
-          (
-            user: CreateUserResponse
-          ) => {
 
-            const request = {
+        if (!firebaseUser.email) {
 
-              userId:
-                user.id,
+            return throwError(
+                () =>
+                    new Error(
+                        'La cuenta de Google no tiene correo electrónico.'
+                    )
+            );
+        }
 
-              name:
-                form.name.trim(),
 
-              document:
-                form.document.trim(),
+        /*
+         * =====================================================
+         * ONBOARDING
+         * =====================================================
+         */
 
-              documentType:
-                form.documentType,
+        return this.repository
+            .onboarding({
 
-              cell:
-                form.cell.trim(),
+                user: {
 
-              email:
-                firebaseUser.email!
-                  .trim()
-                  .toLowerCase()
-            };
+                    roleId:
+                        USER_ROLE_IDS.CLIENT
 
-            return this.repository
-              .createClient(
-                request
-              )
+                },
 
-              .pipe(
+                name:
+                    form.name
+                        .trim(),
+
+                document:
+                    form.document
+                        .trim(),
+
+                documentType:
+                    form.documentType,
+
+                cell:
+                    form.cell
+                        .trim(),
+
+                email:
+                    firebaseUser.email
+                        .trim()
+                        .toLowerCase()
+
+            })
+            .pipe(
 
                 map(
-                  client => {
+                    response => {
 
-                    this.sessionService
-                      .setSession({
+                        const userId =
+                            response.user.id;
 
-                        userId:
-                          user.id,
 
-                        clientId:
-                          client.id,
+                        const clientId =
+                            response.id;
 
-                        firebaseUid:
-                          firebaseUser.uid,
 
-                        email:
-                          client.email,
+                        /*
+                         * =================================================
+                         * CREAR SESIÓN LOCAL
+                         * =================================================
+                         */
 
-                        displayName:
-                          client.name,
+                        this.sessionService
+                            .setSession({
 
-                        role:
-                          'CLIENT',
+                                userId,
 
-                        status:
-                          'ACTIVE',
+                                clientId,
 
-                        tenantId:
-                          null,
+                                firebaseUid:
+                                    firebaseUser.uid,
 
-                        photoUrl:
-                          firebaseUser.photoURL,
+                                email:
+                                    response.email,
 
-                        barberId:
-                          null,
+                                displayName:
+                                    response.name,
 
-                        barbershopId:
-                          null
-                      });
+                                role:
+                                    'CLIENT',
 
-                    return {
+                                status:
+                                    response.user.status ===
+                                    'BLOCKED'
+                                        ? 'BLOCKED'
+                                        : 'ACTIVE',
 
-                      userId:
-                        user.id,
+                                tenantId:
+                                    null,
 
-                      clientId:
-                        client.id,
+                                photoUrl:
+                                    firebaseUser.photoURL,
 
-                      message:
-                        'Cliente registrado correctamente.'
-                    };
-                  }
+                                barberId:
+                                    null,
+
+                                barbershopId:
+                                    null
+
+                            });
+
+
+                        return {
+
+                            userId,
+
+                            clientId,
+
+                            message:
+                                'Cliente registrado correctamente.'
+
+                        };
+
+                    }
                 )
-              );
-          }
-        )
-      );
-  }
+
+            );
+
+    }
+
 }

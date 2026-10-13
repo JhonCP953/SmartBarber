@@ -518,14 +518,6 @@ export class RegisterAdminComponent {
       this.barberShopForm.getRawValue();
 
 
-    // -------------------------------------------------------
-    // EJECUTAR FLUJO
-    //
-    // 1. Barbería
-    // 2. Usuario roleId = 4
-    // 3. Administrador
-    // -------------------------------------------------------
-
     this.registerAdminUseCase
       .execute(
         adminData,

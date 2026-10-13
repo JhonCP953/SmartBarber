@@ -1,61 +1,167 @@
 import {
-  Injectable,
-  inject
+    Injectable,
+    inject
 } from '@angular/core';
 
 import {
-  HttpClient
+    HttpClient,
+    HttpHeaders
 } from '@angular/common/http';
 
 import {
-  Observable
+    Observable,
+    from,
+    throwError
 } from 'rxjs';
 
 import {
-  environment
+    switchMap
+} from 'rxjs/operators';
+
+import {
+    environment
 } from '../../../../../environments/environment';
 
 import {
-  CreateClientRequest,
-  CreateClientResponse,
-  CreateUserRequest,
-  CreateUserResponse
-} from '../../domain/models/client-registration.model';
+    FirebaseAuthService
+} from '../../../../core/auth/services/firebase-auth.service';
 
 import {
-  ClientRegistrationRepository
+    ClientRegistrationRepository
 } from '../../domain/repositories/client-registration.repository';
+
+import {
+    CustomerOnboardingRequest,
+    CustomerOnboardingResponse,
+    CreateClientRequest,
+    CreateClientResponse,
+    CreateUserRequest,
+    CreateUserResponse
+} from '../../domain/models/client-registration.model';
+
 
 @Injectable()
 export class ClientRegistrationApiService
-  extends ClientRegistrationRepository {
+    extends ClientRegistrationRepository {
 
-  private readonly http =
-    inject(HttpClient);
 
-  private readonly userApiUrl =
-    `${environment.apiUrl}/public/user-service`;
+    private readonly http =
+        inject(HttpClient);
 
-  private readonly clientApiUrl =
-    `${environment.apiUrl}/public/client-service`;
 
-  override createUser(
-    request: CreateUserRequest
-  ): Observable<CreateUserResponse> {
+    private readonly firebaseAuth =
+        inject(FirebaseAuthService);
 
-    return this.http.post<CreateUserResponse>(
-      `${this.userApiUrl}/crear-usuario`,
-      request
-    );
-  }
 
-  override createClient(
-    request: CreateClientRequest
-  ): Observable<CreateClientResponse> {
+    private readonly userApiUrl =
+        `${environment.apiUrl}/public/user-service`;
 
-    return this.http.post<CreateClientResponse>(
-      `${this.clientApiUrl}/crear-cliente`,
-      request
-    );
-  }
+
+    private readonly clientApiUrl =
+        `${environment.apiUrl}/public/client-service`;
+
+
+    private readonly onboardingApiUrl =
+        `${environment.apiUrl}/public/customer-service/onboarding`;
+
+
+    /*
+     * =====================================================
+     * MÉTODO ANTIGUO
+     * =====================================================
+     */
+
+    override createUser(
+        request: CreateUserRequest
+    ):
+        Observable<CreateUserResponse> {
+
+        return this.http.post<CreateUserResponse>(
+            `${this.userApiUrl}/crear-usuario`,
+            request
+        );
+    }
+
+
+    /*
+     * =====================================================
+     * MÉTODO ANTIGUO
+     * =====================================================
+     */
+
+    override createClient(
+        request: CreateClientRequest
+    ):
+        Observable<CreateClientResponse> {
+
+        return this.http.post<CreateClientResponse>(
+            `${this.clientApiUrl}/crear-cliente`,
+            request
+        );
+    }
+
+
+    /*
+     * =====================================================
+     * ONBOARDING CLIENTE
+     *
+     * IMPORTANTE:
+     *
+     * El backend del cliente actualmente lee el token
+     * desde:
+     *
+     *     idToken
+     *
+     * y no desde Authorization.
+     *
+     * El interceptor seguirá enviando Authorization,
+     * pero aquí agregamos también idToken.
+     * =====================================================
+     */
+
+    override onboarding(
+        request: CustomerOnboardingRequest
+    ):
+        Observable<CustomerOnboardingResponse> {
+
+        return from(
+            this.firebaseAuth.getIdToken()
+        )
+            .pipe(
+
+                switchMap(
+                    token => {
+
+                        if (!token) {
+
+                            return throwError(
+                                () =>
+                                    new Error(
+                                        'No existe un token de Firebase válido.'
+                                    )
+                            );
+                        }
+
+
+                        const headers =
+                            new HttpHeaders({
+                                idToken:
+                                    `Bearer ${token}`
+                            });
+
+
+                        return this.http.post<CustomerOnboardingResponse>(
+                            this.onboardingApiUrl,
+                            request,
+                            {
+                                headers
+                            }
+                        );
+
+                    }
+                )
+
+            );
+    }
+
 }

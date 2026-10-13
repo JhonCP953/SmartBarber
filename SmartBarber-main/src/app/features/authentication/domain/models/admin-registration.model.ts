@@ -1,95 +1,247 @@
 import {
-  DocumentType
+    DocumentType
 } from '../../../barber-shop/domain/models/barber-shop.model';
+
+
+/*
+ * =========================================================
+ * FORMULARIO ADMINISTRADOR
+ * =========================================================
+ */
 
 export interface AdminRegistrationForm {
 
-  name: string;
+    name: string;
 
-  document: string;
+    document: string;
 
-  documentType: DocumentType;
+    documentType: DocumentType;
 
-  cell: string;
+    cell: string;
+
 }
+
 
 export interface CreateUserRequest {
 
-  roleId: 4;
+    roleId: number;
+
 }
+
 
 export interface CreateUserResponse {
 
-  id?: string;
+    id?: string;
 
-  userId?: string;
+    userId?: string;
 
-  firebaseId?: string;
+    firebaseId?: string;
 
-  status?: string;
+    status?: string;
 
-  createAt?: string;
+    createAt?: string;
 
-  updateAt?: string | null;
+    updateAt?: string | null;
 
-  roleId?: number;
+    roleId?: number;
+
 }
+
 
 export interface CreateAdminRequest {
 
-  userId: string;
+    userId: string;
 
-  barberiaId: string;
+    barberiaId: string;
 
-  name: string;
+    name: string;
 
-  document: string;
+    document: string;
 
-  documentType: DocumentType;
+    documentType: DocumentType;
 
-  cell: string;
+    cell: string;
 
-  email: string;
+    email: string;
 
-  specialty: string;
+    specialty: string;
+
 }
+
 
 export interface CreateAdminResponse {
 
-  id?: string;
+    id?: string;
 
-  adminId?: string;
+    adminId?: string;
 
-  userId?: string;
+    userId?: string;
 
-  barberiaId?: string;
+    barberiaId?: string;
 
-  document?: string;
+    document?: string;
 
-  documentType?: DocumentType;
+    documentType?: DocumentType;
 
-  name?: string;
+    name?: string;
 
-  cell?: string;
+    cell?: string;
 
-  email?: string;
+    email?: string;
 
-  specialty?: string;
+    specialty?: string;
 
-  createAt?: string;
+    createAt?: string;
 
-  updateAt?: string | null;
+    updateAt?: string | null;
 
-  message?: string;
+    message?: string;
+
 }
+
+
+/*
+ * =========================================================
+ * ONBOARDING BARBERÍA
+ * =========================================================
+ */
+
+export interface BarberShopOnboardingRequest {
+
+    name: string;
+
+    description: string;
+
+    location: string;
+
+    phone: string;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    companyName: string;
+
+    employee: {
+
+        user: {
+
+            roleId: number;
+
+        };
+
+
+        barberiaId: string;
+
+        name: string;
+
+        document: string;
+
+        documentType: DocumentType;
+
+        cell: string;
+
+        email: string;
+
+        specialty: string;
+
+    };
+
+}
+
+
+/*
+ * =========================================================
+ * USER RESPONSE
+ * =========================================================
+ */
+
+export interface BarberShopOnboardingUserResponse {
+
+    id: string;
+
+    firebaseId: string;
+
+    status: string;
+
+    roleId: number;
+
+    createAt: string;
+
+}
+
+
+/*
+ * =========================================================
+ * EMPLOYEE RESPONSE
+ * =========================================================
+ */
+
+export interface BarberShopOnboardingEmployeeResponse {
+
+    id: string;
+
+    name: string;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    cell: string;
+
+    email: string;
+
+    specialty: string;
+
+    user: BarberShopOnboardingUserResponse;
+
+    createAt: string;
+
+}
+
+
+/*
+ * =========================================================
+ * RESPONSE ONBOARDING BARBERÍA
+ * =========================================================
+ */
+
+export interface BarberShopOnboardingResponse {
+
+    name: string;
+
+    description: string;
+
+    location: string;
+
+    phone: string;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    companyName: string | null;
+
+    employee:
+        BarberShopOnboardingEmployeeResponse;
+
+}
+
+
+/*
+ * =========================================================
+ * RESULTADO DEL USE CASE
+ * =========================================================
+ */
 
 export interface AdminRegistrationResult {
 
-  userId: string;
+    userId: string;
 
-  employeeId: string;
+    employeeId: string;
 
-  barberShopId: string;
+    barberShopId: string;
 
-  message: string;
+    message: string;
+
 }

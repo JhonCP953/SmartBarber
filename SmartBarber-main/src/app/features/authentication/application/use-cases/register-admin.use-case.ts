@@ -1,297 +1,296 @@
 import {
-  Injectable
+    Injectable
 } from '@angular/core';
 
 import {
-  Observable,
-  map,
-  throwError
+    Observable,
+    map,
+    switchMap,
+    throwError
 } from 'rxjs';
 
 import {
-  switchMap
-} from 'rxjs/operators';
-
-import {
-  FirebaseAuthService
+    FirebaseAuthService
 } from '../../../../core/auth/services/firebase-auth.service';
 
 import {
-  SessionService
+    SessionService
 } from '../../../../core/auth/services/session.service';
 
 import {
-  AdminRegistrationForm,
-  AdminRegistrationResult
+    AdminRegistrationForm,
+    AdminRegistrationResult,
+    BarberShopOnboardingResponse
 } from '../../domain/models/admin-registration.model';
 
 import {
-  BarberShopRegisterRequest,
-  BarberShopResponse
+    BarberShopRegisterRequest
 } from '../../../barber-shop/domain/models/barber-shop.model';
 
 import {
-  AdminRegistrationRepository
+    AdminRegistrationRepository
 } from '../../domain/repositories/admin-registration.repository';
 
 import {
-  USER_ROLE_IDS
+    USER_ROLE_IDS
 } from '../../domain/models/user-role.model';
+
 
 @Injectable()
 export class RegisterAdminUseCase {
 
-  constructor(
-    private readonly repository:
-      AdminRegistrationRepository,
 
-    private readonly firebaseAuthService:
-      FirebaseAuthService,
+    constructor(
+        private readonly repository:
+            AdminRegistrationRepository,
 
-    private readonly sessionService:
-      SessionService
-  ) { }
+        private readonly firebaseAuthService:
+            FirebaseAuthService,
 
-  execute(
-    adminData: AdminRegistrationForm,
-    barberShopData: BarberShopRegisterRequest
-  ): Observable<AdminRegistrationResult> {
+        private readonly sessionService:
+            SessionService
+    ) { }
 
-    const firebaseUser =
-      this.firebaseAuthService.getCurrentUser();
 
-    if (!firebaseUser) {
+    execute(
+        adminData: AdminRegistrationForm,
+        barberShopData: BarberShopRegisterRequest
+    ):
+        Observable<AdminRegistrationResult> {
 
-      return throwError(
-        () =>
-          new Error(
-            'No existe una sesión autenticada con Google.'
-          )
-      );
-    }
 
-    if (!firebaseUser.email) {
+        const firebaseUser =
+            this.firebaseAuthService
+                .getCurrentUser();
 
-      return throwError(
-        () =>
-          new Error(
-            'La cuenta de Google no tiene correo.'
-          )
-      );
-    }
 
-    /*
-     * =====================================================
-     * PASO 1
-     * CREAR BARBERÍA
-     * =====================================================
-     */
+        if (!firebaseUser) {
 
-    return this.repository
-      .createBarberShop(
-        barberShopData
-      )
-
-      .pipe(
-
-        switchMap(
-          (
-            barberShop:
-              BarberShopResponse
-          ) => {
-
-            if (
-              !barberShop ||
-              !barberShop.id
-            ) {
-
-              return throwError(
+            return throwError(
                 () =>
-                  new Error(
-                    'El backend no devolvió el ID de la barbería.'
-                  )
-              );
+                    new Error(
+                        'No existe una sesión autenticada con Google.'
+                    )
+            );
+        }
+
+
+        if (!firebaseUser.email) {
+
+            return throwError(
+                () =>
+                    new Error(
+                        'La cuenta de Google no tiene correo.'
+                    )
+            );
+        }
+
+
+        /*
+         * =====================================================
+         * ONBOARDING COMPLETO
+         * =====================================================
+         */
+
+        const onboardingRequest = {
+
+            name:
+                barberShopData.name
+                    .trim(),
+
+            description:
+                barberShopData.description
+                    .trim(),
+
+            location:
+                barberShopData.location
+                    .trim(),
+
+            phone:
+                barberShopData.phone
+                    .trim(),
+
+            document:
+                barberShopData.document
+                    .trim(),
+
+            documentType:
+                barberShopData.documentType,
+
+            companyName:
+                barberShopData.companyName
+                    .trim(),
+
+            employee: {
+
+                user: {
+
+                    roleId:
+                        USER_ROLE_IDS.ADMIN
+
+                },
+
+                barberiaId:
+                    crypto.randomUUID(),
+
+
+                name:
+                    adminData.name
+                        .trim(),
+
+                document:
+                    adminData.document
+                        .trim(),
+
+                documentType:
+                    adminData.documentType,
+
+                cell:
+                    adminData.cell
+                        .trim(),
+
+                email:
+                    firebaseUser.email
+                        .trim()
+                        .toLowerCase(),
+
+                specialty:
+                    'Administrador'
+
             }
 
-            const barberShopId =
-              String(
-                barberShop.id
-              );
+        };
 
-            /*
-             * =====================================================
-             * PASO 2
-             * CREAR USUARIO ADMINISTRADOR
-             * =====================================================
-             */
 
-            return this.repository
-              .createUser({
+        return this.repository
+            .onboarding(
+                onboardingRequest
+            )
+            .pipe(
 
-                roleId:
-                  USER_ROLE_IDS.ADMIN
-
-              })
-
-              .pipe(
 
                 switchMap(
-                  userResponse => {
+                    (
+                        onboardingResponse:
+                            BarberShopOnboardingResponse
+                    ) => {
 
-                    if (
-                      !userResponse
-                    ) {
+                        return this.repository
+                            .findBarberShopByName(
+                                onboardingResponse.name
+                            )
+                            .pipe(
 
-                      return throwError(
-                        () =>
-                          new Error(
-                            'El backend no devolvió información del usuario.'
-                          )
-                      );
+                                map(
+                                    barberShop => {
+
+                                        if (
+                                            !barberShop?.id
+                                        ) {
+
+                                            throw new Error(
+                                                'La barbería fue creada, pero el backend no devolvió su ID.'
+                                            );
+
+                                        }
+
+
+                                        const userId =
+                                            onboardingResponse
+                                                .employee
+                                                .user
+                                                .id;
+
+
+                                        const employeeId =
+                                            onboardingResponse
+                                                .employee
+                                                .id;
+
+
+                                        const barberShopId =
+                                            String(
+                                                barberShop.id
+                                            );
+
+
+                                        /*
+                                         * =============================================
+                                         * CREAR SESIÓN
+                                         * =============================================
+                                         */
+
+                                        this.sessionService
+                                            .setSession({
+
+                                                userId,
+
+                                                clientId:
+                                                    null,
+
+                                                firebaseUid:
+                                                    firebaseUser.uid,
+
+                                                email:
+                                                    onboardingResponse
+                                                        .employee
+                                                        .email,
+
+                                                displayName:
+                                                    onboardingResponse
+                                                        .employee
+                                                        .name,
+
+                                                role:
+                                                    'ADMIN',
+
+                                                status:
+                                                    onboardingResponse
+                                                        .employee
+                                                        .user
+                                                        .status ===
+                                                    'BLOCKED'
+                                                        ? 'BLOCKED'
+                                                        : 'ACTIVE',
+
+                                                tenantId:
+                                                    null,
+
+                                                photoUrl:
+                                                    firebaseUser.photoURL,
+
+                                                barberId:
+                                                    employeeId,
+
+                                                barbershopId:
+                                                    barberShopId
+
+                                            });
+
+
+                                        return {
+
+                                            userId,
+
+                                            employeeId,
+
+                                            barberShopId,
+
+                                            message:
+                                                'Barbería, usuario y administrador registrados correctamente.'
+
+                                        };
+
+                                    }
+                                )
+
+                            );
+
                     }
-
-                    const userId =
-                      userResponse.id;
-
-                    if (!userId) {
-
-                      return throwError(
-                        () =>
-                          new Error(
-                            'El backend no devolvió el ID del usuario.'
-                          )
-                      );
-                    }
-
-                    /*
-                     * =====================================================
-                     * PASO 3
-                     * CREAR ADMINISTRADOR
-                     * =====================================================
-                     */
-
-                    return this.repository
-                      .createAdmin({
-
-                        userId,
-
-                        barberiaId:
-                          barberShopId,
-
-                        name:
-                          adminData.name
-                            .trim(),
-
-                        document:
-                          adminData.document
-                            .trim(),
-
-                        documentType:
-                          adminData.documentType,
-
-                        cell:
-                          adminData.cell
-                            .trim(),
-
-                        email:
-                          firebaseUser.email!
-                            .trim()
-                            .toLowerCase(),
-
-                        specialty:
-                          'Administrador'
-
-                      })
-
-                      .pipe(
-
-                        map(
-                          adminResponse => {
-
-                            if (
-                              !adminResponse
-                            ) {
-
-                              throw new Error(
-                                'El backend no devolvió información del administrador.'
-                              );
-                            }
-
-                            const adminId =
-                              adminResponse.id;
-
-                            if (!adminId) {
-
-                              throw new Error(
-                                'El backend no devolvió el ID del administrador.'
-                              );
-                            }
-
-                            /*
-                             * =====================================================
-                             * SESIÓN
-                             * =====================================================
-                             */
-
-                            this.sessionService
-                              .setSession({
-
-                                userId,
-
-                                clientId:
-                                  null,
-
-                                firebaseUid:
-                                  firebaseUser.uid,
-
-                                email:
-                                  firebaseUser.email!,
-
-                                displayName:
-                                  adminData.name,
-
-                                role:
-                                  'ADMIN',
-
-                                status:
-                                  'ACTIVE',
-
-                                tenantId:
-                                  null,
-
-                                photoUrl:
-                                  firebaseUser.photoURL,
-
-                                barberId:
-                                  adminId,
-
-                                barbershopId:
-                                  barberShopId
-
-                              });
-
-                            return {
-
-                              userId,
-
-                              employeeId:
-                                adminId,
-
-                              barberShopId,
-
-                              message:
-                                'Barbería, usuario y administrador registrados correctamente.'
-
-                            };
-
-                          }
-                        )
-                      );
-                  }
                 )
-              );
-          }
-        )
-      );
-  }
+
+            );
+
+    }
+
 }

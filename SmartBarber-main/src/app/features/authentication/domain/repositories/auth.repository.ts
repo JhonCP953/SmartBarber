@@ -1,11 +1,15 @@
-import { Observable } from 'rxjs';
+import {
+    Observable
+} from 'rxjs';
 
 import {
-    BackendRole
+    BackendRoleResponse
 } from '../models/auth-session.model';
+
 
 export abstract class AuthRepository {
 
     abstract verifyAuthentication():
-        Observable<BackendRole>;
+        Observable<BackendRoleResponse>;
+
 }

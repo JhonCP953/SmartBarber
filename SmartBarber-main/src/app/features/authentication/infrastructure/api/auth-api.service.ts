@@ -20,27 +20,33 @@ import {
 } from '../../domain/repositories/auth.repository';
 
 import {
-    BackendRole
+    BackendRoleResponse
 } from '../../domain/models/auth-session.model';
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthApiService
-    implements AuthRepository {
+    extends AuthRepository {
+
 
     private readonly http =
         inject(HttpClient);
 
+
     private readonly apiUrl =
         `${environment.apiUrl}/auth/verify`;
 
-    verifyAuthentication():
-        Observable<BackendRole> {
 
-        return this.http.post<BackendRole>(
+    override verifyAuthentication():
+        Observable<BackendRoleResponse> {
+
+        return this.http.post<BackendRoleResponse>(
             this.apiUrl,
             null
         );
+
     }
+
 }

@@ -66,27 +66,31 @@ export class FirebaseAuthService {
     }
 
 
-    async signInWithGoogle(): Promise<User> {
+   async signInWithGoogle(): Promise<User> {
+    const provider = new GoogleAuthProvider();
 
-        const provider =
-            new GoogleAuthProvider();
+    provider.setCustomParameters({
+        prompt: 'select_account'
+    });
 
-        provider.setCustomParameters({
-            prompt: 'select_account'
-        });
-
-        const result =
-            await signInWithPopup(
-                this.auth,
-                provider
-            );
-
-        this.userSubject.next(
-            result.user
+    try {
+        const result = await signInWithPopup(
+            this.auth,
+            provider
         );
 
+        this.userSubject.next(result.user);
+
         return result.user;
+    } catch (error: unknown) {
+        console.error(
+            'Error al iniciar sesión con Google:',
+            error
+        );
+
+        throw error;
     }
+}
 
 
     async getIdToken(): Promise<string | null> {

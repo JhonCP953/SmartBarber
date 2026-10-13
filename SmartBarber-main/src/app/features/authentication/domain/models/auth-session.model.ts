@@ -4,13 +4,27 @@ import {
     UserStatus
 } from '../../../../core/auth/model/auth-session.model';
 
+
 export type {
     AuthSession,
     UserRole,
     UserStatus
 };
 
+ 
+
 export type BackendRole =
-    | 'Cliente'
+    | 'ADMIN'
+    | 'BARBER'
+    | 'CUSTOMER';
+
+
+export type LegacyBackendRole =
+    | 'Administrador'
     | 'Barbero'
-    | 'Administrador';
+    | 'Cliente';
+
+
+export type BackendRoleResponse =
+    | BackendRole
+    | LegacyBackendRole;

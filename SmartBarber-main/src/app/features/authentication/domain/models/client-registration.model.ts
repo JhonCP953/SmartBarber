@@ -3,6 +3,13 @@ export type DocumentType =
     | 'CE'
     | 'NIT';
 
+
+/*
+ * =========================================================
+ * FORMULARIO DEL FRONT
+ * =========================================================
+ */
+
 export interface ClientRegistrationForm {
 
     document: string;
@@ -16,8 +23,9 @@ export interface ClientRegistrationForm {
 
 export interface CreateUserRequest {
 
-    roleId: 1;
+    roleId: number;
 }
+
 
 export interface CreateUserResponse {
 
@@ -34,6 +42,7 @@ export interface CreateUserResponse {
     roleId: number;
 }
 
+
 export interface CreateClientRequest {
 
     userId: string;
@@ -48,6 +57,7 @@ export interface CreateClientRequest {
 
     email: string;
 }
+
 
 export interface CreateClientResponse {
 
@@ -69,6 +79,88 @@ export interface CreateClientResponse {
 
     updateAt: string | null;
 }
+
+
+/*
+ * =========================================================
+ * ONBOARDING CLIENTE
+ * =========================================================
+ */
+
+export interface CustomerOnboardingRequest {
+
+    user: {
+
+        roleId: number;
+
+    };
+
+    name: string;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    cell: string;
+
+    email: string;
+}
+
+
+/*
+ * =========================================================
+ * RESPONSE USER
+ * =========================================================
+ */
+
+export interface CustomerOnboardingUserResponse {
+
+    id: string;
+
+    firebaseId: string;
+
+    status: string;
+
+    roleId: number;
+
+    createAt: string;
+
+}
+
+
+/*
+ * =========================================================
+ * RESPONSE ONBOARDING CLIENTE
+ * =========================================================
+ */
+
+export interface CustomerOnboardingResponse {
+
+    id: string;
+
+    user: CustomerOnboardingUserResponse;
+
+    document: string;
+
+    documentType: DocumentType;
+
+    name: string;
+
+    cell: string;
+
+    email: string;
+
+    createAt: string;
+
+    updateAt: string | null;
+}
+
+
+/*
+ * =========================================================
+ * RESULTADO DEL USE CASE
+ * =========================================================
+ */
 
 export interface ClientRegistrationResult {
 
