@@ -3,12 +3,14 @@
   <!-- Tarjeta Dividida 2 Columnas -->
   <main class="crud-card">
     
-    <!-- Lado Izquierdo: Formulario de Creación de Servicio -->
+    <!-- Lado Izquierdo: Formulario de Creación / Modificación -->
     <section class="form-section">
       <div class="form-header">
         <span class="badge-tag">💈 GESTIÓN DE SERVICIOS</span>
-        <h1 class="title">Crear Nuevo Servicio</h1>
-        <p class="subtitle">Ingresa los detalles del servicio ofertado para tu barbería.</p>
+        <h1 class="title">{{ isEditMode ? 'Modificar Servicio' : 'Crear Nuevo Servicio' }}</h1>
+        <p class="subtitle">
+          {{ isEditMode ? 'Actualiza los detalles del servicio seleccionado.' : 'Ingresa los detalles del servicio ofertado para tu barbería.' }}
+        </p>
       </div>
 
       <form [formGroup]="serviceForm" (ngSubmit)="saveService()" class="styled-form">
@@ -98,9 +100,14 @@
         <!-- ID de Barbería (Oculto o Lectura) -->
         <input type="hidden" formControlName="barberiaId" />
 
-        <button type="submit" class="btn-submit">
-          CREAR SERVICIO
-        </button>
+        <div class="form-buttons-row">
+          <button type="submit" class="btn-submit">
+            {{ isEditMode ? 'ACTUALIZAR SERVICIO' : 'CREAR SERVICIO' }}
+          </button>
+          <button type="button" class="btn-secondary" *ngIf="isEditMode" (click)="cancelEdit()">
+            Cancelar
+          </button>
+        </div>
       </form>
     </section>
 
@@ -112,7 +119,7 @@
       </div>
 
       <div class="services-scroll">
-        <div class="service-item-card" *ngFor="let item of servicesList; let i = index">
+        <div class="service-item-card" *ngFor="let item of servicesList; let i = index" [class.inactive]="item.isActive === false">
           <div class="card-top">
             <h3 class="service-title">{{ item.name }}</h3>
             <span class="offer-tag" *ngIf="item.offert">OFERTA</span>
@@ -128,7 +135,12 @@
             </div>
           </div>
 
+          <!-- Botones de Modificar, Desactivar/Activar y Eliminar -->
           <div class="card-actions">
+            <button class="btn-action-text edit" (click)="editService(i)">✏️ Modificar</button>
+            <button class="btn-action-text toggle" (click)="toggleServiceStatus(i)">
+              {{ item.isActive !== false ? '🚫 Desactivar' : '✅ Activar' }}
+            </button>
             <button class="btn-delete" (click)="deleteService(i)">🗑️ Eliminar</button>
           </div>
         </div>

@@ -141,9 +141,14 @@
   color: #fbbf24;
   cursor: pointer;
 }
+.form-buttons-row {
+  display: flex;
+  gap: 60px; 
+  margin-top: 0.5rem;
+}
 
 .btn-submit {
-  margin-top: 0.5rem;
+  flex: 1;
   padding: 0.9rem;
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: #000000;
@@ -261,21 +266,98 @@
   font-size: 1.05rem;
 }
 
+/* =========================================
+   ESTILOS MEJORADOS PARA ACCIONES DE TARJETA
+   ========================================= */
+
 .card-actions {
   display: flex;
+  gap: 0.75rem;
   justify-content: flex-end;
-  margin-top: 0.25rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #262c36;
 }
 
+/* Botones de acción base (Modificar y Desactivar/Activar) */
+.btn-action-text {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #2a3241;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Botón Modificar (Acento Ámbar) */
+.btn-action-text.edit {
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.btn-action-text.edit:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.2);
+}
+
+/* Botón Desactivar / Activar (Estilo Neutro/Alerta) */
+.btn-action-text.toggle {
+  color: #94a3b8;
+}
+
+.btn-action-text.toggle:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+/* Botón Eliminar (Estilo Sutil Rojo) */
 .btn-delete {
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
   color: #ef4444;
   font-size: 0.75rem;
-  cursor: pointer;
   font-weight: 600;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn-delete:hover {
-  text-decoration: underline;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Estado visual cuando la tarjeta está inactiva */
+.service-item-card.inactive {
+  opacity: 0.5;
+  border: 1px dashed #374151;
+  background: #13171f;
+}
+/* Estilo para el botón Cancelar en modo edición */
+.btn-secondary {
+  flex: 1;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #000000;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
 }
