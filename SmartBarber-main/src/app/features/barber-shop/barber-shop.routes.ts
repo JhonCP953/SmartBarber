@@ -35,10 +35,29 @@ export const BARBER_SHOP_ROUTES: Routes = [
       import('./components/branch-register/branch-register.component')
         .then(m => m.BranchRegisterComponent)
   },
+ {
+        path: 'configuracion',
+        loadComponent: () =>
+            import('./components/configuration/config.component')
+                .then(m => m.BarberConfigComponent)
+    },
   {
-    path: 'configuracion',
+        path: 'politicas-cancelacion',
+        loadComponent: () =>
+          import('../../features/barber-shop/components/cancellation-policies/cancellation-policies.component')
+            .then(m => m.CancellationPoliciesComponent)
+    },
+    {
+        path: 'canales-contacto',
+        loadComponent: () =>
+          import('../../features/barber-shop/components/contact-channels/contact-channels.component')
+            .then(m => m.ContactChannelsComponent)
+    },
+    {
+    path: 'CRUD-Servicios',
     loadComponent: () =>
-      import('./components/config-servicios/config.component')
-        .then(m => m.BarberConfigComponent)
+      import('./components/crud-servicios/Create-service/crud-servicios.component')
+        .then(m => m.BarberServiConfigComponent)
   }
+
 ];

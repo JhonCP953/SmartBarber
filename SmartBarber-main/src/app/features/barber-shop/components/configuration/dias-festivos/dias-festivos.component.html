@@ -1,0 +1,32 @@
+<!-- DÍAS NO LABORABLES Y FESTIVOS (PS-33) -->
+<div class="vintage-card">
+  <div class="card-header-banner">
+    <h2>Días No Laborables & Festivos</h2>
+    <p>Configuración de Excepciones</p>
+  </div>
+
+  <!-- Selector de sede ubicado exactamente debajo de la línea divisoria -->
+  <div class="card-subheader-selector">
+    <label>Sede Activa:</label>
+    <select class="vintage-select-sm" [(ngModel)]="barberId" (ngModelChange)="barberIdChange.emit($event)">
+      <option *ngFor="let b of barberList" [value]="b.id">{{ b.name }}</option>
+    </select>
+  </div>
+
+  <div class="holiday-add-box">
+    <input type="date" [(ngModel)]="newHolidayDate" class="vintage-input" />
+    <input type="text" [(ngModel)]="newHolidayDesc" placeholder="Motivo (ej. Mantenimiento)" class="vintage-input" />
+    <button type="button" class="vintage-btn gold-sm" (click)="addHoliday()">Agregar</button>
+  </div>
+
+  <div class="holidays-list">
+    <div class="holiday-item" *ngFor="let h of holidays">
+      <div class="holiday-info">
+        <strong>📅 {{ h.date }}</strong>
+        <span>{{ h.description }}</span>
+      </div>
+      <button type="button" class="btn-delete" (click)="removeHoliday(h.id)">❌</button>
+    </div>
+    <p class="empty-msg" *ngIf="holidays.length === 0">No hay días no laborables registrados para esta sede.</p>
+  </div>
+</div>

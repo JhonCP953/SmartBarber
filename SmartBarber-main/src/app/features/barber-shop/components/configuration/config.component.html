@@ -1,0 +1,35 @@
+<div class="vintage-container">
+  <!-- Cabecera estilo cartel vintage -->
+  <header class="vintage-header">
+    <div class="barber-poles left"></div>
+    <div class="header-titles">
+      <span class="subtitle-top">GESTIÓN DE BARBERÍAS</span>
+      <h1>Administración de Sedes & Estética Clásica</h1>
+      <span class="sub-script">Panel de Consulta completa de establecimientos disponibles</span>
+    </div>
+    <div class="barber-poles right"></div>
+  </header>
+
+  <!-- Panel de edición + Tabla de registros -->
+  <app-barberias-registros
+    [barberList]="barberList"
+    [barberId]="barberId"
+    [seleccionado]="selectedItem"
+    (barberiaSeleccionada)="onBarberiaSeleccionada($event)"
+    (guardado)="loadBarberList()">
+  </app-barberias-registros>
+
+  <!-- SECCIÓN INFERIOR: Horarios y Festivos -->
+  <div class="bottom-sections-grid">
+    <app-horarios-atencion
+      [barberList]="barberList"
+      [(selectedEmpleadoUuid)]="selectedEmpleadoUuid">
+    </app-horarios-atencion>
+
+    <app-dias-festivos
+      [barberList]="barberList"
+      [barberId]="barberId"
+      (barberIdChange)="onBarberSelectionChange($event)">
+    </app-dias-festivos>
+  </div>
+</div>

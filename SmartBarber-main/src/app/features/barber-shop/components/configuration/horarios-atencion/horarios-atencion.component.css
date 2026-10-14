@@ -1,0 +1,49 @@
+/* El host es flex para que la tarjeta se estire a la misma altura que la de festivos */
+:host {
+  display: flex;
+}
+
+.vintage-card {
+  flex: 1;
+}
+
+.hours-scroll-container {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.hour-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed #423628;
+}
+
+.day-label {
+  width: 90px;
+  font-size: 0.85rem;
+  color: #d1b88e;
+  font-weight: bold;
+}
+
+.time-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-inputs input[type="time"] {
+  background: #141211;
+  border: 1px solid #7c623b;
+  color: #f3e9d2;
+  padding: 4px;
+  border-radius: 3px;
+}
+
+.closed-text {
+  color: #8c7355;
+  font-style: italic;
+  font-size: 0.85rem;
+}

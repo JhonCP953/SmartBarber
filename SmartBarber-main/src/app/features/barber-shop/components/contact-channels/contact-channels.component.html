@@ -1,0 +1,143 @@
+<div class="contact-page-wrapper">
+  <!-- Hero / Header Visual -->
+  <header class="hero-section">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <span class="brand-badge">💈 SMARTBARBER </span>
+      <h1 class="hero-title">Canales de Contacto & Redes</h1>
+      <p class="hero-subtitle">Conecta tu barbería con el mundo. Configura tus accesos directos y redes sociales.</p>
+    </div>
+  </header>
+
+  <!-- Contenedor del Formulario Interactivo -->
+  <main class="form-container">
+    <form [formGroup]="contactForm" (ngSubmit)="saveChannels()" class="interactive-form">
+      
+      <div class="form-grid">
+        
+        <!-- WhatsApp -->
+        <div class="input-card">
+          <label for="whatsapp" class="input-label">
+            <span class="icon">💬</span> WhatsApp de Atención *
+          </label>
+          <div class="input-wrapper">
+            <span class="input-prefix">+57</span>
+            <input 
+              id="whatsapp"
+              type="text" 
+              formControlName="whatsapp" 
+              class="custom-input" 
+              placeholder="300 123 4567"
+            />
+          </div>
+        </div>
+
+        <!-- Instagram -->
+        <div class="input-card">
+          <label for="instagram" class="input-label">
+            <span class="icon">📸</span> Instagram (Usuario)
+          </label>
+          <div class="input-wrapper">
+            <span class="input-prefix">User</span>
+            <input 
+              id="instagram"
+              type="text" 
+              formControlName="instagram" 
+              class="custom-input" 
+              placeholder="tu_barberia_oficial"
+            />
+          </div>
+        </div>
+
+        <!-- Facebook -->
+        <div class="input-card">
+          <label for="facebook" class="input-label">
+            <span class="icon">📘</span> Facebook
+          </label>
+          <div class="input-wrapper">
+            <span class="input-prefix">fb.com/</span>
+            <input 
+              id="facebook"
+              type="text" 
+              formControlName="facebook" 
+              class="custom-input" 
+              placeholder="tu_barberia"
+            />
+          </div>
+        </div>
+
+        <!-- TikTok -->
+        <div class="input-card">
+          <label for="tiktok" class="input-label">
+            <span class="icon">🎵</span> TikTok (Usuario)
+          </label>
+          <div class="input-wrapper">
+            <span class="input-prefix">User</span>
+            <input 
+              id="tiktok"
+              type="text" 
+              formControlName="tiktok" 
+              class="custom-input" 
+              placeholder="tu_barberia"
+            />
+          </div>
+        </div>
+
+        <!-- Correo Soporte -->
+        <div class="input-card">
+          <label for="supportEmail" class="input-label">
+            <span class="icon">✉️</span> Correo Electrónico
+          </label>
+          <div class="input-wrapper">
+            <input 
+              id="supportEmail"
+              type="email" 
+              formControlName="supportEmail" 
+              class="custom-input full-width" 
+              placeholder="contacto@smartbarber.com"
+            />
+          </div>
+        </div>
+
+        <!-- Sitio Web -->
+        <div class="input-card">
+          <label for="website" class="input-label">
+            <span class="icon">🌐</span> Sitio Web Oficial
+          </label>
+          <div class="input-wrapper">
+            <span class="input-prefix">https://</span>
+            <input 
+              id="website"
+              type="text" 
+              formControlName="website" 
+              class="custom-input" 
+              placeholder="smartbarber.com"
+            />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Preview Interactivo de Enlaces Activos -->
+      <div class="preview-bar" *ngIf="hasActiveLinks()">
+        <span class="preview-title">Vista Previa de Canales Activos:</span>
+        <div class="social-badges">
+          <span class="badge" *ngIf="contactForm.get('whatsapp')?.value">💬 WhatsApp</span>
+          <span class="badge" *ngIf="contactForm.get('instagram')?.value">📸 Instagram</span>
+          <span class="badge" *ngIf="contactForm.get('facebook')?.value">📘 Facebook</span>
+          <span class="badge" *ngIf="contactForm.get('tiktok')?.value">🎵 TikTok</span>
+          <span class="badge" *ngIf="contactForm.get('website')?.value">🌐 Web</span>
+        </div>
+      </div>
+
+      <!-- Botón de Acción Principal -->
+      <div class="action-wrapper">
+        <button type="submit" class="btn-gold-action">
+          <span>GUARDAR CANALES Y REDES</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+
+    </form>
+  </main>
+</div>

@@ -1,0 +1,64 @@
+/* El host es flex para que la tarjeta se estire a la misma altura que la de horarios */
+:host {
+  display: flex;
+}
+
+.vintage-card {
+  flex: 1;
+}
+
+.vintage-input {
+  width: 100%;
+  background-color: #141211;
+  border: 1px solid #7c623b;
+  color: #f3e9d2;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.vintage-input:focus {
+  border-color: #c5a059;
+  outline: none;
+  box-shadow: 0 0 5px rgba(197, 160, 89, 0.4);
+}
+
+.holiday-add-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.holidays-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.holiday-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #141211;
+  padding: 8px 12px;
+  border: 1px solid #4a3d2c;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.holiday-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.holiday-info span {
+  color: #9e845c;
+  font-size: 0.75rem;
+}
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}

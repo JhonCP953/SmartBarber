@@ -1,0 +1,281 @@
+.crud-wrapper {
+  min-height: 100vh;
+  background-color: #0d0f12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #f1f5f9;
+}
+
+.crud-card {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  width: 100%;
+  max-width: 1100px;
+  background: #161a22;
+  border: 1px solid #262c36;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 900px) {
+  .crud-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Lado Izquierdo: Formulario */
+.form-section {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.15);
+  border: 1px solid #d97706;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+}
+
+.styled-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input-group label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #0f1218;
+  border: 1px solid #2d3545;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: #d97706;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.2);
+}
+
+.input-wrapper.highlight-gold {
+  border-color: #f59e0b;
+}
+
+.prefix-icon {
+  padding: 0 0.75rem;
+  font-size: 0.95rem;
+}
+
+.styled-input {
+  width: 100%;
+  padding: 0.7rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.checkbox-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #1c222d;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #2a3241;
+}
+
+.styled-checkbox {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: #d97706;
+  cursor: pointer;
+}
+
+.checkbox-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fbbf24;
+  cursor: pointer;
+}
+
+.btn-submit {
+  margin-top: 0.5rem;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #000000;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-submit:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+}
+
+/* Lado Derecho: Lista de Servicios */
+.list-section {
+  background: #11151c;
+  padding: 2.5rem 2rem;
+  border-left: 1px solid #262c36;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.list-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.counter-badge {
+  font-size: 0.75rem;
+  background: #252d3c;
+  color: #94a3b8;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+}
+
+.services-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.service-item-card {
+  background: #1c222d;
+  border: 1px solid #2a3241;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.service-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.offer-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: #ef4444;
+  color: #ffffff;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.service-desc {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.price-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.main-price {
+  font-weight: 800;
+  color: #f59e0b;
+  font-size: 1.05rem;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-delete:hover {
+  text-decoration: underline;
+}

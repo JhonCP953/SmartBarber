@@ -1,0 +1,58 @@
+<!-- GESTIÓN DE HORARIO DE EMPLEADO (horario_empleado) -->
+<div class="vintage-card">
+  <div class="card-header-banner">
+    <h2>Horarios de Atención</h2>
+    <p>Configuración de Turno de Empleado</p>
+  </div>
+
+  <!-- Selector de Empleado -->
+  <div class="card-subheader-selector" style="margin-bottom: 20px;">
+    <label>EMPLEADO ACTIVO:</label>
+    <select class="vintage-select-sm" [(ngModel)]="selectedEmpleadoUuid" (ngModelChange)="selectedEmpleadoUuidChange.emit($event)" name="selectedEmpleadoUuid">
+      <option value="" disabled>Seleccione un empleado...</option>
+      <option *ngFor="let emp of barberList" [value]="emp.idEmpleado || emp.id_empleado || emp.uuid || emp.id">
+        {{ emp.nombre || emp.nombres || emp.name || 'Sin Nombre' }}
+      </option>
+    </select>
+  </div>
+
+  <form [formGroup]="horarioForm" (ngSubmit)="saveHorarios()">
+    <div class="hours-form-container" style="display: flex; flex-direction: column; gap: 15px;">
+
+      <!-- Horario de Trabajo Principal -->
+      <div class="form-row-schedule" style="display: flex; align-items: center; justify-content: space-between;">
+        <label><strong>Jornada Laboral:</strong></label>
+        <div class="time-inputs">
+          <input type="time" formControlName="horaInicio" class="vintage-input-time" />
+          <span style="margin: 0 8px;">a</span>
+          <input type="time" formControlName="horaFin" class="vintage-input-time" />
+        </div>
+      </div>
+
+      <!-- Horario de Almuerzo -->
+      <div class="form-row-schedule" style="display: flex; align-items: center; justify-content: space-between;">
+        <label><strong>Turno de Almuerzo:</strong></label>
+        <div class="time-inputs">
+          <input type="time" formControlName="horaInicioAlmuerzo" class="vintage-input-time" />
+          <span style="margin: 0 8px;">a</span>
+          <input type="time" formControlName="horaFinAlmuerzo" class="vintage-input-time" />
+        </div>
+      </div>
+
+      <!-- Estado de Vacaciones -->
+      <div class="form-row-schedule" style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+        <label><strong>¿En Vacaciones?</strong></label>
+        <label class="switch-container">
+          <input type="checkbox" formControlName="vacaciones" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- Botón para Guardar Horario de Empleado -->
+    <div class="card-footer-action" style="margin-top: 20px; text-align: right;">
+      <button type="submit" class="vintage-btn">GUARDAR HORARIO EMPLEADO</button>
+    </div>
+  </form>
+</div>

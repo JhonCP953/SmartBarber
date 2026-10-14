@@ -1,0 +1,53 @@
+/* Estilos Generales Estética Vintage */
+.vintage-container {
+  background-color: #e9d9d9;
+  color: #e6d5b8;
+  min-height: 100vh;
+  padding: 30px;
+  font-family: 'Georgia', serif;
+}
+
+.vintage-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px double #c5a059;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.header-titles h1 {
+  font-size: 2.8rem;
+  color: #181008;
+  letter-spacing: 4px;
+  margin: 0;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.subtitle-top {
+  font-size: 0.9rem;
+  letter-spacing: 6px;
+  color: #a88844;
+  display: block;
+}
+
+.sub-script {
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #a88844;
+}
+
+/* Secciones Inferiores (Horarios y Festivos) */
+.bottom-sections-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+@media (max-width: 900px) {
+  .bottom-sections-grid {
+    grid-template-columns: 1fr;
+  }
+}
