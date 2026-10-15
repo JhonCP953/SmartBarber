@@ -1,159 +1,75 @@
-import {
-    Injectable
-} from '@angular/core';
 
-import {
-    BehaviorSubject
-} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { AuthSession } from '../model/auth-session.model';
 
-import {
-    AuthSession
-} from '../model/auth-session.model';
-
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SessionService {
+  private readonly storageKey = 'smartbarber.session';
 
-    private readonly storageKey =
-        'smartbarber.session';
+  private readonly sessionSubject =
+    new BehaviorSubject<AuthSession | null>(this.loadStoredSession());
 
-    private readonly sessionSubject =
-        new BehaviorSubject<AuthSession | null>(
-            this.loadStoredSession()
-        );
+  readonly session$ = this.sessionSubject.asObservable();
 
-    readonly session$ =
-        this.sessionSubject.asObservable();
+  get currentSession(): AuthSession | null {
+    return this.sessionSubject.value;
+  }
 
-    get currentSession():
-        AuthSession | null {
+  setSession(session: AuthSession): void {
+    this.sessionSubject.next(session);
 
-        return this.sessionSubject.value;
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(session));
+    } catch {
+      // El almacenamiento puede estar deshabilitado.
     }
+  }
 
-    setSession(
-        session: AuthSession
-    ): void {
+  clearSession(): void {
+    this.sessionSubject.next(null);
 
-        this.sessionSubject.next(
-            session
-        );
-
-        this.persistSession(
-            session
-        );
+    try {
+      localStorage.removeItem(this.storageKey);
+    } catch {
+      // El almacenamiento puede estar deshabilitado.
     }
+  }
 
-    clearSession(): void {
+  isAuthenticated(): boolean {
+    return this.currentSession !== null;
+  }
 
-        this.sessionSubject.next(
-            null
-        );
+  isActive(): boolean {
+    return this.currentSession?.status === 'ACTIVE';
+  }
 
-        try {
-            localStorage.removeItem(
-                this.storageKey
-            );
-        } catch {
-            // Storage unavailable.
-        }
+  hasRole(role: string): boolean {
+    return this.currentSession?.role === role;
+  }
+
+  getUserId(): string | null {
+    return this.currentSession?.userId ?? null;
+  }
+
+  getClientId(): string | null {
+    return this.currentSession?.clientId ?? null;
+  }
+
+  getBarberId(): string | null {
+    return this.currentSession?.barberId ?? null;
+  }
+
+  getBarbershopId(): string | null {
+    return this.currentSession?.barbershopId ?? null;
+  }
+
+  private loadStoredSession(): AuthSession | null {
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      return stored ? JSON.parse(stored) as AuthSession : null;
+    } catch {
+      return null;
     }
-
-    isAuthenticated(): boolean {
-
-        return (
-            this.currentSession !== null
-        );
-    }
-
-    isActive(): boolean {
-
-        return (
-            this.currentSession?.status ===
-            'ACTIVE'
-        );
-    }
-
-    hasRole(
-        role: string
-    ): boolean {
-
-        return (
-            this.currentSession?.role ===
-            role
-        );
-    }
-
-    getUserId(): string | null {
-
-        return (
-            this.currentSession?.userId ??
-            null
-        );
-    }
-
-    getClientId(): string | null {
-
-        return (
-            this.currentSession?.clientId ??
-            null
-        );
-    }
-
-    getBarberId(): string | null {
-
-        return (
-            this.currentSession?.barberId ??
-            null
-        );
-    }
-
-    getBarbershopId(): string | null {
-
-        return (
-            this.currentSession?.barbershopId ??
-            null
-        );
-    }
-
-    private persistSession(
-        session: AuthSession
-    ): void {
-
-        try {
-
-            localStorage.setItem(
-                this.storageKey,
-                JSON.stringify(session)
-            );
-
-        } catch {
-            // Storage unavailable.
-        }
-    }
-
-    private loadStoredSession():
-        AuthSession | null {
-
-        try {
-
-            const stored =
-                localStorage.getItem(
-                    this.storageKey
-                );
-
-            if (!stored) {
-                return null;
-            }
-
-            return JSON.parse(
-                stored
-            ) as AuthSession;
-
-        } catch {
-
-            return null;
-        }
-    }
+  }
 }

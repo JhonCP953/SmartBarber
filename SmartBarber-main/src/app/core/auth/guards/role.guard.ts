@@ -45,6 +45,6 @@ export const roleGuard: CanActivateFn = (
     }
 
     return router.createUrlTree([
-        '/panel'
+        '/panel/home'
     ]);
 };

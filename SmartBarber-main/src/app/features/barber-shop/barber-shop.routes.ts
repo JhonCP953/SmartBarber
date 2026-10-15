@@ -10,54 +10,145 @@ import {
     roleGuard
 } from '../../core/auth/guards/role.guard';
 
+
 export const BARBER_SHOP_ROUTES: Routes = [
+
+    // ============================================================
+    // CONFIGURACIÓN PRINCIPAL
+    // ============================================================
+
     {
         path: '',
+
         canActivate: [
             authGuard,
             roleGuard
         ],
+
         data: {
             roles: [
                 'ADMIN'
             ]
         },
+
         loadComponent: () =>
-            import('./components/branch-register/branch-register.component')
-            .then(
+            import(
+                './components/branch-register/branch-register.component'
+            ).then(
                 m =>
                     m.BranchRegisterComponent
             )
     },
-  {
-    path: '',
-    loadComponent: () =>
-      import('./components/branch-register/branch-register.component')
-        .then(m => m.BranchRegisterComponent)
-  },
- {
+
+
+    // ============================================================
+    // CONFIGURACIÓN
+    // ============================================================
+
+    {
         path: 'configuracion',
+
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+
+        data: {
+            roles: [
+                'ADMIN'
+            ]
+        },
+
         loadComponent: () =>
-            import('./components/configuration/config.component')
-                .then(m => m.BarberConfigComponent)
+            import(
+                './components/configuration/config.component'
+            ).then(
+                m =>
+                    m.BarberConfigComponent
+            )
     },
-  {
+
+
+    // ============================================================
+    // POLÍTICAS DE CANCELACIÓN
+    // ============================================================
+
+    {
         path: 'politicas-cancelacion',
+
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+
+        data: {
+            roles: [
+                'ADMIN'
+            ]
+        },
+
         loadComponent: () =>
-          import('../../features/barber-shop/components/cancellation-policies/cancellation-policies.component')
-            .then(m => m.CancellationPoliciesComponent)
+            import(
+                './components/cancellation-policies/cancellation-policies.component'
+            ).then(
+                m =>
+                    m.CancellationPoliciesComponent
+            )
     },
+
+
+    // ============================================================
+    // CANALES DE CONTACTO
+    // ============================================================
+
     {
         path: 'canales-contacto',
-        loadComponent: () =>
-          import('../../features/barber-shop/components/contact-channels/contact-channels.component')
-            .then(m => m.ContactChannelsComponent)
-    },
-    {
-    path: 'CRUD-Servicios',
-    loadComponent: () =>
-      import('./components/crud-service/Create-service/crud-servicios.component')
-        .then(m => m.BarberServiConfigComponent)
-  }
 
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+
+        data: {
+            roles: [
+                'ADMIN'
+            ]
+        },
+
+        loadComponent: () =>
+            import(
+                './components/contact-channels/contact-channels.component'
+            ).then(
+                m =>
+                    m.ContactChannelsComponent
+            )
+    },
+
+
+    // ============================================================
+    // SERVICIOS
+    // ============================================================
+
+    {
+        path: 'CRUD-Servicios',
+
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+
+        data: {
+            roles: [
+                'ADMIN'
+            ]
+        },
+
+        loadComponent: () =>
+            import(
+                './components/crud-service/Create-service/crud-servicios.component'
+            ).then(
+                m =>
+                    m.BarberServiConfigComponent
+            )
+    }
 ];

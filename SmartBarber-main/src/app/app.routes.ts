@@ -1,3 +1,4 @@
+
 import { Routes } from '@angular/router';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 
@@ -12,21 +13,18 @@ export const routes: Routes = [
           import('./features/landing/landing.routes')
             .then(m => m.LANDING_ROUTES)
       },
-
       {
         path: 'barberShop',
         loadChildren: () =>
           import('./features/barber-shop/barber-shop.routes')
             .then(m => m.BARBER_SHOP_ROUTES)
       },
-
       {
         path: 'subscription',
         loadChildren: () =>
           import('./features/subscription/subscription.routes')
             .then(m => m.SUBSCRIPTION_ROUTES)
       },
-
       {
         path: 'reservar',
         loadChildren: () =>
@@ -38,56 +36,21 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/authentication/authentication.routes')
             .then(m => m.AUTHENTICATION_ROUTES)
-      },
-      {
-        path: 'profile',
-
-        loadChildren: () =>
-          import('./features/profile/profile.routes'
-          ).then(
-            m => m.PROFILE_ROUTES
-          )
       }
     ]
   },
-
-  // ============================================================
-  // AUTHENTICATED PANEL
-  // ============================================================
-
   {
     path: 'panel',
     loadChildren: () =>
       import('./features/panel/panel.routes')
         .then(m => m.PANEL_ROUTES)
   },
-
-  // ============================================================
-  // FALLBACK
-  // ============================================================
-
-
-  /*
-   * Las rutas privadas de cliente y administrador deben agregarse aquí cuando sus módulos estén definidos.
-   *
-   * Ejemplo de protección:
-   *
-   * {
-   *   path: 'admin',
-   *   canActivate: [authGuard, roleGuard],
-   *   data: { role: 'ADMIN' },
-   *   loadChildren: () => ...
-   * }
-   *
-   * No activar hasta confirmar el módulo/ruta real.
-   */
-
-
-
-
-
-
-
+  {
+    path: 'profile',
+    loadChildren: () =>
+      import('./features/profile/profile.routes')
+        .then(m => m.PROFILE_ROUTES)
+  },
   {
     path: '**',
     redirectTo: ''
