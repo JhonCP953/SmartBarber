@@ -1,41 +1,56 @@
 <div class="panel-shell">
 
+    <!-- OVERLAY MOBILE -->
     <div *ngIf="mobileMenuOpen()" class="mobile-overlay" (click)="closeMobileMenu()" aria-hidden="true">
     </div>
 
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
     <aside class="panel-sidebar" [class.collapsed]="sidebarCollapsed()" [class.mobile-open]="mobileMenuOpen()">
 
+
+        <!-- USUARIO + BOTÓN MENÚ -->
+
         <div class="sidebar-brand">
 
-            <a routerLink="/panel/home" class="brand-link" (click)="closeMobileMenu()">
+            <div class="sidebar-user-summary">
 
-                <img src="/logo.png" alt="SmartBarber" class="brand-logo">
+                <div class="user-avatar" aria-hidden="true">
 
-                <div class="brand-copy" *ngIf="!sidebarCollapsed()">
+                    {{ getInitials(summary()?.userName || '') }}
+
+                </div>
+
+
+                <div class="user-information" *ngIf="!sidebarCollapsed()">
 
                     <strong>
-                        SMARTBARBER
+                        {{ summary()?.userName }}
                     </strong>
 
                     <span>
-                        Barbería &amp; Salón
+                        {{ summary()?.roleLabel }}
                     </span>
 
                 </div>
 
-            </a>
+            </div>
 
 
-            <!-- BOTÓN 3 RAYITAS -->
+            <!-- TRES RAYAS -->
 
-            <button type="button" class="sidebar-toggle" (click)="toggleSidebar()" [attr.aria-label]="sidebarCollapsed()
-                    ? 'Expandir menú'
-                    : 'Contraer menú'" [attr.title]="sidebarCollapsed()
-                    ? 'Expandir menú'
-                    : 'Contraer menú'">
+            <button type="button" class="sidebar-toggle" (click)="toggleSidebar()" [attr.aria-label]="
+                    sidebarCollapsed()
+                        ? 'Expandir menú'
+                        : 'Contraer menú'
+                " [attr.title]="
+                    sidebarCollapsed()
+                        ? 'Expandir menú'
+                        : 'Contraer menú'
+                ">
 
                 <span></span>
                 <span></span>
@@ -46,30 +61,9 @@
         </div>
 
 
-        <!-- USUARIO SIDEBAR -->
-
-        <div class="sidebar-user">
-
-            <div class="user-avatar">
-                {{ getInitials(summary()?.userName || '') }}
-            </div>
-
-            <div class="user-information" *ngIf="!sidebarCollapsed()">
-
-                <strong>
-                    {{ summary()?.userName }}
-                </strong>
-
-                <span>
-                    {{ summary()?.roleLabel }}
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- NAVEGACIÓN -->
+        <!-- =================================================
+             NAVEGACIÓN
+        ================================================== -->
 
         <nav class="panel-navigation" aria-label="Navegación principal">
 
@@ -97,6 +91,8 @@
                         ">
 
 
+                        <!-- ICONO -->
+
                         <span class="navigation-icon" aria-hidden="true">
 
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -112,12 +108,16 @@
                         </span>
 
 
+                        <!-- TEXTO -->
+
                         <span class="navigation-label" *ngIf="!sidebarCollapsed()">
 
                             {{ item.label }}
 
                         </span>
 
+
+                        <!-- PRÓXIMAMENTE -->
 
                         <span class="navigation-status" *ngIf="
                                 !sidebarCollapsed() &&
@@ -139,19 +139,24 @@
     </aside>
 
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
 
     <main class="panel-main">
 
 
-        <!-- TOPBAR -->
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
 
         <header class="panel-topbar">
+
 
             <div class="topbar-left">
 
 
-                <!-- MOBILE -->
+                <!-- MENÚ MOBILE -->
 
                 <button type="button" class="mobile-menu-button" (click)="toggleMobileMenu()" aria-label="Abrir menú">
 
@@ -177,7 +182,9 @@
             </div>
 
 
-            <!-- USUARIO + AJUSTES -->
+            <!-- =================================================
+                 USUARIO SUPERIOR
+            ================================================== -->
 
             <div class="topbar-right">
 
@@ -210,39 +217,46 @@
                 </div>
 
 
-                <!-- MENU AJUSTES -->
+                <!-- =================================================
+                     AJUSTES
+                ================================================== -->
 
                 <div class="user-menu-wrapper" (click)="$event.stopPropagation()">
 
 
-                    <button type="button" class="settings-button" [class.open]="
-                            userMenuOpen()
-                        " (click)="
-                            toggleUserMenu()
-                        " aria-label="Abrir menú de usuario" [attr.aria-expanded]="
-                            userMenuOpen()
-                        ">
+                    <button type="button" class="settings-button" [class.open]="userMenuOpen()"
+                        (click)="toggleUserMenu()" aria-label="Abrir menú de usuario"
+                        [attr.aria-expanded]="userMenuOpen()">
 
+
+                        <!-- ICONO DE AJUSTES / CONTROLES -->
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 
-                            <circle cx="12" cy="12" r="3">
+                            <path d="M4 7h16"></path>
+
+                            <path d="M4 17h16"></path>
+
+                            <circle cx="9" cy="7" r="2">
                             </circle>
 
-                            <path
-                                d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.08a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.9A1.7 1.7 0 0 0 8.46 10a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.56V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03h.04v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z">
-                            </path>
+                            <circle cx="15" cy="17" r="2">
+                            </circle>
 
                         </svg>
 
                     </button>
 
 
-                    <!-- DROPDOWN -->
+                    <!-- =================================================
+                         DROPDOWN USUARIO
+                    ================================================== -->
 
                     <div *ngIf="userMenuOpen()" class="user-dropdown" role="menu">
 
+
+                        <!-- CABECERA -->
 
                         <div class="user-dropdown-header">
 
@@ -297,6 +311,7 @@
 
                             </span>
 
+
                             <span>
                                 Perfil
                             </span>
@@ -348,14 +363,23 @@
         </header>
 
 
-        <!-- CONTENIDO -->
+        <!-- =================================================
+             CONTENIDO
+        ================================================== -->
 
         <div class="panel-content">
+
+
+            <!-- =================================================
+                 HOME DEL PANEL
+            ================================================== -->
 
             <section class="panel-home" *ngIf="isPanelHome()">
 
 
-                <!-- PANEL DE CONTROL -->
+                <!-- =================================================
+                     PANEL DE CONTROL
+                ================================================== -->
 
                 <section class="welcome-card">
 
@@ -366,11 +390,13 @@
                         </span>
 
                         <h1>
+
                             {{ summary()?.title }}
 
                             <span aria-hidden="true">
                                 👋
                             </span>
+
                         </h1>
 
                         <p>
@@ -389,10 +415,14 @@
                 </section>
 
 
-                <!-- MÉTRICAS -->
+                <!-- =================================================
+                     MÉTRICAS
+                ================================================== -->
 
                 <section class="metrics-grid" aria-label="Indicadores">
 
+
+                    <!-- TURNOS -->
 
                     <article class="metric-card">
 
@@ -423,6 +453,8 @@
 
                     </article>
 
+
+                    <!-- BARBEROS -->
 
                     <article class="metric-card">
 
@@ -459,6 +491,8 @@
                     </article>
 
 
+                    <!-- INGRESOS -->
+
                     <article class="metric-card">
 
                         <span class="metric-icon">
@@ -491,7 +525,9 @@
                 </section>
 
 
-                <!-- AGENDA / ORGANIZACIÓN / ANALÍTICA -->
+                <!-- =================================================
+                     AGENDA / ORGANIZACIÓN / ANALÍTICA
+                ================================================== -->
 
                 <section class="dashboard-grid">
 
@@ -733,6 +769,7 @@
                                             navigateToItem(item)
                                         ">
 
+
                                         <span>
 
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -748,6 +785,7 @@
                                             </svg>
 
                                         </span>
+
 
                                         <small>
                                             {{ item.label }}
@@ -768,6 +806,8 @@
             </section>
 
 
+            <!-- ROUTER CHILDREN -->
+
             <router-outlet></router-outlet>
 
         </div>
@@ -775,7 +815,9 @@
     </main>
 
 
-    <!-- MODAL PRÓXIMAMENTE -->
+    <!-- =====================================================
+         MODAL PRÓXIMAMENTE
+    ====================================================== -->
 
     <div *ngIf="selectedComingSoon()" class="modal-backdrop" (click)="closeComingSoon()">
 

@@ -3,7 +3,9 @@ import {
   inject
 } from '@angular/core';
 
-import { SessionService } from '../../../../core/auth/services/session.service';
+import {
+  SessionService
+} from '../../../../core/auth/services/session.service';
 
 import {
   PanelNavigationGroup,
@@ -25,9 +27,10 @@ export class PanelNavigationService {
   private readonly groups:
     PanelNavigationGroup[] = [
 
-      /* =====================================================
-         GENERAL
-      ===================================================== */
+
+      // =====================================================
+      // GENERAL
+      // =====================================================
 
       {
         id: 'general',
@@ -52,7 +55,8 @@ export class PanelNavigationService {
 
             icon: 'home',
 
-            route: '/panel/home',
+            route:
+              '/panel/home',
 
             roles: [
               'CLIENT',
@@ -60,10 +64,13 @@ export class PanelNavigationService {
               'ADMIN'
             ],
 
-            status: 'AVAILABLE',
+            status:
+              'AVAILABLE',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'profile',
@@ -75,7 +82,8 @@ export class PanelNavigationService {
 
             icon: 'profile',
 
-            route: '/panel/profile',
+            route:
+              '/panel/profile',
 
             roles: [
               'CLIENT',
@@ -83,18 +91,20 @@ export class PanelNavigationService {
               'ADMIN'
             ],
 
-            status: 'AVAILABLE',
+            status:
+              'AVAILABLE',
 
-            visible: true
+            visible:
+              true
           }
 
         ]
       },
 
 
-      /* =====================================================
-         CLIENTE
-      ===================================================== */
+      // =====================================================
+      // CLIENTE
+      // =====================================================
 
       {
         id: 'client',
@@ -117,16 +127,20 @@ export class PanelNavigationService {
 
             icon: 'calendar',
 
-            route: '/reservar',
+            route:
+              '/panel/reservas',
 
             roles: [
               'CLIENT'
             ],
 
-            status: 'AVAILABLE',
+            status:
+              'AVAILABLE',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'virtual-queue',
@@ -138,16 +152,20 @@ export class PanelNavigationService {
 
             icon: 'queue',
 
-            route: '/panel/virtual-queue',
+            route:
+              '/panel/virtual-queue',
 
             roles: [
               'CLIENT'
             ],
 
-            status: 'COMING_SOON',
+            status:
+              'COMING_SOON',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'reservation-history',
@@ -159,16 +177,20 @@ export class PanelNavigationService {
 
             icon: 'history',
 
-            route: '/panel/history',
+            route:
+              '/panel/history',
 
             roles: [
               'CLIENT'
             ],
 
-            status: 'COMING_SOON',
+            status:
+              'COMING_SOON',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'notifications',
@@ -180,24 +202,27 @@ export class PanelNavigationService {
 
             icon: 'bell',
 
-            route: '/panel/notifications',
+            route:
+              '/panel/notifications',
 
             roles: [
               'CLIENT'
             ],
 
-            status: 'COMING_SOON',
+            status:
+              'COMING_SOON',
 
-            visible: true
+            visible:
+              true
           }
 
         ]
       },
 
 
-      /* =====================================================
-         BARBERO
-      ===================================================== */
+      // =====================================================
+      // BARBERO
+      // =====================================================
 
       {
         id: 'barber',
@@ -220,16 +245,20 @@ export class PanelNavigationService {
 
             icon: 'calendar',
 
-            route: '/panel/agenda',
+            route:
+              '/panel/agenda',
 
             roles: [
               'BARBER'
             ],
 
-            status: 'COMING_SOON',
+            status:
+              'COMING_SOON',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'barber-queue',
@@ -241,16 +270,20 @@ export class PanelNavigationService {
 
             icon: 'queue',
 
-            route: '/panel/virtual-queue',
+            route:
+              '/panel/virtual-queue',
 
             roles: [
               'BARBER'
             ],
 
-            status: 'COMING_SOON',
+            status:
+              'COMING_SOON',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'barber-clients',
@@ -262,24 +295,27 @@ export class PanelNavigationService {
 
             icon: 'users',
 
-            route: '/panel/clients',
+            route:
+              '/panel/clients',
 
             roles: [
               'BARBER'
             ],
 
-            status: 'COMING_SOON',
+            status:
+              'COMING_SOON',
 
-            visible: true
+            visible:
+              true
           }
 
         ]
       },
 
 
-      /* =====================================================
-         ADMINISTRADOR
-      ===================================================== */
+      // =====================================================
+      // ADMINISTRADOR
+      // =====================================================
 
       {
         id: 'admin',
@@ -298,20 +334,24 @@ export class PanelNavigationService {
             label: 'Mi barbería',
 
             description:
-              'Configura la información de tu barbería.',
+              'Configura tu barbería, horarios y días festivos.',
 
             icon: 'home',
 
-            route: '/panel/barbershop',
+            route:
+              '/panel/barbershop',
 
             roles: [
               'ADMIN'
             ],
 
-            status: 'AVAILABLE',
+            status:
+              'AVAILABLE',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'barbers',
@@ -323,16 +363,20 @@ export class PanelNavigationService {
 
             icon: 'users',
 
-            route: '/panel/users',
+            route:
+              '/panel/users',
 
             roles: [
               'ADMIN'
             ],
 
-            status: 'AVAILABLE',
+            status:
+              'AVAILABLE',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'services',
@@ -344,37 +388,20 @@ export class PanelNavigationService {
 
             icon: 'scissors',
 
-            route: '/barberShop',
+            route:
+              '/panel/services',
 
             roles: [
               'ADMIN'
             ],
 
-            status: 'AVAILABLE',
+            status:
+              'AVAILABLE',
 
-            visible: true
+            visible:
+              true
           },
 
-          {
-            id: 'schedule',
-
-            label: 'Horarios',
-
-            description:
-              'Configura horarios y días de atención.',
-
-            icon: 'clock',
-
-            route: '/panel/barbershop',
-
-            roles: [
-              'ADMIN'
-            ],
-
-            status: 'AVAILABLE',
-
-            visible: true
-          },
 
           {
             id: 'subscription',
@@ -382,20 +409,24 @@ export class PanelNavigationService {
             label: 'Suscripción y pagos',
 
             description:
-              'Consulta la suscripción y el historial de pagos.',
+              'Consulta y administra la suscripción de tu barbería.',
 
             icon: 'wallet',
 
-            route: '/panel/subscription',
+            route:
+              '/panel/subscription',
 
             roles: [
               'ADMIN'
             ],
 
-            status: 'AVAILABLE',
+            status:
+              'AVAILABLE',
 
-            visible: true
+            visible:
+              true
           },
+
 
           {
             id: 'reports',
@@ -407,15 +438,18 @@ export class PanelNavigationService {
 
             icon: 'chart',
 
-            route: '/panel/reports',
+            route:
+              '/panel/reports',
 
             roles: [
               'ADMIN'
             ],
 
-            status: 'COMING_SOON',
+            status:
+              'COMING_SOON',
 
-            visible: true
+            visible:
+              true
           }
 
         ]
@@ -424,36 +458,50 @@ export class PanelNavigationService {
     ];
 
 
-  getNavigation(): PanelNavigationGroup[] {
+  // =====================================================
+  // NAVEGACIÓN SEGÚN ROL
+  // =====================================================
+
+  getNavigation():
+    PanelNavigationGroup[] {
 
     const role =
       this.sessionService
         .currentSession
         ?.role;
 
+
     if (!role) {
+
       return [];
     }
+
 
     return this.groups
 
       .filter(
         group =>
-          group.roles.includes(role)
+          group.roles.includes(
+            role
+          )
       )
 
-      .map(group => ({
+      .map(
+        group => ({
 
-        ...group,
+          ...group,
 
-        items:
-          group.items.filter(
-            item =>
-              item.visible &&
-              item.roles.includes(role)
-          )
+          items:
+            group.items.filter(
+              item =>
+                item.visible &&
+                item.roles.includes(
+                  role
+                )
+            )
 
-      }))
+        })
+      )
 
       .filter(
         group =>
@@ -462,47 +510,69 @@ export class PanelNavigationService {
   }
 
 
-  getAvailableItems(): PanelNavigationItem[] {
+  // =====================================================
+  // DISPONIBLES
+  // =====================================================
+
+  getAvailableItems():
+    PanelNavigationItem[] {
 
     return this.getNavigation()
 
       .flatMap(
-        group => group.items
+        group =>
+          group.items
       )
 
       .filter(
         item =>
-          item.status === 'AVAILABLE'
+          item.status ===
+          'AVAILABLE'
       );
   }
 
 
-  getComingSoonItems(): PanelNavigationItem[] {
+  // =====================================================
+  // PRÓXIMAMENTE
+  // =====================================================
+
+  getComingSoonItems():
+    PanelNavigationItem[] {
 
     return this.getNavigation()
 
       .flatMap(
-        group => group.items
+        group =>
+          group.items
       )
 
       .filter(
         item =>
-          item.status === 'COMING_SOON'
+          item.status ===
+          'COMING_SOON'
       );
   }
 
+
+  // =====================================================
+  // VALIDACIÓN DE ROL
+  // =====================================================
 
   canAccessRole(
     roles: UserRole[]
-  ): boolean {
+  ):
+    boolean {
 
     const role =
       this.sessionService
         .currentSession
         ?.role;
 
+
     return !!role &&
-      roles.includes(role);
+      roles.includes(
+        role
+      );
   }
 
 }

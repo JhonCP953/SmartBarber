@@ -1,157 +1,227 @@
-import { Routes } from '@angular/router';
-import { SubscriptionComponent } from './components/subscription/subscription.component';
-import { MySubscriptionComponent } from './components/my-subscription/my-subscription.component';
+import {
+    Routes
+} from '@angular/router';
 
 
-import { SubscriptionRepository } from './domain/repositories/subscription.repository';
-import { SubscriptionApiService } from './infrastructure/api/subscription-api.service';
+// =====================================================
+// REPOSITORIOS
+// =====================================================
 
-import { GetCurrentSubscriptionUseCase } from './application/use-cases/get-current-subscription.use-case';
-import { GetSubscriptionPlansUseCase } from './application/use-cases/get-subscription-plans.use-case';
-import { ChangeSubscriptionPlanUseCase } from './application/use-cases/change-subscription-plan.use-case';
-import { CancelSubscriptionUseCase } from './application/use-cases/cancel-subscription.use-case';
+import {
+    SubscriptionRepository
+} from './domain/repositories/subscription.repository';
 
-import { PaymentRepository } from './domain/repositories/payment.repository';
-import { GetPaymentHistoryUseCase } from './application/use-cases/get-payment-history.use-case';
-import { PaymentApiService } from './infrastructure/api/payment-api.service';
+import {
+    SubscriptionApiService
+} from './infrastructure/api/subscription-api.service';
 
-import { RenewSubscriptionUseCase } from './application/use-cases/renew-subscription.use-case';
+import {
+    PaymentRepository
+} from './domain/repositories/payment.repository';
 
-export const SUBSCRIPTION_ROUTES: Routes = [
-
-  /*
-   * PS-19
-   * Estado de la suscripción
-   */
-  {
-    path: '',
-
-    loadComponent: () =>
-      import(
-        './components/subscription/subscription.component'
-      )
-        .then(
-          m =>
-            m.SubscriptionComponent
-        )
-  },
-
-  /*
- * PS-15
- * Renovación
- */
-
-  {
-    path: 'renew',
-    providers: [
-      { provide: SubscriptionRepository, useClass: SubscriptionApiService },
-      GetCurrentSubscriptionUseCase,
-      RenewSubscriptionUseCase
-    ],
-    loadComponent: () =>
-      import('./pages/renew-subscription/renew-subscription.component')
-        .then(m => m.RenewSubscriptionComponent)
-  },
-
-  /*
-   * PS-16
-   * Cambio de plan
-   */
-  {
-    path: 'change-plan',
-
-    providers: [
-
-      {
-        provide:
-          SubscriptionRepository,
-
-        useClass:
-          SubscriptionApiService
-      },
-
-      GetCurrentSubscriptionUseCase,
-
-      GetSubscriptionPlansUseCase,
-
-      ChangeSubscriptionPlanUseCase
-
-    ],
-
-    loadComponent: () =>
-      import(
-        './pages/change-plan/change-plan.component'
-      )
-        .then(
-          m =>
-            m.ChangePlanComponent
-        )
-  },
+import {
+    PaymentApiService
+} from './infrastructure/api/payment-api.service';
 
 
-  /*
-   * PS-18
-   * Historial de pagos
-   */
-  {
-    path: 'payment-history',
+// =====================================================
+// USE CASES - SUSCRIPCIÓN
+// =====================================================
 
-    providers: [
+import {
+    GetCurrentSubscriptionUseCase
+} from './application/use-cases/get-current-subscription.use-case';
 
-      {
-        provide:
-          PaymentRepository,
+import {
+    GetSubscriptionPlansUseCase
+} from './application/use-cases/get-subscription-plans.use-case';
 
-        useClass:
-          PaymentApiService
-      },
+import {
+    ChangeSubscriptionPlanUseCase
+} from './application/use-cases/change-subscription-plan.use-case';
 
-      GetPaymentHistoryUseCase
+import {
+    CancelSubscriptionUseCase
+} from './application/use-cases/cancel-subscription.use-case';
 
-    ],
-
-    loadComponent: () =>
-      import(
-        './pages/payment-history/payment-history.component'
-      )
-        .then(
-          m =>
-            m.PaymentHistoryComponent
-        )
-  },
+import {
+    RenewSubscriptionUseCase
+} from './application/use-cases/renew-subscription.use-case';
 
 
-  /*
-   * PS-17
-   * Cancelación
-   */
-  {
-    path: 'cancel',
+// =====================================================
+// USE CASES - PAGOS
+// =====================================================
 
-    providers: [
+import {
+    GetPaymentHistoryUseCase
+} from './application/use-cases/get-payment-history.use-case';
 
-      {
-        provide:
-          SubscriptionRepository,
 
-        useClass:
-          SubscriptionApiService
-      },
+export const SUBSCRIPTION_ROUTES:
+    Routes = [
 
-      GetCurrentSubscriptionUseCase,
 
-      CancelSubscriptionUseCase
+    // =================================================
+    // ESTADO ACTUAL
+    // =================================================
 
-    ],
+    {
+        path: '',
 
-    loadComponent: () =>
-      import(
-        './pages/cancel-subscription/cancel-subscription.component'
-      )
-        .then(
-          m =>
-            m.CancelSubscriptionComponent
-        )
-  }
+        providers: [
+
+            {
+                provide:
+                    SubscriptionRepository,
+
+                useClass:
+                    SubscriptionApiService
+            },
+
+            GetCurrentSubscriptionUseCase
+
+        ],
+
+        loadComponent: () =>
+            import(
+                './pages/subscription-status/subscription-status.component'
+            ).then(
+                m =>
+                    m.SubscriptionStatusComponent
+            )
+    },
+
+
+    // =================================================
+    // RENOVAR
+    // =================================================
+
+    {
+        path: 'renew',
+
+        providers: [
+
+            {
+                provide:
+                    SubscriptionRepository,
+
+                useClass:
+                    SubscriptionApiService
+            },
+
+            GetCurrentSubscriptionUseCase,
+
+            RenewSubscriptionUseCase
+
+        ],
+
+        loadComponent: () =>
+            import(
+                './pages/renew-subscription/renew-subscription.component'
+            ).then(
+                m =>
+                    m.RenewSubscriptionComponent
+            )
+    },
+
+
+    // =================================================
+    // CAMBIAR PLAN
+    // =================================================
+
+    {
+        path: 'change-plan',
+
+        providers: [
+
+            {
+                provide:
+                    SubscriptionRepository,
+
+                useClass:
+                    SubscriptionApiService
+            },
+
+            GetCurrentSubscriptionUseCase,
+
+            GetSubscriptionPlansUseCase,
+
+            ChangeSubscriptionPlanUseCase
+
+        ],
+
+        loadComponent: () =>
+            import(
+                './pages/change-plan/change-plan.component'
+            ).then(
+                m =>
+                    m.ChangePlanComponent
+            )
+    },
+
+
+    // =================================================
+    // HISTORIAL DE PAGOS
+    // =================================================
+
+    {
+        path: 'payment-history',
+
+        providers: [
+
+            {
+                provide:
+                    PaymentRepository,
+
+                useClass:
+                    PaymentApiService
+            },
+
+            GetPaymentHistoryUseCase
+
+        ],
+
+        loadComponent: () =>
+            import(
+                './pages/payment-history/payment-history.component'
+            ).then(
+                m =>
+                    m.PaymentHistoryComponent
+            )
+    },
+
+
+    // =================================================
+    // CANCELAR
+    // =================================================
+
+    {
+        path: 'cancel',
+
+        providers: [
+
+            {
+                provide:
+                    SubscriptionRepository,
+
+                useClass:
+                    SubscriptionApiService
+            },
+
+            GetCurrentSubscriptionUseCase,
+
+            CancelSubscriptionUseCase
+
+        ],
+
+        loadComponent: () =>
+            import(
+                './pages/cancel-subscription/cancel-subscription.component'
+            ).then(
+                m =>
+                    m.CancelSubscriptionComponent
+            )
+    }
 
 ];
