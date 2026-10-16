@@ -1,376 +1,87 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    computed,
-    inject,
-    OnInit,
-    signal
-} from '@angular/core';
-
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-
-import {
-    GetCurrentSubscriptionUseCase
-} from '../../application/use-cases/get-current-subscription.use-case';
-
-import {
-    CurrentSubscription,
-    SubscriptionStatus
-} from '../../domain/models/current-subscription.model';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SubscriptionService, SubscriptionPayload } from '../../infrastructure/subscription-ws.service';
 
 @Component({
-    selector: 'app-subscription-status',
-
-    standalone: true,
-
-    imports: [
-        CommonModule,
-        RouterLink
-    ],
-
-    templateUrl:
-        './subscription-status.component.html',
-
-    styleUrl:
-        './subscription-status.component.css',
-
-    changeDetection:
-        ChangeDetectionStrategy.OnPush
+  selector: 'app-subscription-status',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './subscription-status.component.html',
+  styleUrls: ['./subscription-status.component.css']
 })
-export class SubscriptionStatusComponent
-    implements OnInit {
+export class SubscriptionStatusComponent implements OnInit, OnDestroy {
+  subscriptionForm!: FormGroup;
+  isSubmitting = false;
 
-    private readonly getCurrentSubscriptionUseCase =
-        inject(GetCurrentSubscriptionUseCase);
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly subscriptionService: SubscriptionService
+  ) {}
 
-    readonly currentSubscription =
-        signal<CurrentSubscription | null>(null);
+  ngOnInit(): void {
+    this.initForm();
+    
+    // Conectar al WebSocket de pagos al iniciar
+    this.subscriptionService.connectWebSocket();
 
-    readonly loading =
-        signal(false);
+    // Escuchar actualizaciones en tiempo real desde el WebSocket
+    this.subscriptionService.getPaymentStatus().subscribe({
+      next: (wsData) => {
+        console.log('📡 [WEBSOCKET REALTIME]:', wsData);
+      }
+    });
+  }
 
-    readonly errorMessage =
-        signal<string | null>(null);
+  ngOnDestroy(): void {
+    // Cerrar WebSocket al salir de la pantalla
+    this.subscriptionService.disconnectWebSocket();
+  }
 
-    readonly daysRemaining =
-        computed(() => {
+  private initForm(): void {
+    this.subscriptionForm = this.fb.group({
+      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      cardNumber: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
+      expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/)]],
+      cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
+      autoRenew: [true]
+    });
+  }
 
-            const subscription =
-                this.currentSubscription();
-
-            if (!subscription) {
-                return null;
-            }
-
-            return this.calculateDaysRemaining(
-                subscription.renewalDate
-            );
-
-        });
-
-    readonly isExpiringSoon =
-        computed(() => {
-
-            const days =
-                this.daysRemaining();
-
-            return (
-                days !== null &&
-                days >= 0 &&
-                days <= 7 &&
-                this.isActive()
-            );
-
-        });
-
-    readonly statusLabel =
-        computed(() => {
-
-            const status =
-                this.currentSubscription()?.status;
-
-            return status
-                ? this.getStatusLabel(status)
-                : '';
-
-        });
-
-    readonly statusDescription =
-        computed(() => {
-
-            const status =
-                this.currentSubscription()?.status;
-
-            switch (status) {
-
-                case 'ACTIVE':
-                    return 'La suscripción se encuentra activa.';
-
-                case 'PENDING':
-                    return 'La suscripción está pendiente de activación.';
-
-                case 'PAST_DUE':
-                    return 'El pago de la suscripción está pendiente o atrasado.';
-
-                case 'PENDING_CANCELLATION':
-                    return 'La suscripción está programada para finalizar.';
-
-                case 'CANCELLED':
-                    return 'La suscripción se encuentra cancelada.';
-
-                case 'EXPIRED':
-                    return 'La suscripción ha vencido.';
-
-                default:
-                    return '';
-
-            }
-
-        });
-
-    readonly canRenew =
-        computed(() => {
-
-            const status =
-                this.currentSubscription()?.status;
-
-            return (
-                status === 'ACTIVE' ||
-                status === 'PAST_DUE' ||
-                status === 'EXPIRED'
-            );
-
-        });
-
-    readonly canChangePlan =
-        computed(() => {
-
-            const status =
-                this.currentSubscription()?.status;
-
-            return status === 'ACTIVE';
-
-        });
-
-    readonly canCancel =
-        computed(() => {
-
-            const status =
-                this.currentSubscription()?.status;
-
-            return status === 'ACTIVE';
-
-        });
-
-    ngOnInit(): void {
-
-        this.loadSubscription();
-
+  onSubmit(): void {
+    if (this.subscriptionForm.invalid) {
+      alert('⚠️ Por favor completa correctamente todos los campos de pago.');
+      this.subscriptionForm.markAllAsTouched();
+      return;
     }
 
-    reload(): void {
-
-        this.loadSubscription();
-
-    }
-
-    isActive(): boolean {
-
-        return (
-            this.currentSubscription()?.status ===
-            'ACTIVE'
-        );
-
-    }
-
-    getStatusLabel(
-        status: SubscriptionStatus
-    ): string {
-
-        switch (status) {
-
-            case 'ACTIVE':
-                return 'Activa';
-
-            case 'PENDING':
-                return 'Pendiente';
-
-            case 'PAST_DUE':
-                return 'Pago pendiente';
-
-            case 'PENDING_CANCELLATION':
-                return 'Cancelación programada';
-
-            case 'CANCELLED':
-                return 'Cancelada';
-
-            case 'EXPIRED':
-                return 'Vencida';
-
-            default:
-                return status;
-
-        }
-
-    }
-
-    getStatusClass(
-        status: SubscriptionStatus
-    ): string {
-
-        switch (status) {
-
-            case 'ACTIVE':
-                return 'status-active';
-
-            case 'PENDING':
-                return 'status-pending';
-
-            case 'PAST_DUE':
-                return 'status-past-due';
-
-            case 'PENDING_CANCELLATION':
-                return 'status-pending-cancellation';
-
-            case 'CANCELLED':
-                return 'status-cancelled';
-
-            case 'EXPIRED':
-                return 'status-expired';
-
-            default:
-                return '';
-
-        }
-
-    }
-
-    formatCurrency(
-        value: number,
-        currency: string
-    ): string {
-
-        return new Intl.NumberFormat(
-            'es-CO',
-            {
-                style: 'currency',
-                currency,
-                maximumFractionDigits: 0
-            }
-        ).format(value);
-
-    }
-
-    formatDate(
-        date: string
-    ): string {
-
-        return new Intl.DateTimeFormat(
-            'es-CO',
-            {
-                dateStyle: 'long'
-            }
-        ).format(
-            new Date(date)
-        );
-
-    }
-
-    private loadSubscription(): void {
-
-        this.loading.set(true);
-        this.errorMessage.set(null);
-
-        this.getCurrentSubscriptionUseCase
-            .execute()
-            .subscribe({
-
-                next: (subscription) => {
-
-                    this.currentSubscription.set(
-                        subscription
-                    );
-
-                    this.loading.set(false);
-
-                },
-
-                error: (error: unknown) => {
-
-                    this.loading.set(false);
-
-                    this.errorMessage.set(
-                        this.getErrorMessage(error)
-                    );
-
-                }
-
-            });
-
-    }
-
-    private calculateDaysRemaining(
-        renewalDate: string
-    ): number {
-
-        const now =
-            new Date();
-
-        const expiration =
-            new Date(renewalDate);
-
-        const difference =
-            expiration.getTime() -
-            now.getTime();
-
-        return Math.max(
-            0,
-            Math.ceil(
-                difference /
-                (1000 * 60 * 60 * 24)
-            )
-        );
-
-    }
-
-    private getErrorMessage(
-        error: unknown
-    ): string {
-
-        const response =
-            error as {
-                error?: {
-                    code?: string;
-                    message?: string;
-                };
-            };
-
-        switch (
-        response.error?.code
-        ) {
-
-            case 'SUBSCRIPTION_NOT_FOUND':
-
-                return (
-                    'No se encontró una suscripción asociada a la barbería.'
-                );
-
-            case 'UNAUTHORIZED':
-
-                return (
-                    'No tienes autorización para consultar la suscripción.'
-                );
-
-            default:
-
-                return (
-                    response.error?.message ??
-                    'No fue posible consultar el estado de la suscripción.'
-                );
-
-        }
-
-    }
-
+    this.isSubmitting = true;
+    const formVal = this.subscriptionForm.value;
+
+    const payload: SubscriptionPayload = {
+      fullName: formVal.fullName,
+      email: formVal.email,
+      cardNumber: formVal.cardNumber,
+      expirationDate: formVal.expirationDate,
+      cvv: formVal.cvv,
+      autoRenew: formVal.autoRenew,
+      planName: 'PLAN BÁSICO',
+      price: 30000
+    };
+
+    this.subscriptionService.createSubscription(payload).subscribe({
+      next: (res) => {
+        console.log('🚀 [HTTP SUCCESS]:', res);
+        alert('¡Suscripción registrada exitosamente! 💈💳');
+        this.isSubmitting = false;
+        this.subscriptionForm.reset({ autoRenew: true });
+      },
+      error: (err) => {
+        console.error('❌ [HTTP ERROR]:', err);
+        alert('Hubo un inconveniente al conectar con el servidor de pago.');
+        this.isSubmitting = false;
+      }
+    });
+  }
 }

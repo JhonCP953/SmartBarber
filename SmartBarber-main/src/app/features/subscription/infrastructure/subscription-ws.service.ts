@@ -1,55 +1,66 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+
+export interface SubscriptionPayload {
+  fullName: string;
+  email: string;
+  cardNumber: string;
+  expirationDate: string;
+  cvv: string;
+  autoRenew: boolean;
+  planName: string;
+  price: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class SubscriptionWsService {
-  getSubscriptionData() {
-    throw new Error('Method not implemented.');
-  }
+export class SubscriptionService {
+  private apiUrl = 'http://localhost:8080/subscription-barbershop-service/create';
+  private wsUrl = 'ws://localhost:8080/ws/payment';
+  
   private socket$!: WebSocket;
-  private messageSubject = new Subject<any>();
+  private paymentStatusSubject = new Subject<any>();
 
-  private wsUrl = 'ws://localhost:8080/ws/subscriptions';
+  constructor(private readonly http: HttpClient) {}
 
-  constructor() {
-    this.connect();
+  createSubscription(payload: SubscriptionPayload): Observable<any> {
+    return this.http.post<any>(this.apiUrl, payload);
   }
 
-  public connect(): void {
+  connectWebSocket(): void {
     this.socket$ = new WebSocket(this.wsUrl);
 
-    this.socket$.onopen = (event) => {
-      console.log('Conectado al WebSocket de suscripciones', event);
+    this.socket$.onopen = () => {
+      console.log('🟢 Conectado al WebSocket de pagos: ws://localhost:8080/ws/payment');
     };
 
     this.socket$.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      this.messageSubject.next(data);
+      try {
+        const data = JSON.parse(event.data);
+        this.paymentStatusSubject.next(data);
+      } catch (e) {
+        this.paymentStatusSubject.next(event.data);
+      }
     };
 
     this.socket$.onerror = (error) => {
-      console.error('Error en WebSocket:', error);
+      console.error('❌ Error en WebSocket:', error);
     };
 
-    this.socket$.onclose = (event) => {
-      console.warn('Conexión WebSocket cerrada. Reconectando...', event);
-      setTimeout(() => this.connect(), 3000); // Auto-reconexión
+    this.socket$.onclose = () => {
+      console.warn('⚠️ WebSocket desconectado');
     };
   }
 
-  // Enviar datos de la suscripción al backend por el socket
-  public sendSubscription(data: any): void {
-    if (this.socket$.readyState === WebSocket.OPEN) {
-      this.socket$.send(JSON.stringify(data));
-    } else {
-      console.error('El WebSocket no está abierto. Estado:', this.socket$.readyState);
+  getPaymentStatus(): Observable<any> {
+    return this.paymentStatusSubject.asObservable();
+  }
+
+  disconnectWebSocket(): void {
+    if (this.socket$) {
+      this.socket$.close();
     }
-  }
-
-  // Escuchar respuestas del backend
-  public getMessages(): Observable<any> {
-    return this.messageSubject.asObservable();
   }
 }
