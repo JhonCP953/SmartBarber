@@ -8,17 +8,24 @@ export interface SubscriptionPayload {
   cardNumber: string;
   expirationDate: string;
   cvv: string;
-  autoRenew: boolean;
+  automaticRenew: boolean;
   planName: string;
   price: number;
+  barberId: string;
+  subscriptionId: number,
+	status: string,
+	duration: number,
+	type: string,
 }
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class SubscriptionService {
   private apiUrl = 'http://localhost:8080/subscription-barbershop-service/create';
-  private wsUrl = 'ws://localhost:8080/ws/payment';
+  private wsUrl = 'ws://localhost:8080/ws/payment?orderId=';
   
   private socket$!: WebSocket;
   private paymentStatusSubject = new Subject<any>();
@@ -29,18 +36,21 @@ export class SubscriptionService {
     return this.http.post<any>(this.apiUrl, payload);
   }
 
-  connectWebSocket(): void {
+  connectWebSocket(orderId: string): void {
+    this.wsUrl = this.wsUrl.concat(orderId)
     this.socket$ = new WebSocket(this.wsUrl);
 
     this.socket$.onopen = () => {
-      console.log('🟢 Conectado al WebSocket de pagos: ws://localhost:8080/ws/payment');
+      console.log('🟢 Conectado al WebSocket de pagos: ', this.wsUrl);
     };
 
     this.socket$.onmessage = (event) => {
       try {
+        console.log('🟢 Evento recibido: ', event);
         const data = JSON.parse(event.data);
         this.paymentStatusSubject.next(data);
       } catch (e) {
+        console.error('🟢 error capturando el evento' , e);
         this.paymentStatusSubject.next(event.data);
       }
     };

@@ -23,14 +23,14 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
     this.initForm();
     
     // Conectar al WebSocket de pagos al iniciar
-    this.subscriptionService.connectWebSocket();
+    //this.subscriptionService.connectWebSocket();
 
     // Escuchar actualizaciones en tiempo real desde el WebSocket
-    this.subscriptionService.getPaymentStatus().subscribe({
+    /*this.subscriptionService.getPaymentStatus().subscribe({
       next: (wsData) => {
         console.log('📡 [WEBSOCKET REALTIME]:', wsData);
       }
-    });
+    });*/
   }
 
   ngOnDestroy(): void {
@@ -65,9 +65,15 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
       cardNumber: formVal.cardNumber,
       expirationDate: formVal.expirationDate,
       cvv: formVal.cvv,
-      autoRenew: formVal.autoRenew,
+      automaticRenew: formVal.autoRenew,
+      //autoRenew: false,
       planName: 'PLAN BÁSICO',
-      price: 30000
+      price: 30000,
+      barberId: "ce47034d-31fb-4f94-af17-6c868fc371ce",
+      subscriptionId: 1,
+      status: "PENDING",
+      duration: 60,
+      type: "CREATE",
     };
 
     this.subscriptionService.createSubscription(payload).subscribe({
@@ -76,6 +82,12 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
         alert('¡Suscripción registrada exitosamente! 💈💳');
         this.isSubmitting = false;
         this.subscriptionForm.reset({ autoRenew: true });
+        this.subscriptionService.connectWebSocket(res.orderId);
+        this.subscriptionService.getPaymentStatus().subscribe({
+        next: (wsData) => {
+          console.log('📡 [WEBSOCKET REALTIME]:', wsData);
+        }
+    });
       },
       error: (err) => {
         console.error('❌ [HTTP ERROR]:', err);
