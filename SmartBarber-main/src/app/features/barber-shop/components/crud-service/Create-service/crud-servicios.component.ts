@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { BarberServiceService } from '../../../service/barber-service.service';
 
 export interface BarberServicePayload {
+  id?: number;
   barberiaId: string;
   name: string;
   description: string;
@@ -11,6 +12,7 @@ export interface BarberServicePayload {
   price: number;
   offert: boolean;
   special_price: number;
+  status?: boolean;
   isActive?: boolean;
 }
 
@@ -26,8 +28,10 @@ export class BarberServiConfigComponent implements OnInit {
   
   isEditMode = false;
   editingIndex: number | null = null;
+  editingServiceId: number | null = null;
 
   servicesList: BarberServicePayload[] = [];
+  readonly currentBarberiaId = '3563acd0-d8e2-4018-aabf-b47d3d9cde11';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -41,7 +45,7 @@ export class BarberServiConfigComponent implements OnInit {
 
   private initForm(): void {
     this.serviceForm = this.fb.group({
-      barberiaId: ['a9038d25-c8c3-4cfa-8025-b198b1861060', [Validators.required]],
+      barberiaId: [this.currentBarberiaId, [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required]],
       duration: [15, [Validators.required, Validators.min(5)]],
@@ -63,56 +67,101 @@ export class BarberServiConfigComponent implements OnInit {
     });
   }
 
+  // 🟢 Carga directa usando el servicio fuertemente tipado
   loadAllServices(): void {
-    this.barberService.getAllServices().subscribe({
+    this.barberService.getServicesByBarberiaId(this.currentBarberiaId).subscribe({
       next: (data: any) => {
+        console.log('📦 [RAW BACKEND RESPONSE]:', data);
+        
+        // El backend responde un Array [...] como vimos en Insomnia
         const servicesArray = Array.isArray(data) ? data : [data];
+
         this.servicesList = servicesArray.map((item: any) => ({
           ...item,
-          isActive: true
+          // Mapeamos status (de la BD) a isActive (de la vista)
+          isActive: item.status ?? item.isActive ?? true
         }));
-        console.log('✅ Todos los servicios cargados desde la BD:', this.servicesList);
+
+        console.log('✅ Servicios procesados correctamente:', this.servicesList);
       },
       error: (err: any) => {
-        console.error('❌ Error al cargar los servicios:', err);
+        console.error('❌ Error al obtener los servicios del servidor:', err);
       }
     });
   }
-
-  saveService(): void {
+saveService(): void {
     if (this.serviceForm.invalid) {
       alert('⚠️ Por favor completa todos los campos del servicio correctamente.');
       return;
     }
 
-    const payload: BarberServicePayload = this.serviceForm.value;
+    const formValues = this.serviceForm.value;
 
-    if (this.isEditMode && this.editingIndex !== null) {
-      payload.isActive = this.servicesList[this.editingIndex].isActive ?? true;
-      this.servicesList[this.editingIndex] = payload;
-      alert('¡Servicio modificado exitosamente! ✏️');
-      this.cancelEdit();
-    } else {
-      this.barberService.createService(payload).subscribe({
+    // 🟢 Payload limpio idéntico al que probaste y funcionó en Insomnia
+    const payload = {
+      barberiaId: formValues.barberiaId,
+      name: formValues.name,
+      description: formValues.description,
+      duration: formValues.duration,
+      price: formValues.price,
+      offert: formValues.offert,
+      special_price: formValues.special_price
+    };
+
+    console.log('📦 [JSON LIMPIO ENVIADO AL BACKEND]:', JSON.stringify(payload));
+
+    if (this.isEditMode && this.editingServiceId !== null) {
+      // ✏️ MODO EDICIÓN -> PUT al backend (el ID va solo en la URL)
+      this.barberService.updateService(this.editingServiceId, payload).subscribe({
         next: (response: any) => {
-          console.log('🚀 [BACKEND RESPONSE]:', response);
+          console.log('✅ [UPDATE SUCCESS]:', response);
+          alert('¡Servicio modificado en la base de datos exitosamente! ✏️');
+          this.cancelEdit();
           this.loadAllServices();
-          alert('¡Servicio registrado y guardado en la base de datos exitosamente! 💈');
-          this.resetForm();
         },
         error: (err: any) => {
-          console.error('❌ Error al guardar el servicio:', err);
+          console.error('❌ [UPDATE ERROR FULL]:', err);
+          alert('Hubo un error al actualizar el servicio en la base de datos.');
+        }
+      });
+    } else {
+      // ➕ MODO CREACIÓN -> POST al backend
+      this.barberService.createService(payload).subscribe({
+        next: (response: any) => {
+          console.log('✅ [CREATE SUCCESS]:', response);
+          alert('¡Servicio registrado exitosamente! 💈');
+          this.resetForm();
+          this.loadAllServices();
+        },
+        error: (err: any) => {
+          console.error('❌ [CREATE ERROR]:', err);
           alert('Hubo un error al conectar con el servidor.');
         }
       });
     }
   }
 
-  editService(index: number): void {
+editService(index: number): void {
+    const service = this.servicesList[index];
+    if (!service.id) {
+      alert('⚠️ Este servicio no tiene un ID válido para editar.');
+      return;
+    }
+
     this.isEditMode = true;
     this.editingIndex = index;
-    const service = this.servicesList[index];
-    this.serviceForm.patchValue(service);
+    this.editingServiceId = service.id; // Capturamos el ID del servicio (ej. 6)
+
+    this.serviceForm.patchValue({
+      barberiaId: service.barberiaId || this.currentBarberiaId,
+      name: service.name,
+      description: service.description,
+      duration: service.duration,
+      price: service.price,
+      offert: service.offert,
+      special_price: service.special_price,
+      isActive: service.isActive ?? true
+    });
   }
 
   cancelEdit(): void {
@@ -128,6 +177,7 @@ export class BarberServiConfigComponent implements OnInit {
 
   resetForm(): void {
     this.serviceForm.patchValue({
+      barberiaId: this.currentBarberiaId,
       name: '',
       description: '',
       duration: 15,
