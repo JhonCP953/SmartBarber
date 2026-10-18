@@ -352,7 +352,6 @@ export class PanelNavigationService {
               true
           },
 
-
           {
             id: 'barbers',
 
@@ -376,7 +375,6 @@ export class PanelNavigationService {
             visible:
               true
           },
-
 
           {
             id: 'services',
@@ -402,14 +400,13 @@ export class PanelNavigationService {
               true
           },
 
-
           {
             id: 'subscription',
 
             label: 'Suscripción y pagos',
 
             description:
-              'Consulta y administra la suscripción de tu barbería.',
+              'Adquirir suscripción, consultar pagos y administrar tu plan.',
 
             icon: 'wallet',
 
@@ -427,6 +424,29 @@ export class PanelNavigationService {
               true
           },
 
+          {
+            id: 'schedules',
+
+            label: 'Horarios',
+
+            description:
+              'Configura los horarios de atención de tu barbería.',
+
+            icon: 'clock',
+
+            route:
+              '/panel/barbershop',
+
+            roles: [
+              'ADMIN'
+            ],
+
+            status:
+              'AVAILABLE',
+
+            visible:
+              true
+          },
 
           {
             id: 'reports',
@@ -451,7 +471,6 @@ export class PanelNavigationService {
             visible:
               true
           }
-
         ]
       }
 

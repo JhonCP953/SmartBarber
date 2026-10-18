@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 
 import { authGuard } from '../../core/auth/guards/auth.guard';
@@ -9,9 +8,15 @@ import { PanelNavigationService } from './application/services/panel-navigation.
 export const PANEL_ROUTES: Routes = [
   {
     path: '',
-    canActivate: [authGuard],
+    canActivate: [authGuard, panelEntryGuard],
     providers: [PanelNavigationService],
+
+    loadComponent: () =>
+      import('./pages/panel/panel.component')
+        .then(m => m.PanelComponent),
+
     children: [
+
       {
         path: '',
         pathMatch: 'full',
@@ -19,41 +24,129 @@ export const PANEL_ROUTES: Routes = [
       },
       {
         path: 'home',
-        canActivate: [panelEntryGuard],
-        loadComponent: () =>
-          import('./pages/panel/panel.component')
-            .then(m => m.PanelComponent)
+        children: []
       },
+
+      /*
+       * PERFIL
+       */
       {
         path: 'profile',
         canActivate: [authGuard],
+
         loadChildren: () =>
           import('../profile/profile.routes')
             .then(m => m.PROFILE_ROUTES)
       },
+
+      /*
+       * BARBERÍA
+       */
       {
         path: 'barbershop',
-        canActivate: [authGuard, roleGuard],
-        data: { roles: ['ADMIN'] },
+        canActivate: [
+          authGuard,
+          roleGuard
+        ],
+
+        data: {
+          roles: ['ADMIN']
+        },
+
         loadComponent: () =>
-          import('../barber-shop/components/configuration/config.component')
-            .then(m => m.BarberConfigComponent)
+          import(
+            '../barber-shop/components/configuration/config.component'
+          ).then(
+            m => m.BarberConfigComponent
+          )
       },
+
+      /*
+       * USUARIOS / BARBEROS
+       */
       {
         path: 'users',
-        canActivate: [authGuard, roleGuard],
-        data: { roles: ['ADMIN'] },
+        canActivate: [
+          authGuard,
+          roleGuard
+        ],
+
+        data: {
+          roles: ['ADMIN']
+        },
+
         loadChildren: () =>
-          import('../user-management/user-management.routes')
-            .then(m => m.USER_MANAGEMENT_ROUTES)
+          import(
+            '../user-management/user-management.routes'
+          ).then(
+            m => m.USER_MANAGEMENT_ROUTES
+          )
       },
+
+      /*
+       * SERVICIOS
+       */
+      {
+        path: 'services',
+        canActivate: [
+          authGuard,
+          roleGuard
+        ],
+
+        data: {
+          roles: ['ADMIN']
+        },
+
+        loadComponent: () =>
+          import(
+            '../barber-shop/components/crud-service/Create-service/crud-servicios.component'
+          ).then(
+            m => m.BarberServiConfigComponent
+          )
+      },
+
+      /*
+       * SUSCRIPCIÓN
+       */
       {
         path: 'subscription',
-        canActivate: [authGuard, roleGuard],
-        data: { roles: ['ADMIN'] },
+        canActivate: [
+          authGuard,
+          roleGuard
+        ],
+
+        data: {
+          roles: ['ADMIN']
+        },
+
         loadChildren: () =>
-          import('../subscription/subscription.routes')
-            .then(m => m.SUBSCRIPTION_ROUTES)
+          import(
+            '../subscription/subscription.routes'
+          ).then(
+            m => m.SUBSCRIPTION_ROUTES
+          )
+      },
+
+      /*
+       * RESERVAS / MÓDULO CLIENTE
+       */
+      {
+        path: 'reservas',
+        canActivate: [
+          authGuard,
+          roleGuard
+        ],
+
+        data: {
+          roles: ['CLIENT']
+        },
+
+        loadChildren: () =>
+          import(
+            '../reservations/reservations.routes'
+          ).then(
+            m => m.RESERVATION_ROUTES
+          )
       }
     ]
   }

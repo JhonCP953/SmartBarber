@@ -192,6 +192,57 @@ export class PanelComponent
     });
   }
 
+  get currentModule(): PanelNavigationItem | null {
+
+    if (this.isPanelHome()) {
+      return null;
+    }
+
+    const currentUrl =
+      this.router.url.split('?')[0];
+
+    return (
+      this.navigationGroups()
+        .flatMap(group => group.items)
+        .find(item =>
+          currentUrl === item.route ||
+          currentUrl.startsWith(
+            `${item.route}/`
+          )
+        ) ?? null
+    );
+  }
+
+
+  get currentModuleTitle(): string {
+
+    if (this.isPanelHome()) {
+      return 'PANEL DE CONTROL';
+    }
+
+    return (
+      this.currentModule?.label.toUpperCase() ??
+      'SMARTBARBER'
+    );
+  }
+
+
+  get currentModuleSubtitle(): string {
+
+    if (this.isPanelHome()) {
+
+      return (
+        this.summary()?.subtitle ??
+        'Bienvenido a SmartBarber.'
+      );
+    }
+
+    return (
+      this.currentModule?.description ??
+      'Gestiona tu información desde SmartBarber.'
+    );
+  }
+
 
   get availableItemCount(): number {
 
