@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { BarberServicePayload } from '../components/crud-service/Create-service/crud-servicios.component'; // O ajusta la ruta de tu interfaz
+import { Observable, from, switchMap } from 'rxjs';
+import { BarberServicePayload } from '../components/crud-service/Create-service/crud-servicios.component';
+import { getAuth } from 'firebase/auth'; // Asegúrate de importar esto si usas Firebase Modular
 
 @Injectable({
   providedIn: 'root'
@@ -11,41 +12,71 @@ export class BarberServiceService {
 
   constructor(private http: HttpClient) {}
 
-  createService(payload: BarberServicePayload): Observable<any> {
-    return this.http.post(`${this.apiUrl}/crear-servicio`, payload);
-  }
+  // 🟢 Método para obtener headers con token fresco de Firebase
+  private getHeadersObservable(): Observable<HttpHeaders> {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
 
+    if (!currentUser) {
+      // Si por algo no hay usuario en sesión, intentamos recurrir al storage como respaldo
+      const rawToken = localStorage.getItem('token') || localStorage.getItem('smartbarber.token') || '';
+      const token = rawToken.replace(/['"]+/g, '').trim();
+      return new Observable(subscriber => {
+        subscriber.next(new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }));
+        subscriber.complete();
+      });
+    }
 
-getServicesByBarberiaId(barberiaId: string): Observable<BarberServicePayload[]> {
-    // Pega aquí directamente el token exacto que te funcionó en Insomnia para descartar si el localStorage falla al leer
-    const token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjkwNGIwZjkxYmU2ZWIwODY3ZGFiYmFhYjU4N2RmYzJlMzNmMDBhMjQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc21hcnRiYXJiZXItOTQ1YjYiLCJhdWQiOiJzbWFydGJhcmJlci05NDViNiIsImF1dGhfdGltZSI6MTc5MjMwOTgzMSwidXNlcl9pZCI6Im9rWkphQ1lua0lQZmxYVHk5T0VsU0NmZlIwTDIiLCJzdWIiOiJva1pKYUNZbmtJUGZsWFR5OU9FbFNDZmZSMEwyIiwiaWF0IjoxNzkyMzA5ODMxLCJleHAiOjE3OTIzMTM0MzEsImVtYWlsIjoibmljb2xhc3AxMmVAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbIm5pY29sYXNwMTJlQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.t3zaA-nqNlPF0-u3pkBKmdLX7WTZkYeJT1eyVFsVZJWSsIgsXnMx8ZXANR2p-t8VVVrMxsj_VwoSFJ7L5Fau2m-iENC_NiU-7_yT8DAp2sk_58wfWkaIXbsQR6l21we4dzUhs6Pq3TaI_OsxOBhg6LshrUE86ZUHEhFXeMAhRQNKAQkDrCTet_VpJG414u3403FyiMaH9MbSmcHC57orBPD-3joIWax7BNceKJQdsjudO1T9hl-0eIYA0wWd-iFP6OMziqaTh3INgLJmawGmY-X8uO4dQfBc4ip33dNErOhdL0W2WfvhRTjkWvmkgNUydLuk5eKo3Mu-rVPfwpA0sg';
-    // O si prefieres del storage:
-    // const token = localStorage.getItem('token') || localStorage.getItem('firebase_token') || '';
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-
-    console.log('🚀 [ENVIANDO PETICIÓN HTTP DESDE ANGULAR]');
-
-    return this.http.get<BarberServicePayload[]>(
-      `${this.apiUrl}/barberia/${barberiaId}`,
-      { headers }
+    // `getIdToken(true)` fuerza a Firebase a refrescar el token si ya expiró
+    return from(currentUser.getIdToken(true)).pipe(
+      switchMap(token => {
+        const cleanToken = token.replace(/['"]+/g, '').trim();
+        console.log('🔑 [TOKEN FRESCO OBTENIDO DE FIREBASE]:', cleanToken.substring(0, 15) + '...');
+        
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cleanToken}`
+        });
+        
+        const obs = new Observable<HttpHeaders>(sub => {
+          sub.next(headers);
+          sub.complete();
+        });
+        return obs;
+      })
     );
   }
-  // 🟢 Actualizar un servicio existente por ID (PUT)
-  updateService(serviceId: number | string, payload: BarberServicePayload): Observable<any> {
-    return this.http.put(`${this.apiUrl}/actualizar-service/${serviceId}`, payload, {
-      headers: this.getHeaders()
-    });
+
+  // 🟢 Petición GET para listar servicios
+  getServicesByBarberiaId(barberiaId: string): Observable<BarberServicePayload[]> {
+    console.log('🚀 [ENVIANDO PETICIÓN GET DESDE ANGULAR]');
+    return this.getHeadersObservable().pipe(
+      switchMap(headers => 
+        this.http.get<BarberServicePayload[]>(`${this.apiUrl}/barberia/${barberiaId}`, { headers })
+      )
+    );
   }
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || localStorage.getItem('firebase_token') || '';
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
+  // 🟢 Petición POST para crear servicio
+  createService(payload: BarberServicePayload): Observable<any> {
+    console.log('🚀 [ENVIANDO PETICIÓN POST DESDE ANGULAR]');
+    return this.getHeadersObservable().pipe(
+      switchMap(headers => 
+        this.http.post(`${this.apiUrl}/crear-servicio`, payload, { headers })
+      )
+    );
+  }
+
+  // 🟢 Petición PUT para actualizar servicio
+  updateService(serviceId: number | string, payload: BarberServicePayload): Observable<any> {
+    console.log('🚀 [ENVIANDO PETICIÓN PUT DESDE ANGULAR]');
+    return this.getHeadersObservable().pipe(
+      switchMap(headers => 
+        this.http.put(`${this.apiUrl}/actualizar-service/${serviceId}`, payload, { headers })
+      )
+    );
   }
 }
