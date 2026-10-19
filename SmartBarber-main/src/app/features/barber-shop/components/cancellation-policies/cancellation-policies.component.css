@@ -1,12 +1,13 @@
+/* Paleta Unificada y Profesional para Políticas */
 .policy-page-wrapper {
   min-height: 100vh;
-  background-color: #0d0f12;
+  background-color: #f4efe6;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #f1f5f9;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  color: #2c221e;
 }
 
 /* Contenedor estilo tarjeta dividida 2 columnas */
@@ -15,11 +16,11 @@
   grid-template-columns: 1.1fr 0.9fr;
   width: 100%;
   max-width: 1050px;
-  background: #161a22;
-  border: 1px solid #262c36;
+  background: #ffffff;
+  border: 1px solid #e5dcd0;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 40px rgba(60, 40, 20, 0.08);
 }
 
 @media (max-width: 850px) {
@@ -31,12 +32,13 @@
   }
 }
 
-/* Lado Izquierdo: Formulario */
+/* Lado Izquierdo: Formulario Claro */
 .form-section {
   padding: 2.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: #ffffff;
 }
 
 .badge-tag {
@@ -44,9 +46,9 @@
   font-size: 0.7rem;
   letter-spacing: 1.5px;
   font-weight: 700;
-  color: #d97706;
-  background: rgba(217, 119, 6, 0.15);
-  border: 1px solid #d97706;
+  color: #c29b68;
+  background: rgba(194, 155, 104, 0.15);
+  border: 1px solid #c29b68;
   padding: 0.2rem 0.6rem;
   border-radius: 20px;
   margin-bottom: 0.75rem;
@@ -55,13 +57,13 @@
 .title {
   font-size: 1.75rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #2c221e;
   margin-bottom: 0.25rem;
 }
 
 .subtitle {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #7a6354;
   margin-bottom: 1.75rem;
 }
 
@@ -79,23 +81,24 @@
 
 .input-group label {
   font-size: 0.825rem;
-  font-weight: 600;
-  color: #cbd5e1;
+  font-weight: 700;
+  color: #3a2e28;
 }
 
 .input-wrapper {
   display: flex;
   align-items: center;
-  background: #0f1218;
-  border: 1px solid #2d3545;
+  background: #fbf9f5;
+  border: 1px solid #dcd1c4;
   border-radius: 8px;
   overflow: hidden;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .input-wrapper:focus-within {
-  border-color: #d97706;
-  box-shadow: 0 0 10px rgba(217, 119, 6, 0.2);
+  border-color: #c29b68;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(194, 155, 104, 0.2);
 }
 
 .prefix-icon {
@@ -108,7 +111,7 @@
   padding: 0.7rem 0.75rem;
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: #2c221e;
   font-size: 0.9rem;
   outline: none;
 }
@@ -117,57 +120,65 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: #1c222d;
+  background: #fbf9f5;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  border: 1px solid #2a3241;
+  border: 1px solid #e8dfd5;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.checkbox-card:hover {
+  border-color: #c29b68;
+  background: #ffffff;
 }
 
 .styled-checkbox {
   width: 1.1rem;
   height: 1.1rem;
-  accent-color: #d97706;
+  accent-color: #c29b68;
   cursor: pointer;
 }
 
 .checkbox-label {
   font-size: 0.85rem;
-  font-weight: 500;
-  color: #e2e8f0;
+  font-weight: 600;
+  color: #3a2e28;
   cursor: pointer;
 }
 
 .btn-submit {
   margin-top: 0.75rem;
   padding: 0.9rem;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #000000;
+  background: linear-gradient(135deg, #2c221e 0%, #4a382f 100%);
+  color: #f7f4ef;
   font-weight: 800;
   font-size: 0.95rem;
   letter-spacing: 0.5px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .btn-submit:hover {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+  background: linear-gradient(135deg, #c29b68 0%, #a37b48 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(194, 155, 104, 0.35);
   transform: translateY(-2px);
 }
 
-/* Lado Derecho: Panel Visual Estilo Canva */
+/* Lado Derecho: Panel Visual Elegante */
 .visual-section {
   position: relative;
-background: linear-gradient(135deg, rgba(31, 41, 61, 0.85) 0%, rgba(13, 15, 18, 0.95) 100%),
-              url('../../../../../../public/img2.jpg') center/cover no-repeat;  display: flex;
+  background: linear-gradient(135deg, rgba(30, 23, 20, 0.85) 0%, rgba(15, 12, 10, 0.95) 100%),
+              url('../../../../../../public/img2.jpg') center/cover no-repeat;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 3rem;
   text-align: center;
-  border-left: 1px solid #262c36;
+  border-left: 1px solid #e5dcd0;
 }
 
 .visual-overlay {
@@ -176,7 +187,7 @@ background: linear-gradient(135deg, rgba(31, 41, 61, 0.85) 0%, rgba(13, 15, 18, 
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(161, 96, 21, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(194, 155, 104, 0.1) 0%, transparent 70%);
 }
 
 .visual-content {
@@ -192,7 +203,7 @@ background: linear-gradient(135deg, rgba(31, 41, 61, 0.85) 0%, rgba(13, 15, 18, 
   font-size: 0.75rem;
   letter-spacing: 2px;
   font-weight: 800;
-  color: #f59e0b;
+  color: #c29b68;
   text-transform: uppercase;
 }
 
@@ -205,23 +216,23 @@ background: linear-gradient(135deg, rgba(31, 41, 61, 0.85) 0%, rgba(13, 15, 18, 
 
 .visual-content p {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #e2d9cc;
   line-height: 1.5;
   max-width: 320px;
 }
 
 .highlight-box {
   margin-top: 1rem;
-  background: rgba(217, 119, 6, 0.1);
-  border: 1px solid rgba(217, 119, 6, 0.3);
+  background: rgba(194, 155, 104, 0.15);
+  border: 1px solid rgba(194, 155, 104, 0.3);
   padding: 0.85rem 1rem;
   border-radius: 10px;
   font-size: 0.775rem;
-  color: #cbd5e1;
+  color: #f7f4ef;
   text-align: left;
 }
 
 .highlight-box span {
-  color: #fbbf24;
+  color: #dfc29e;
   font-weight: 700;
 }
