@@ -189,10 +189,12 @@ export class AppointmentComponent implements OnInit {
     this.isLoading = true;
     
     // Formato ISO estricto que Java LocalDateTime / Instant procesa sin error
-    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00.000Z`;
+    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00-05:00`;
 
     // Estructura limpia basada estrictamente en los nombres de tu DTO de backend
     const payload = {
+      customerId: "6ecd45c9-79ac-43e1-9796-9eaf09e48357",
+      barbershopId: this.barberias[0].id,
       employeeId: this.selectedBarbero.id,
       reservationServiceId: this.selectedServicesIds, // Asegura que sea un array de números o strings según tu backend
       startTime: startTimeIso,

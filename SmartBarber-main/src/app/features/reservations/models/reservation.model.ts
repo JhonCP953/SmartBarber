@@ -1,5 +1,6 @@
 export interface CreateReservationPayload {
   customerId: string;
+  barbershopId: string;
   employeeId: string;
   reservationServiceId: number[];
   startTime: string;
