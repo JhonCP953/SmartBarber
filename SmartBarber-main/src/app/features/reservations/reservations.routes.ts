@@ -7,18 +7,4 @@ export const RESERVATION_ROUTES: Routes = [
             import('./components/appointment/appointment.component')
                 .then(m => m.AppointmentComponent)
     }
-   
 ];
-    // {
-    //     path: '',
-    //     loadComponent: () =>
-    //         import('./pages/reservation-list/reservation-list.component')
-    //             .then(m => m.ReservationListComponent)
-    // },
-
-    // {
-    //     path: 'nueva',
-    //     loadComponent: () =>
-    //         import('./pages/reservation-create/reservation-create.component')
-    //             .then(m => m.ReservationCreateComponent)
-    // },

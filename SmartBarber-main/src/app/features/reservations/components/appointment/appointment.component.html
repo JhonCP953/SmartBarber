@@ -1,77 +1,126 @@
-<section class="feedback-section">
-  <div class="wrap">
-    <div class="feedback-card">
-      <h2>DÉJANOS TU OPINIÓN</h2>
-      <p>Cuéntanos cómo fue tu experiencia general en nuestra barbería y la calidad de los cortes.</p>
+<div class="booking-page-wrapper">
+  <div class="booking-main-card">
+    
+    <!-- Encabezado -->
+    <div class="booking-header">
+      <span class="gauge-tag">MIS RESERVAS</span>
+      <h2 class="title">Agendar Cita</h2>
+      <p class="subtitle">Selecciona la sede, el barbero y tu horario ideal respetando su jornada de trabajo.</p>
+    </div>
 
-      <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
-        <div class="form-grid">
-          
-          <!-- Nombre -->
-          <div class="form-group">
-            <input 
-              type="text" 
-              formControlName="name" 
-              placeholder="Tu nombre" 
-              class="form-control" 
-            />
-          </div>
-
-          <!-- Correo -->
-          <div class="form-group">
-            <input 
-              type="email" 
-              formControlName="email" 
-              placeholder="Tu correo electrónico" 
-              class="form-control" 
-            />
-          </div>
-
-          <!-- Selección (mantiene formControlName="barber" y el array original) -->
-          <div class="form-group">
-            <select formControlName="barber" class="form-control">
-              <option value="" disabled selected>Selecciona el tipo de corte o servicio</option>
-              <option *ngFor="let barbero of barberos" [value]="barbero">
-                {{ barbero }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Calificación de la Barbería / Servicio -->
-          <div class="form-group">
-            <select formControlName="rating" class="form-control">
-              <option value="" disabled selected>Calificación general de la barbería</option>
-              <option value="5">⭐⭐⭐⭐⭐ (Excelente)</option>
-              <option value="4">⭐⭐⭐⭐ (Muy Bueno)</option>
-              <option value="3">⭐⭐⭐ (Bueno)</option>
-              <option value="2">⭐⭐ (Regular)</option>
-              <option value="1">⭐ (Malo)</option>
-            </select>
-          </div>
-
-          <!-- Comentario / Opinión -->
-          <div class="form-group full-width">
-            <textarea 
-              formControlName="comment" 
-              rows="4" 
-              placeholder="Escribe tus comentarios sobre el ambiente del local y el resultado de los cortes..." 
-              class="form-control">
-            </textarea>
-          </div>
-
+    <!-- Contenedor 2 Columnas -->
+    <div class="booking-grid-columns">
+      
+      <!-- COLUMNA 1: Paso 1 - Barbería y Barberos -->
+      <div class="step-card">
+        <div class="step-header">
+          <h3>Paso 1: Seleccionar Barbería (Sede)</h3>
         </div>
 
-        <button 
-          type="submit" 
-          [disabled]="feedbackForm.invalid || state === 'sending'" 
-          class="btn-submit">
-          <span *ngIf="state === 'idle'">ENVIAR OPINIÓN</span>
-          <span *ngIf="state === 'sending'">ENVIANDO...</span>
-          <span *ngIf="state === 'success'">¡ENVIADO CON ÉXITO!</span>
-          <span *ngIf="state === 'error'">ERROR AL ENVIAR</span>
+        <div class="input-group">
+          <label class="input-label">Sede Barbería *</label>
+          <select class="styled-select" [(ngModel)]="selectedBarberiaId" (ngModelChange)="onBarberiaChange($event)">
+            <option value="" disabled>-- Seleccionar Barbería --</option>
+            <option *ngFor="let b of barberias" [value]="b.id">
+              {{ b.name }} - {{ b.location }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Tarjetas de Barberos -->
+        <div class="barberos-grid">
+          <div 
+            *ngFor="let barbero of barberosFiltrados" 
+            class="barber-card"
+            [class.selected]="selectedBarbero?.id === barbero.id"
+            (click)="onBarberoSelect(barbero)"
+          >
+            <div class="barber-avatar-container">
+              <img [src]="barbero.foto" [alt]="barbero.name" class="barber-img" />
+            </div>
+            <div class="barber-info">
+              <h4 class="barber-name">{{ barbero.name }}</h4>
+              <p class="barber-spec">{{ barbero.especialidad }}</p>
+              <div class="barber-status">
+                <span class="status-dot" [ngClass]="barbero.estado"></span>
+                <span class="status-text">{{ barbero.estadoTexto }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA 2: Paso 2 - Calendario y Confirmación -->
+      <div class="step-card">
+        <div class="step-header">
+          <h3>Paso 2: Seleccionar Barbero y Hora (Limpio y Fácil)</h3>
+        </div>
+
+        <!-- Calendario Dinámico -->
+        <div class="calendar-widget">
+          <div class="calendar-header-nav">
+            <button class="cal-nav-btn" type="button" (click)="cambiarMes(-1)">&lt;</button>
+            <span class="cal-month-title">{{ currentMonthYear }}</span>
+            <button class="cal-nav-btn" type="button" (click)="cambiarMes(1)">&gt;</button>
+          </div>
+          <div class="calendar-days-grid">
+            <span class="day-label">L</span><span class="day-label">M</span><span class="day-label">M</span><span class="day-label">J</span><span class="day-label">V</span><span class="day-label">S</span><span class="day-label">D</span>
+
+            <div *ngFor="let p of paddingDays" class="cal-day-empty"></div>
+
+            <button 
+              *ngFor="let d of diasMes" 
+              class="cal-day-cell" 
+              [class.active-day]="selectedDia === d"
+              type="button"
+              (click)="seleccionarDia(d)"
+            >
+              {{ d }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Horarios Disponibles -->
+        <div class="input-group mt-3" *ngIf="selectedBarbero">
+          <label class="input-label">Horarios Disponibles para el {{ selectedFecha }}</label>
+          <div class="slots-container">
+            <button 
+              type="button" 
+              *ngFor="let slot of slotsHorarios" 
+              class="slot-btn"
+              [class.active]="selectedHora === slot.hora"
+              [class.disabled]="!slot.disponible"
+              (click)="seleccionarHora(slot)"
+            >
+              {{ slot.hora }} {{ !slot.disponible ? '(' + slot.motivoOcupado + ')' : '' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Resumen (Valor COP 30,000) -->
+        <div class="service-summary-box">
+          <div class="summary-row">
+            <span class="service-title-sum">CORTE DE CABELLO</span>
+            <span class="service-price-sum">COP 30,000</span>
+          </div>
+          <div class="summary-sub">
+            <span>30 min</span>
+          </div>
+          <hr class="summary-divider" />
+          <div class="summary-total-row">
+            <strong>Total</strong>
+            <strong class="total-price">COP 30,000</strong>
+          </div>
+        </div>
+
+        <!-- Botón de Confirmación -->
+        <button class="btn-confirmar" (click)="crearReserva()" [disabled]="isLoading">
+          {{ isLoading ? 'Procesando...' : 'Confirmar Reserva' }}
         </button>
-      </form>
+
+      </div>
+
     </div>
 
   </div>
-</section>
+</div>
