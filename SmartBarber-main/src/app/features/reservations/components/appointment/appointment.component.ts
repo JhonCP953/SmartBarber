@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { getAuth } from 'firebase/auth';
 import { ReservationService } from '../../services/reservation.service';
-import { Barberia, Barbero, SlotHorario } from '../../models/reservation.model';
+import { Barberia, Barbero, SlotHorario, RangoOcupado } from '../../models/reservation.model';
 
 @Component({
   selector: 'app-appointment',
@@ -40,8 +42,17 @@ export class AppointmentComponent implements OnInit {
   loadingServicios: boolean = false;
   precioTotalCalculado: number = 0;
 
+  // Horarios
   slotsHorarios: SlotHorario[] = [];
+  loadingHorarios: boolean = false;
+  errorHorario: string = '';
+
+  // Reserva
   isLoading: boolean = false;
+
+  // TEMPORAL: solo para pruebas mientras el backend no envía el scheduleId
+  // en la lista de empleados. Ponlo en null cuando ya lo envíen.
+  private readonly scheduleIdPrueba: number | null = 5;
 
   constructor(
     private reservationService: ReservationService,
@@ -53,6 +64,8 @@ export class AppointmentComponent implements OnInit {
     this.cargarBarberias();
   }
 
+  // ───────────────────────── Carga de datos ─────────────────────────
+
   cargarBarberias(): void {
     this.reservationService.getBarberias().subscribe({
       next: (res: any) => {
@@ -60,7 +73,7 @@ export class AppointmentComponent implements OnInit {
         this.barberias = Array.isArray(rawList) ? rawList : [rawList];
 
         const barberiaIdParam = this.route.snapshot.queryParamMap.get('barberiaId');
-        
+
         if (barberiaIdParam && this.barberias.some((b: any) => (b.id || b.id_barberia) === barberiaIdParam)) {
           this.selectedBarberiaId = barberiaIdParam;
         } else if (this.barberias.length > 0) {
@@ -79,11 +92,8 @@ export class AppointmentComponent implements OnInit {
     });
   }
 
-  
   cargarEmpleadosPorBarberia(barberiaId: string): void {
     if (!barberiaId) return;
-    
-    console.log('🔄 Consultando empleados para la barbería ID:', barberiaId);
 
     this.reservationService.getEmployeesByBarberiaId(barberiaId).subscribe({
       next: (res: any) => {
@@ -94,6 +104,7 @@ export class AppointmentComponent implements OnInit {
           id: emp.id || emp.id_empleado,
           name: emp.name || emp.nombre,
           especialidad: emp.specialty || emp.especialidad || 'Barbero Profesional',
+          scheduleId: emp.scheduleId ?? emp.id_horario ?? emp.horarioId ?? this.scheduleIdPrueba,
           estado: 'libre',
           estadoTexto: 'Libre',
           foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
@@ -110,7 +121,7 @@ export class AppointmentComponent implements OnInit {
         }
       },
       error: (err: any) => {
-        console.error('❌ Error al cargar empleados para la barbería:', err);
+        console.error('Error al cargar empleados para la barbería:', err);
         this.barberosFiltrados = [];
         this.selectedBarbero = null;
         this.slotsHorarios = [];
@@ -142,14 +153,17 @@ export class AppointmentComponent implements OnInit {
     });
   }
 
+  // ───────────────────────── Eventos de UI ─────────────────────────
+
   onBarberiaChange(barberiaId: string): void {
     this.selectedBarberiaId = barberiaId;
+    this.selectedHora = '';
     if (barberiaId) {
       this.cargarEmpleadosPorBarberia(barberiaId);
       this.cargarServiciosPorBarberia(barberiaId);
     }
   }
-  
+
   onBarberoSelect(barbero: Barbero): void {
     this.selectedBarbero = barbero;
     this.selectedHora = '';
@@ -183,6 +197,8 @@ export class AppointmentComponent implements OnInit {
       .reduce((acc, current) => acc + (current.special_price || current.price || 0), 0);
   }
 
+  // ───────────────────────── Calendario ─────────────────────────
+
   generarCalendario(): void {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
@@ -202,6 +218,7 @@ export class AppointmentComponent implements OnInit {
     } else {
       this.selectedDia = null;
       this.selectedFecha = '';
+      this.selectedHora = '';
       this.slotsHorarios = [];
     }
   }
@@ -214,10 +231,11 @@ export class AppointmentComponent implements OnInit {
 
   seleccionarDia(dia: number): void {
     this.selectedDia = dia;
+    this.selectedHora = '';
     const year = this.currentDate.getFullYear();
     const month = (this.currentDate.getMonth() + 1).toString().padStart(2, '0');
     const dayStr = dia.toString().padStart(2, '0');
-    
+
     this.selectedFecha = `${year}-${month}-${dayStr}`;
 
     if (this.selectedBarbero) {
@@ -225,52 +243,123 @@ export class AppointmentComponent implements OnInit {
     }
   }
 
-  generarHorariosDisponibles(): void {
-    if (!this.selectedBarbero) return;
+  // ───────────────────────── Horarios y ocupación ─────────────────────────
 
-    this.reservationService.getScheduleByEmployeeId(this.selectedBarbero.id).subscribe({
-      next: (scheduleRes: any) => {
-        const data = scheduleRes.data || scheduleRes;
-        const horaInicio = data.startTime || data.hora_inicio || '08:00';
-        const horaFin = data.endTime || data.hora_fin || '18:00';
-        
-        this.slotsHorarios = this.construirSlotsDeTiempo(horaInicio, horaFin, data.ocupados || data.bookedSlots || []);
-      },
-      error: (err) => {
-        console.warn('⚠️ schedule-service con datos por defecto de respaldo:', err);
-        this.slotsHorarios = this.construirSlotsDeTiempo('08:00', '18:00', []);
+  generarHorariosDisponibles(): void {
+    const barbero = this.selectedBarbero;
+    const fecha = this.selectedFecha;
+    if (!barbero || !fecha) return;
+
+    const scheduleId = barbero.scheduleId;
+    if (scheduleId === null || scheduleId === undefined || scheduleId === '') {
+      this.slotsHorarios = [];
+      this.errorHorario = 'Este barbero no tiene un horario asignado.';
+      this.setEstadoBarbero(barbero, 'descanso', 'Sin horario');
+      return;
+    }
+
+    this.loadingHorarios = true;
+    this.errorHorario = '';
+
+    forkJoin({
+      schedule: this.reservationService.getScheduleById(scheduleId).pipe(
+        catchError(err => {
+          console.error('Error al cargar el horario:', err);
+          return of(null);
+        })
+      ),
+      reservas: this.reservationService.getReservationsByEmployee(barbero.id, fecha).pipe(
+        catchError(err => {
+          console.warn('No se pudieron cargar las reservas del barbero:', err);
+          return of([]);
+        })
+      )
+    }).subscribe(({ schedule, reservas }) => {
+      // Ignora respuestas viejas si el usuario ya cambió de barbero o de día
+      if (this.selectedBarbero?.id !== barbero.id || this.selectedFecha !== fecha) return;
+
+      this.loadingHorarios = false;
+
+      const raw = (schedule as any)?.data ?? schedule;
+      const turno = Array.isArray(raw) ? raw[0] : raw; // ajustar si el backend envía un turno por día
+      const inicio = turno?.startTime ?? turno?.hora_inicio;
+      const fin = turno?.endTime ?? turno?.hora_fin;
+
+      if (!inicio || !fin) {
+        this.slotsHorarios = [];
+        this.errorHorario = 'El barbero no tiene turno disponible.';
+        this.setEstadoBarbero(barbero, 'descanso', 'Sin turno');
+        return;
       }
+
+      const lista = (reservas as any)?.data ?? reservas ?? [];
+      const ocupados: RangoOcupado[] = (Array.isArray(lista) ? lista : [])
+        .filter((r: any) => r?.startTime && r?.endTime)
+        .map((r: any) => ({
+          ini: this.isoAMinutosLocal(r.startTime),
+          fin: this.isoAMinutosLocal(r.endTime)
+        }));
+
+      this.slotsHorarios = this.construirSlotsDeTiempo(inicio, fin, ocupados);
+      this.actualizarEstadoPorReservas(barbero, ocupados);
     });
   }
 
-  private construirSlotsDeTiempo(horaInicio: string, horaFin: string, ocupados: any[] = []): SlotHorario[] {
-    const toMinutes = (time: string): number => {
-      const [hours, minutes] = time.split(':').map(Number);
-      return hours * 60 + minutes;
+  // ISO (UTC o con offset) -> minutos del día en hora de Colombia
+  private isoAMinutosLocal(iso: string): number {
+    const hhmm = new Date(iso).toLocaleTimeString('en-GB', {
+      timeZone: 'America/Bogota',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    const [h, m] = hhmm.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  private hoyColombia(): string {
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+  }
+
+  private construirSlotsDeTiempo(horaInicio: string, horaFin: string, ocupados: RangoOcupado[]): SlotHorario[] {
+    const toMin = (t: string): number => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
     };
 
-    const start = toMinutes(horaInicio);
-    const end = toMinutes(horaFin);
+    const start = toMin(horaInicio);
+    const end = toMin(horaFin);
     if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return [];
 
-    const busyTimes = new Set<string>(ocupados.map((ocupado: any) => {
-      const time = typeof ocupado === 'string'
-        ? ocupado
-        : ocupado?.startTime ?? ocupado?.hora ?? ocupado?.time ?? '';
-      return typeof time === 'string' ? time.slice(0, 5) : '';
-    }));
+    const esHoy = this.selectedFecha === this.hoyColombia();
+    const ahora = this.isoAMinutosLocal(new Date().toISOString());
 
     const slots: SlotHorario[] = [];
-    for (let minute = start; minute + 30 <= end; minute += 30) {
-      const hora = `${Math.floor(minute / 60).toString().padStart(2, '0')}:${(minute % 60).toString().padStart(2, '0')}`;
-      const disponible = !busyTimes.has(hora);
+    for (let min = start; min + 30 <= end; min += 30) {
+      const hora = `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+      const choca = ocupados.some(o => min < o.fin && min + 30 > o.ini);
+      const pasado = esHoy && min <= ahora;
+
       slots.push({
         hora,
-        disponible,
-        motivoOcupado: disponible ? undefined : 'Ocupado'
+        disponible: !choca && !pasado,
+        motivoOcupado: choca ? 'Ocupado' : pasado ? 'Pasado' : undefined
       });
     }
     return slots;
+  }
+
+  private setEstadoBarbero(b: Barbero, estado: string, texto: string): void {
+    b.estado = estado;
+    b.estadoTexto = texto;
+  }
+
+  private actualizarEstadoPorReservas(b: Barbero, ocupados: RangoOcupado[]): void {
+    const esHoy = this.selectedFecha === this.hoyColombia();
+    const ahora = this.isoAMinutosLocal(new Date().toISOString());
+    const ocupadoAhora = esHoy && ocupados.some(o => ahora >= o.ini && ahora < o.fin);
+
+    this.setEstadoBarbero(b, ocupadoAhora ? 'ocupado' : 'libre', ocupadoAhora ? 'Ocupado' : 'Libre');
   }
 
   seleccionarHora(slot: SlotHorario): void {
@@ -279,60 +368,62 @@ export class AppointmentComponent implements OnInit {
     }
   }
 
- crearReserva(): void {
-  // 1. Validar que el UUID dinámico de la base de datos ya esté cargado
-  if (!this.internalDatabaseUserId) {
-    alert('⚠️ El perfil de usuario aún se está sincronizando. Por favor espera un segundo.');
-    return;
-  }
+  // ───────────────────────── Crear reserva ─────────────────────────
 
-  if (!this.selectedBarbero || !this.selectedHora || !this.selectedFecha) {
-    alert('Por favor selecciona un barbero, una fecha y un horario válido.');
-    return;
-  }
-
-  if (!this.selectedServicesIds || this.selectedServicesIds.length === 0) {
-    alert('⚠️ Debes seleccionar al menos un servicio para la reserva.');
-    return;
-  }
-
-  this.isLoading = true;
-
-  const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00-05:00`;
-
-  const cleanServiceIds = this.selectedServicesIds.map((s: any) => {
-    const idVal = typeof s === 'object' ? (s.id || s.id_servicio) : s;
-    return Number(idVal);
-  }).filter(id => !isNaN(id));
-
-  const rawEmployeeId = String(this.selectedBarbero.id || '').trim();
-
-  // 2. Payload 100% dinámico utilizando la variable de la base de datos
-  const payload = {
-    customerId: this.internalDatabaseUserId, 
-    employeeId: rawEmployeeId,
-    barbershopId: this.selectedBarberiaId,
-    reservationServiceId: cleanServiceIds,
-    startTime: startTimeIso,
-    notes: 'Reserva creada desde Angular'
-  };
-
-  console.log('📦 JSON dinámico enviado al backend:', JSON.stringify(payload, null, 2));
-
-  this.reservationService.createReservation(payload).subscribe({
-    next: (res: any) => {
-      this.isLoading = false;
-      alert('¡Reserva creada exitosamente!');
-      console.log('✅ Respuesta exitosa:', res);
-      this.selectedHora = '';
-      this.generarHorariosDisponibles();
-    },
-    error: (err: any) => {
-      this.isLoading = false;
-      console.error('❌ Error al crear reserva backend:', err);
-      const mensajeError = err.error?.message || err.error?.data?.message || 'Error al procesar la reserva';
-      alert(`Atención del Sistema: ${mensajeError}`);
+  crearReserva(): void {
+    if (!this.internalDatabaseUserId) {
+      alert('⚠️ El perfil de usuario aún se está sincronizando. Por favor espera un segundo.');
+      return;
     }
-  });
-}
+
+    if (!this.selectedBarbero || !this.selectedHora || !this.selectedFecha) {
+      alert('Por favor selecciona un barbero, una fecha y un horario válido.');
+      return;
+    }
+
+    if (!this.selectedServicesIds || this.selectedServicesIds.length === 0) {
+      alert('⚠️ Debes seleccionar al menos un servicio para la reserva.');
+      return;
+    }
+
+    this.isLoading = true;
+
+    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00-05:00`;
+
+    const cleanServiceIds = this.selectedServicesIds
+      .map((s: any) => {
+        const idVal = typeof s === 'object' ? (s.id || s.id_servicio) : s;
+        return Number(idVal);
+      })
+      .filter(id => !isNaN(id));
+
+    const payload = {
+      customerId: this.internalDatabaseUserId,
+      employeeId: String(this.selectedBarbero.id || '').trim(),
+      barbershopId: this.selectedBarberiaId,
+      reservationServiceId: cleanServiceIds,
+      startTime: startTimeIso,
+      notes: 'Reserva creada desde Angular'
+    };
+
+    this.reservationService.createReservation(payload).subscribe({
+      next: () => {
+        this.isLoading = false;
+        alert('¡Reserva creada exitosamente!');
+        this.selectedHora = '';
+        this.generarHorariosDisponibles(); // refresca y marca el slot como ocupado
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Error al crear reserva backend:', err.status, err.error);
+        const mensajeError =
+          err.error?.message ||
+          err.error?.data?.message ||
+          err.error?.error ||
+          (typeof err.error === 'string' ? err.error : '') ||
+          'Error al procesar la reserva';
+        alert(`Atención del Sistema: ${mensajeError}`);
+      }
+    });
+  }
 }

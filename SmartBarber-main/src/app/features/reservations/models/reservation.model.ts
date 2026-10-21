@@ -27,10 +27,16 @@ export interface Barbero {
   estado?: string;
   estadoTexto?: string;
   foto?: string;
+  scheduleId?: number | string | null;
 }
 
 export interface SlotHorario {
   hora: string;
   disponible: boolean;
   motivoOcupado?: string;
+}
+
+export interface RangoOcupado {
+  ini: number; // minutos desde las 00:00 (hora Colombia)
+  fin: number;
 }

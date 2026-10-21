@@ -33,12 +33,12 @@ export class ReservationService {
     }
 
     const token = (
-      localStorage.getItem('token') || 
-      localStorage.getItem('smartbarber.token') || 
+      localStorage.getItem('token') ||
+      localStorage.getItem('smartbarber.token') ||
       localStorage.getItem('firebaseToken') || ''
     ).replace(/['"]+/g, '').trim();
 
-    return new Observable(subscriber => {
+    return new Observable<HttpHeaders>(subscriber => {
       subscriber.next(new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -53,7 +53,7 @@ export class ReservationService {
     );
   }
 
-getEmployeesByBarberiaId(barberiaId: string): Observable<any> {
+  getEmployeesByBarberiaId(barberiaId: string): Observable<any> {
     return this.getAuthHeaders().pipe(
       switchMap(headers => this.http.get(`${this.apiUrl}/public/employee-service/barbershop/${barberiaId}`, { headers }))
     );
@@ -65,16 +65,22 @@ getEmployeesByBarberiaId(barberiaId: string): Observable<any> {
     );
   }
 
-  getScheduleByEmployeeId(employeeId: string): Observable<any> {
+  // El id es el del HORARIO (numerico), por ejemplo /schedule-service/id/5
+  getScheduleById(scheduleId: number | string): Observable<any> {
     return this.getAuthHeaders().pipe(
-      switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/id/${employeeId}`, { headers }))
+      switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/id/${scheduleId}`, { headers }))
     );
   }
-  getScheduleById(scheduleId: number | string): Observable<any> {
-  return this.getAuthHeaders().pipe(
-    switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/id/${scheduleId}`, { headers }))
-  );
-}
+
+  // Endpoint que debe crear el backend: reservas del empleado en un dia (YYYY-MM-DD)
+  getReservationsByEmployee(employeeId: string, date: string): Observable<any> {
+    return this.getAuthHeaders().pipe(
+      switchMap(headers => this.http.get(
+        `${this.apiUrl}/reservation-service/employee/${employeeId}`,
+        { headers, params: { date } }
+      ))
+    );
+  }
 
   createReservation(payload: any): Observable<any> {
     return this.getAuthHeaders().pipe(
