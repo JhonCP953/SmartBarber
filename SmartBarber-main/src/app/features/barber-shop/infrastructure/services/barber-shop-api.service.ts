@@ -1,112 +1,134 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BarberShopRegisterRequest, BarberShopResponse } from '../../domain/models/barber-shop.model';
+
 import { environment } from '../../../../../environments/environment';
+import {
+  BarberShopRegisterRequest,
+  BarberShopResponse
+} from '../../domain/models/barber-shop.model';
+import {
+  ScheduleRequest,
+  ScheduleResponse
+} from '../../domain/models/schedule.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class BarberShopApiService {
-    private readonly http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-    getEmpleados(): Observable<any[]> {
-        return this.http.get<any[]>(`${environment.apiUrl}/employee-service`);
-    }
-    private readonly apiUrl = `${environment.apiUrl}/barber-service`;
-    
-    // URL específica para el microservicio de horarios que probaste en Insomnia
-    private readonly scheduleUrl = `${environment.apiUrl}/schedule-service`;
+  private readonly apiUrl = `${environment.apiUrl}/barber-service`;
+  private readonly employeeUrl = `${environment.apiUrl}/employee-service`;
+  private readonly scheduleUrl = `${environment.apiUrl}/schedule-service`;
 
-    /**
-     * Crear barbería
-     */
-    createBarberShop(
-        request: BarberShopRegisterRequest
-    ): Observable<BarberShopResponse> {
-        return this.http.post<BarberShopResponse>(
-            `${this.apiUrl}/create-barber`,
-            request
-        );
-    }
+  createBarberShop(
+    request: BarberShopRegisterRequest
+  ): Observable<BarberShopResponse> {
+    return this.http.post<BarberShopResponse>(
+      `${this.apiUrl}/create-barber`,
+      request
+    );
+  }
 
-    /**
-     * Obtener todas las barberías (Método necesario para listar en la tabla)
-     */
-     getAll(): Observable<any> {
-        // Asegúrate de que apunte al endpoint correcto de tu backend para listar
-        return this.http.get<any>(`${environment.apiUrl}/barber-service`); 
-    }
+  getAll(): Observable<BarberShopResponse[]> {
+    return this.http.get<BarberShopResponse[]>(
+      `${this.apiUrl}/obtener-barberia-nombre`
+    );
+  }
 
-    /**
-     * Obtener barbería por ID
-     */
-    getById(
-        id: string
-    ): Observable<BarberShopResponse> {
-        return this.http.get<BarberShopResponse>(
-            `${this.apiUrl}/id/${id}`
-        );
-    }
-   // Obtener empleado por su ID o UUID exacto según la colección de Insomnia
-    getEmpleadoPorId(id: string): Observable<any> {
-        return this.http.get<any>(`${environment.apiUrl}/employee-service/id/${id}`);
-    }
+  getById(id: string): Observable<BarberShopResponse> {
+    return this.http.get<BarberShopResponse>(
+      `${this.apiUrl}/id/${encodeURIComponent(id)}`
+    );
+  }
 
-    // O si prefieres buscar por documento como se ve en tu Insomnia:
-    getEmpleadoPorDocumento(documento: string): Observable<any> {
-        return this.http.get<any>(`${environment.apiUrl}/employee-service/documento/${documento}`);
-    }
+  getByDocument(document: string): Observable<BarberShopResponse> {
+    return this.http.get<BarberShopResponse>(
+      `${this.apiUrl}/document/${encodeURIComponent(document)}`
+    );
+  }
 
-    obtenerBarberias(companyName: string): Observable<BarberShopResponse[]> {
-        return this.http.get<BarberShopResponse[]>(
-            `${this.apiUrl}/company-name/${encodeURIComponent(companyName)}`
-        );
-    }
+  getByCompanyName(companyName: string): Observable<BarberShopResponse[]> {
+    return this.http.get<BarberShopResponse[]>(
+      `${this.apiUrl}/company-name/${encodeURIComponent(companyName)}`
+    );
+  }
 
-    /**
-     * Actualizar barbería
-     */
-    update(
-        id: string,
-        request: BarberShopRegisterRequest
-    ): Observable<BarberShopResponse> {
-        return this.http.put<BarberShopResponse>(
-            `${this.apiUrl}/update-barber/${id}`,
-            request
-        );
-    }
+  update(
+    id: string,
+    request: BarberShopRegisterRequest
+  ): Observable<BarberShopResponse> {
+    return this.http.put<BarberShopResponse>(
+      `${this.apiUrl}/update-barber/${encodeURIComponent(id)}`,
+      request
+    );
+  }
 
- // --- Métodos para el Schedule Service / Horario Empleado ---
+  getEmployeesByBarbershop(barbershopId: string): Observable<unknown[]> {
+    return this.http.get<unknown[]>(
+      `${this.employeeUrl}/barbershop/${encodeURIComponent(barbershopId)}`
+    );
+  }
 
-  // Obtener horario de empleado por su ID numérico (ej: /schedule-service/id/3)
-    obtenerHorarioEmpleadoPorId(id: number | string): Observable<any> {
-        return this.http.get<any>(`${environment.apiUrl}/schedule-service/id/${id}`);
-    }
+  getEmpleadoPorId(id: string): Observable<unknown> {
+    return this.http.get<unknown>(
+      `${this.employeeUrl}/id/${encodeURIComponent(id)}`
+    );
+  }
 
-    // Crear horario de empleado (POST que ya tienes en Insomnia)
-    crearHorarioEmpleado(payload: any): Observable<any> {
-        return this.http.post<any>(`${environment.apiUrl}/schedule-service/crear-schedule`, payload);
-    }
+  getEmpleadoPorDocumento(document: string): Observable<unknown> {
+    return this.http.get<unknown>(
+      `${this.employeeUrl}/documento/${encodeURIComponent(document)}`
+    );
+  }
 
-    actualizarHorarioEmpleado(id: number | string, payload: any): Observable<any> {
-        return this.http.put<any>(`${environment.apiUrl}/schedule-service/actualizar-schedule/${id}`, payload);
-    }
+  obtenerHorarioEmpleadoPorEmpleadoId(
+    employeeId: string
+  ): Observable<ScheduleResponse> {
+    return this.http.get<ScheduleResponse>(
+      `${this.scheduleUrl}/empleado/${encodeURIComponent(employeeId)}`
+    );
+  }
 
+  crearHorarioEmpleado(
+    payload: ScheduleRequest
+  ): Observable<ScheduleResponse> {
+    return this.http.post<ScheduleResponse>(
+      `${this.scheduleUrl}/crear-schedule`,
+      payload
+    );
+  }
 
-    //Dias festivos 
+  actualizarHorarioEmpleado(
+    id: number,
+    payload: ScheduleRequest
+  ): Observable<ScheduleResponse> {
+    return this.http.put<ScheduleResponse>(
+      `${this.scheduleUrl}/actualizar-schedule/${encodeURIComponent(String(id))}`,
+      payload
+    );
+  }
 
-    obtenerDiasNoLaborables(barberId: number | string): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/festivos/${barberId}`);
-    }
+  obtenerDiasNoLaborables(barberId: string): Observable<unknown[]> {
+    return this.http.get<unknown[]>(
+      `${this.apiUrl}/festivos/${encodeURIComponent(barberId)}`
+    );
+  }
 
-    agregarDiaNoLaborable(barberId: number | string, festivo: any): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/festivos/${barberId}`, festivo);
-    }
+  agregarDiaNoLaborable(
+    barberId: string,
+    payload: unknown
+  ): Observable<unknown> {
+    return this.http.post<unknown>(
+      `${this.apiUrl}/festivos/${encodeURIComponent(barberId)}`,
+      payload
+    );
+  }
 
-    eliminarDiaNoLaborable(festivoId: number): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}/festivos/${festivoId}`);
-    }
+  eliminarDiaNoLaborable(festivoId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/festivos/${encodeURIComponent(festivoId)}`
+    );
+  }
 }
-
-export { BarberShopResponse };

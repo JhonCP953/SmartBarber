@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -11,10 +11,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class DiasFestivosComponent {
   @Input() barberList: any[] = [];
-
-  // Two-way: [(barberId)] desde el padre
-  @Input() barberId = '';
-  @Output() barberIdChange = new EventEmitter<string>();
 
   holidays: any[] = [];
   newHolidayDate = '';

@@ -506,3 +506,226 @@ button:disabled {
         width: 100%;
     }
 }
+
+.profile-page {
+    min-height: 80vh;
+    padding: 42px 24px;
+    background: #f4efe6;
+    color: #fdfbf7;
+}
+
+.profile-container {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1050px;
+    padding: 32px;
+    border: 1px solid #c5a880;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #241c16, #1b1612);
+    box-shadow: 0 18px 42px rgba(31, 22, 15, .22);
+}
+
+.profile-header h1,
+.profile-card h2,
+.profile-state h2 {
+    color: #fdfbf7;
+}
+
+.eyebrow,
+.card-eyebrow {
+    color: #d2b88f;
+}
+
+.subtitle,
+.summary-content p:last-child,
+.section-heading p:last-child,
+.loading-state,
+.profile-state,
+.empty-association p {
+    color: #c2b5a6;
+}
+
+.profile-card,
+.profile-state {
+    border-color: #4a3b2c;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #2a211a, #211913);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+}
+
+.profile-summary {
+    gap: 24px;
+}
+
+.profile-avatar,
+.barbershop-icon {
+    border-color: #8a6a3c;
+    background: #17120f;
+    color: #d2b88f;
+}
+
+.summary-content h2,
+.barbershop-information strong {
+    color: #fdfbf7;
+}
+
+.role-badge {
+    border-color: #705844;
+    background: #34291e;
+    color: #e6d2b4;
+}
+
+.status-active {
+    border-color: #55745b;
+    background: #1b2c1e;
+    color: #b8dfbd;
+}
+
+.status-blocked {
+    border-color: #873b34;
+    background: #321b18;
+    color: #ffc0b8;
+}
+
+.status-inactive {
+    border-color: #705844;
+    background: #30271e;
+    color: #e6dfd5;
+}
+
+.section-heading {
+    border-color: #4a3b2c;
+}
+
+.information-item {
+    border-color: #4a3b2c;
+    border-radius: 8px;
+    background: #1b1612;
+}
+
+.information-item span,
+.information-label {
+    color: #c5a880;
+    font-size: 12px;
+}
+
+.information-item strong {
+    color: #fdfbf7;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.form-group label {
+    color: #e6dfd5;
+    font-size: 13px;
+}
+
+.form-group input {
+    min-height: 48px;
+    border-color: #5a4736;
+    border-radius: 8px;
+    background: #120e0b;
+    color: #fdfbf7;
+    font-size: 15px;
+}
+
+.form-group input:focus {
+    border-color: #c5a880;
+    background: #17120f;
+    box-shadow: 0 0 0 3px rgba(197, 168, 128, .14);
+}
+
+.form-group input[readonly],
+.form-group input:disabled {
+    border-color: #423529;
+    background: #211a15;
+    color: #bfa893;
+}
+
+.readonly-message {
+    color: #bfa893;
+    font-size: 12px;
+}
+
+.field-error {
+    color: #ffaaa1;
+    font-size: 12px;
+}
+
+.technical-value {
+    color: #d2b88f;
+    font-size: 12px;
+}
+
+.primary-button,
+.secondary-button {
+    min-height: 46px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.primary-button {
+    border-color: #c5a880;
+    background: #c5a880;
+    color: #1b1612;
+    font-weight: 700;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: #d2b88f;
+    opacity: 1;
+}
+
+.secondary-button {
+    border-color: #705844;
+    background: #241d17;
+    color: #e6dfd5;
+}
+
+.secondary-button:hover:not(:disabled) {
+    border-color: #c5a880;
+    background: #34291e;
+    color: #fdfbf7;
+}
+
+.form-actions {
+    border-color: #4a3b2c;
+}
+
+.message {
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.message-error {
+    border-color: #873b34;
+    background: #321b18;
+    color: #ffc0b8;
+}
+
+.message-success {
+    border-color: #55745b;
+    background: #1b2c1e;
+    color: #b8dfbd;
+}
+
+.state-icon {
+    border-color: #873b34;
+    background: #321b18;
+    color: #ffc0b8;
+}
+
+.loading-spinner {
+    border-color: #5a4736;
+    border-top-color: #c5a880;
+}
+
+@media (max-width: 760px) {
+    .profile-page {
+        padding: 24px 12px;
+    }
+
+    .profile-container {
+        padding: 22px 16px;
+    }
+}

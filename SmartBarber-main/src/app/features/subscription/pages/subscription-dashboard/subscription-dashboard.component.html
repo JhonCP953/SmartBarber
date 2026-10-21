@@ -1,0 +1,70 @@
+<main class="subscription-dashboard">
+  <header class="dashboard-heading">
+    <div class="heading-copy">
+      <span class="eyebrow"><span aria-hidden="true">💈</span> PANEL DE ADMINISTRACIÓN</span>
+      <h1>Suscripción y pagos</h1>
+      <p>Administra desde un solo lugar el plan de tu barbería y sus pagos.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <section class="state-card" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <p>Verificando la barbería asociada a tu perfil...</p>
+    </section>
+  } @else if (errorMessage()) {
+    <section class="state-card error-card" role="alert">
+      <span class="state-icon" aria-hidden="true">!</span>
+      <div>
+        <h2>No se pudo verificar la barbería</h2>
+        <p>{{ errorMessage() }}</p>
+      </div>
+    </section>
+  } @else {
+    @if (barberShop(); as shop) {
+    <section class="barbershop-summary" aria-label="Barbería asociada">
+      <div class="summary-mark" aria-hidden="true">SB</div>
+      <div class="summary-copy">
+        <span>BARBERÍA ASOCIADA A TU PERFIL</span>
+        <h2>{{ shop.name }}</h2>
+        <p>{{ shop.location || 'Ubicación no registrada' }}</p>
+      </div>
+      <span class="shop-status" [class.inactive]="!isBarbershopActive(shop.status)">
+        {{ shop.status || 'ACTIVA' }}
+      </span>
+    </section>
+
+    <section class="modules-section" aria-labelledby="modules-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">ADMINISTRACIÓN</span>
+          <h2 id="modules-title">Módulos de suscripción</h2>
+        </div>
+        <p>Selecciona una opción para consultar o gestionar tu suscripción.</p>
+      </div>
+
+      <div class="module-grid">
+        @for (module of modules; track module.title) {
+          <a
+            class="module-card"
+            [class.acquire-card]="module.title === 'Adquirir suscripción'"
+            [routerLink]="['/panel/subscription', module.route]">
+            <span class="module-icon" aria-hidden="true">{{ module.icon }}</span>
+            <span class="module-state">{{ module.state }}</span>
+            <h3>{{ module.title }}</h3>
+            <p>{{ module.description }}</p>
+            <span class="module-link">Abrir módulo <span aria-hidden="true">→</span></span>
+          </a>
+        }
+      </div>
+    </section>
+
+    <aside class="integration-note">
+      <span class="note-icon" aria-hidden="true">i</span>
+      <p>
+        Los módulos se vinculan a la barbería <strong>{{ shop.name }}</strong> detectada por el backend a partir de tu sesión. Algunas consultas y operaciones requieren endpoints que aún no están documentados.
+      </p>
+    </aside>
+    }
+  }
+</main>

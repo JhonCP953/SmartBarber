@@ -1131,6 +1131,104 @@ button {
         14px;
 }
 
+.subscription-access-alert {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
+    padding: 22px 24px;
+    border: 1px solid #e6aaa4;
+    border-left: 5px solid #b3261e;
+    border-radius: 16px;
+    background: linear-gradient(110deg, #fff0ef, #fff);
+    box-shadow: 0 10px 28px rgba(130, 28, 20, .11);
+}
+
+.subscription-alert-icon {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    place-items: center;
+    border-radius: 50%;
+    background: #f8d7d3;
+    color: #a51f18;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.subscription-alert-copy {
+    min-width: 0;
+    flex: 1;
+}
+
+.subscription-alert-copy h2 {
+    margin: 5px 0;
+    color: #30231d;
+    font-size: 18px;
+}
+
+.subscription-alert-copy p {
+    margin: 0;
+    color: #6d6258;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.subscription-alert-action,
+.subscription-alert-retry {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 0 17px;
+    border: 1px solid #9f211a;
+    border-radius: 10px;
+    background: #a9231b;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+.subscription-alert-action:hover,
+.subscription-alert-action:focus-visible,
+.subscription-alert-retry:hover,
+.subscription-alert-retry:focus-visible {
+    background: #821b15;
+    outline: 2px solid #e6aaa4;
+    outline-offset: 2px;
+}
+
+.subscription-access-alert--pending {
+    border-color: #e6aaa4;
+    background: #fff0ef;
+}
+
+.subscription-access-alert--error {
+    border-color: #d98f88;
+    border-left-color: #821b15;
+    background: #fff0ef;
+}
+
+.subscription-alert-loading {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    border: 3px solid #eadfcf;
+    border-top-color: #9b774f;
+    border-radius: 50%;
+    animation: subscription-loading .8s linear infinite;
+}
+
+@keyframes subscription-loading {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 
 /* =========================================================
    PANEL DE CONTROL
@@ -2160,6 +2258,34 @@ button {
 ========================================================= */
 
 @media (max-width: 680px) {
+
+    .subscription-access-alert {
+        flex-wrap:
+            wrap;
+
+        align-items:
+            flex-start;
+
+        gap:
+            12px;
+
+        padding:
+            17px;
+    }
+
+
+    .subscription-alert-copy {
+        flex:
+            1 1 calc(100% - 58px);
+    }
+
+
+    .subscription-alert-action,
+    .subscription-alert-retry {
+        margin-left:
+            54px;
+    }
+
 
     .profile-shortcut-information {
         display:

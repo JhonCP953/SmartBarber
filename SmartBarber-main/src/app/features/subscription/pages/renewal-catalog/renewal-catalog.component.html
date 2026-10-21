@@ -1,0 +1,85 @@
+<main class="renewal-page">
+  <a class="back-link" routerLink="/panel/subscription">← Volver a suscripción</a>
+
+  <header class="page-heading">
+    <span class="eyebrow"><span aria-hidden="true">↻</span> RENOVACIÓN</span>
+    <h1>Planes disponibles</h1>
+    <p>Consulta la información de planes que el backend tiene disponibles para tu barbería.</p>
+  </header>
+
+  @if (loading()) {
+    <section class="state-card" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <p>Consultando la barbería de tu perfil y los planes...</p>
+    </section>
+  } @else if (errorMessage()) {
+    <section class="state-card error-card" role="alert">
+      <span class="state-icon" aria-hidden="true">!</span>
+      <div>
+        <h2>No se pudo cargar la información</h2>
+        <p>{{ errorMessage() }}</p>
+        <button class="primary-button" type="button" (click)="reload()">Intentar de nuevo</button>
+      </div>
+    </section>
+  } @else {
+    @if (barberShop(); as shop) {
+    <section class="shop-banner" aria-label="Barbería asociada">
+      <span class="shop-icon" aria-hidden="true">SB</span>
+      <div>
+        <span class="eyebrow">BARBERÍA ASOCIADA A TU PERFIL</span>
+        <h2>{{ shop.name }}</h2>
+        <p>{{ shop.location || 'Ubicación no registrada' }}</p>
+      </div>
+    </section>
+
+    <section class="catalog-section" aria-labelledby="plans-title">
+      <header class="section-heading">
+        <div>
+          <span class="eyebrow">CATÁLOGO DEL BACKEND</span>
+          <h2 id="plans-title">Planes disponibles</h2>
+        </div>
+        <span class="plan-count">{{ plans().length }} {{ plans().length === 1 ? 'plan' : 'planes' }}</span>
+      </header>
+
+      @if (plans().length > 0) {
+        <div class="plan-grid">
+          @for (plan of plans(); track plan.id) {
+            <article class="plan-card">
+              <div class="plan-card-top">
+                <span class="plan-mark" aria-hidden="true">✦</span>
+                @if (plan.discount > 0) {
+                  <span class="discount-badge">Descuento: {{ plan.discount }}</span>
+                }
+              </div>
+              <span class="plan-label">PLAN SMARTBARBER</span>
+              <h3>{{ plan.name }}</h3>
+              <p class="plan-description">{{ plan.description }}</p>
+              <div class="plan-price">
+                <strong>{{ formatCurrency(plan.price) }}</strong>
+                <span>Valor registrado</span>
+              </div>
+              <button type="button" class="renew-disabled" disabled>
+                Renovación no disponible
+              </button>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="state-card empty-card">
+          <div>
+            <h2>No hay planes disponibles</h2>
+            <p>El backend no devolvió planes en el catálogo.</p>
+          </div>
+        </div>
+      }
+    </section>
+
+    <aside class="integration-note">
+      <span class="note-icon" aria-hidden="true">i</span>
+      <p>
+        Esta pantalla muestra el catálogo recibido de <code>GET /subscription-service/all</code> y lo carga después de verificar la barbería del administrador. El backend todavía no expone qué plan contratado está vigente ni su duración; por eso no se marca un plan como actual y no se envía una renovación hasta disponer de esos datos.
+      </p>
+    </aside>
+    }
+  }
+</main>

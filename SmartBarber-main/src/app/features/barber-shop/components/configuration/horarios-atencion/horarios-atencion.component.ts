@@ -1,117 +1,490 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray, FormsModule } from '@angular/forms';
-import { BarberShopApiService as BarberConfigApiService } from '../../../infrastructure/services/barber-shop-api.service';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  FormsModule,
+  Validators
+} from '@angular/forms';
+
+import { BarberShopApiService } from '../../../infrastructure/services/barber-shop-api.service';
+import { SessionService } from '../../../../../core/auth/services/session.service';
+
+import {
+  ScheduleRequest,
+  ScheduleResponse
+} from '../../../domain/models/schedule.model';
+
+interface EmployeeOption {
+  id: string;
+  name: string;
+  specialty?: string;
+}
 
 @Component({
   selector: 'app-horarios-atencion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule
+  ],
   templateUrl: './horarios-atencion.component.html',
-  styleUrls: ['../shared/vintage-shared.css', './horarios-atencion.component.css']
+  styleUrls: ['./horarios-atencion.component.css']
 })
 export class HorariosAtencionComponent implements OnInit {
-  @Input() barberList: any[] = [];
 
-  // Two-way: [(selectedEmpleadoUuid)] desde el padre
-  @Input() selectedEmpleadoUuid = '';
-  @Output() selectedEmpleadoUuidChange = new EventEmitter<string>();
-
-  selectedHorarioId: number | string = 3;
+  private readonly fb = inject(FormBuilder);
+  private readonly api = inject(BarberShopApiService);
+  private readonly sessionService = inject(SessionService);
 
   horarioForm!: FormGroup;
 
-  daysOfWeek = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
+  employees: EmployeeOption[] = [];
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly configApiService: BarberConfigApiService
-  ) {}
+  selectedEmpleadoUuid = '';
+  selectedEmployeeName = '';
+
+  scheduleId: number | null = null;
+
+  loadingEmployees = true;
+  loadingSchedule = false;
+  saving = false;
+
+  scheduleExists = false;
+
+  errorMessage = '';
 
   ngOnInit(): void {
     this.initForm();
+    this.loadEmployees();
   }
 
   private initForm(): void {
     this.horarioForm = this.fb.group({
-      // Controles para la jornada laboral alineados a horario_empleado
-      horaInicio: ['08:00', Validators.required],
-      horaFin: ['18:00', Validators.required],
-      horaInicioAlmuerzo: ['12:00'],
-      horaFinAlmuerzo: ['13:00'],
-      vacaciones: [false],
+      horaInicio: [
+        '08:00',
+        Validators.required
+      ],
 
-      hours: this.fb.array(this.daysOfWeek.map(day => this.fb.group({
-        dayOfWeek: [day],
-        isOpen: [true],
-        openTime: ['08:00'],
-        closeTime: ['20:00']
-      })))
+      horaFin: [
+        '18:00',
+        Validators.required
+      ],
+
+      horaInicioAlmuerzo: [
+        '12:00'
+      ],
+
+      horaFinAlmuerzo: [
+        '13:00'
+      ],
+
+      vacaciones: [
+        false
+      ]
     });
   }
 
-  get hoursArray(): FormArray {
-    return this.horarioForm.get('hours') as FormArray;
-  }
+  private loadEmployees(): void {
 
-  onScheduleBarberSelectionChange(): void {
-    console.log('📡 [FRONTEND] Consultando horario para el ID:', this.selectedHorarioId);
+    const barbershopId =
+      this.sessionService.getBarbershopId();
 
-    if (!this.selectedHorarioId) return;
+    this.loadingEmployees = true;
+    this.errorMessage = '';
 
-    this.configApiService.obtenerHorarioEmpleadoPorId(this.selectedHorarioId).subscribe({
-      next: (res: any) => {
-        console.log('📦 [BACKEND - HORARIO OBTENIDO POR ID]:', res);
-        if (res) {
-          this.horarioForm.patchValue({
-            horaInicio: res.hora_inicio ? res.hora_inicio.substring(0, 5) : '08:00',
-            horaFin: res.hora_fin ? res.hora_fin.substring(0, 5) : '18:00',
-            horaInicioAlmuerzo: res.hora_inicio_almuerzo ? res.hora_inicio_almuerzo.substring(0, 5) : '12:00',
-            horaFinAlmuerzo: res.hora_fin_almuerzo ? res.hora_fin_almuerzo.substring(0, 5) : '13:00',
-            vacaciones: res.vacaciones ?? false
-          });
-        }
-      },
-      error: (err: any) => {
-        console.warn('⚠️ [BACKEND] No se encontró horario para este ID:', err);
-      }
-    });
-  }
+    if (!barbershopId) {
 
-  saveHorarios(): void {
-    const formValue = this.horarioForm.value;
+      this.loadingEmployees = false;
 
-    if (!this.selectedEmpleadoUuid) {
-      alert('⚠️ Por favor define un UUID de empleado válido.');
+      this.errorMessage =
+        'No encontramos una barbería asociada a tu sesión.';
+
       return;
     }
 
-    // Aseguramos formato estricto HH:mm:ss que Java entiende perfectamente
-    const formatTime = (timeStr: string) => {
-      if (!timeStr) return '08:00:00';
-      return timeStr.length === 5 ? `${timeStr}:00` : timeStr;
+    this.api
+      .getEmployeesByBarbershop(barbershopId)
+      .subscribe({
+
+        next: (response: unknown[]) => {
+
+          const rawEmployees = Array.isArray(response)
+            ? response
+            : [];
+
+          this.employees = rawEmployees
+            .map((employee: unknown): EmployeeOption | null => {
+              if (!employee || typeof employee !== 'object') {
+                return null;
+              }
+
+              const item = employee as Record<string, unknown>;
+              const id = item['id'] ??
+                item['idEmpleado'] ??
+                item['id_empleado'] ??
+                item['uuid'];
+
+              if (id === undefined || id === null || String(id).trim() === '') {
+                return null;
+              }
+
+              const name = item['name'] ??
+                item['nombre'] ??
+                item['nombres'];
+              const specialty = item['specialty'] ??
+                item['especialidad'];
+
+              return {
+                id: String(id),
+                name: typeof name === 'string' ? name : 'Empleado',
+                specialty: typeof specialty === 'string' ? specialty : ''
+              };
+            })
+            .filter(
+              (employee): employee is EmployeeOption =>
+                employee !== null
+            );
+
+          this.loadingEmployees = false;
+
+          if (this.employees.length === 0) {
+
+            this.errorMessage =
+              'No hay barberos o empleados registrados para esta barbería.';
+
+            this.resetScheduleState();
+
+            return;
+          }
+
+          this.selectedEmpleadoUuid =
+            this.employees[0].id;
+
+          this.selectedEmployeeName =
+            this.employees[0].name;
+
+          this.loadSchedule(
+            this.selectedEmpleadoUuid
+          );
+        },
+
+        error: (error: unknown) => {
+
+          console.error(
+            '[SmartBarber] Error cargando empleados:',
+            error
+          );
+
+          this.loadingEmployees = false;
+
+          this.errorMessage =
+            'No fue posible cargar el equipo de trabajo.';
+        }
+      });
+  }
+
+  onEmployeeChange(): void {
+
+    const employee =
+      this.employees.find(
+        item =>
+          item.id === this.selectedEmpleadoUuid
+      );
+
+    this.selectedEmployeeName =
+      employee?.name ?? 'Empleado';
+
+    this.loadSchedule(
+      this.selectedEmpleadoUuid
+    );
+  }
+
+  private loadSchedule(
+    employeeId: string
+  ): void {
+
+    if (!employeeId) {
+      return;
+    }
+
+    this.loadingSchedule = true;
+
+    this.scheduleId = null;
+    this.scheduleExists = false;
+
+    this.errorMessage = '';
+
+    this.api
+      .obtenerHorarioEmpleadoPorEmpleadoId(employeeId)
+      .subscribe({
+
+        next: (response: ScheduleResponse) => {
+
+          this.scheduleId =
+            response?.id ?? null;
+
+          this.scheduleExists =
+            Boolean(this.scheduleId);
+
+          this.patchSchedule(response);
+
+          this.loadingSchedule = false;
+        },
+
+        error: (error: unknown) => {
+
+          const status = this.getHttpErrorStatus(error);
+
+          this.loadingSchedule = false;
+
+          /*
+           * Si el backend informa que el empleado
+           * todavía no tiene horario, dejamos el
+           * formulario preparado para crear uno.
+           */
+          if (
+            status === 404 ||
+            status === 409
+          ) {
+
+            this.resetScheduleState();
+
+            return;
+          }
+
+          console.error(
+            '[SmartBarber] Error cargando horario:',
+            error
+          );
+
+          this.errorMessage =
+            'No fue posible consultar el horario del empleado.';
+        }
+      });
+  }
+
+  saveHorarios(): void {
+
+    if (
+      this.horarioForm.invalid ||
+      !this.selectedEmpleadoUuid ||
+      this.saving
+    ) {
+
+      this.horarioForm.markAllAsTouched();
+
+      return;
+    }
+
+    const formValue =
+      this.horarioForm.getRawValue();
+
+    if (
+      formValue.horaInicio >=
+      formValue.horaFin
+    ) {
+
+      alert(
+        'La hora de inicio debe ser anterior a la hora de finalización.'
+      );
+
+      return;
+    }
+
+    if (
+      formValue.horaInicioAlmuerzo &&
+      formValue.horaFinAlmuerzo &&
+      formValue.horaInicioAlmuerzo >=
+      formValue.horaFinAlmuerzo
+    ) {
+
+      alert(
+        'El inicio del almuerzo debe ser anterior a su finalización.'
+      );
+
+      return;
+    }
+
+    const payload: ScheduleRequest = {
+
+      empleadoId:
+        this.selectedEmpleadoUuid,
+
+      startTime:
+        this.toLocalTime(
+          formValue.horaInicio
+        ),
+
+      endTime:
+        this.toLocalTime(
+          formValue.horaFin
+        ),
+
+      lunchStartTime:
+        this.toNullableLocalTime(
+          formValue.horaInicioAlmuerzo
+        ),
+
+      lunchEndTime:
+        this.toNullableLocalTime(
+          formValue.horaFinAlmuerzo
+        ),
+
+      vacation:
+        Boolean(formValue.vacaciones)
     };
 
-    const schedulePayload = {
-      empleadoId: this.selectedEmpleadoUuid.trim(),
-      horaInicio: formatTime(formValue.horaInicio),
-      horaFin: formatTime(formValue.horaFin),
-      horaInicioAlmuerzo: formatTime(formValue.horaInicioAlmuerzo),
-      horaFinAlmuerzo: formatTime(formValue.horaFinAlmuerzo),
-      vacation: Boolean(formValue.vacaciones)
-    };
+    this.saving = true;
 
-    console.log('🚀 [ENVIANDO PAYLOAD LIMPIO]:', JSON.stringify(schedulePayload, null, 2));
+    const request$ =
+      this.scheduleExists &&
+      this.scheduleId !== null
 
-    this.configApiService.crearHorarioEmpleado(schedulePayload).subscribe({
-      next: (res: any) => {
-        console.log('📦 [ÉXITO TOTAL]:', res);
-        alert('¡Horario de empleado guardado con éxito en la base de datos! 🎉');
+        ? this.api.actualizarHorarioEmpleado(
+            this.scheduleId,
+            payload
+          )
+
+        : this.api.crearHorarioEmpleado(
+            payload
+          );
+
+    request$.subscribe({
+
+      next: (response: ScheduleResponse) => {
+
+        this.saving = false;
+
+        this.scheduleId =
+          response?.id ??
+          this.scheduleId;
+
+        this.scheduleExists =
+          Boolean(this.scheduleId);
+
+        this.patchSchedule(response);
+
+        alert(
+          'Horario guardado correctamente.'
+        );
       },
-      error: (err: any) => {
-        console.error('❌ [ERROR DEL SERVIDOR]:', err);
-        alert(`Error: ${JSON.stringify(err.error?.message || err.error)}`);
+
+      error: (error: unknown) => {
+
+        this.saving = false;
+
+        console.error(
+          '[SmartBarber] Error guardando horario:',
+          error
+        );
+
+        alert(
+          'No fue posible guardar el horario.'
+        );
       }
     });
+  }
+
+  private patchSchedule(
+    schedule: Partial<ScheduleResponse> | null
+  ): void {
+
+    this.horarioForm.patchValue({
+
+      horaInicio:
+        this.fromLocalTime(
+          schedule?.startTime,
+          '08:00'
+        ),
+
+      horaFin:
+        this.fromLocalTime(
+          schedule?.endTime,
+          '18:00'
+        ),
+
+      horaInicioAlmuerzo:
+        this.fromLocalTime(
+          schedule?.lunchStartTime,
+          '12:00'
+        ),
+
+      horaFinAlmuerzo:
+        this.fromLocalTime(
+          schedule?.lunchEndTime,
+          '13:00'
+        ),
+
+      vacaciones:
+        schedule?.vacation ?? false
+    });
+  }
+
+  private resetScheduleState(): void {
+
+    this.scheduleId = null;
+
+    this.scheduleExists = false;
+
+    this.horarioForm.patchValue({
+
+      horaInicio: '08:00',
+
+      horaFin: '18:00',
+
+      horaInicioAlmuerzo: '12:00',
+
+      horaFinAlmuerzo: '13:00',
+
+      vacaciones: false
+    });
+  }
+
+  private getHttpErrorStatus(error: unknown): number | undefined {
+    if (!error || typeof error !== 'object' || !('status' in error)) {
+      return undefined;
+    }
+
+    const status = error.status;
+    return typeof status === 'number' ? status : undefined;
+  }
+
+  private toLocalTime(
+    value: string
+  ): string {
+
+    return value?.length === 5
+      ? `${value}:00`
+      : value;
+  }
+
+  private toNullableLocalTime(
+    value: string | null
+  ): string | null {
+
+    if (!value) {
+      return null;
+    }
+
+    return value.length === 5
+      ? `${value}:00`
+      : value;
+  }
+
+  private fromLocalTime(
+    value: string | null | undefined,
+    fallback: string
+  ): string {
+
+    if (!value) {
+      return fallback;
+    }
+
+    return value.length >= 5
+      ? value.substring(0, 5)
+      : fallback;
   }
 }

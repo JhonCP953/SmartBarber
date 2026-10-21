@@ -1,137 +1,307 @@
-<!-- Contenedor Principal en 2 Columnas -->
-<div class="crud-layout">
+<div class="editor-card">
 
-  <!-- COLUMNA IZQUIERDA: Formulario de Edición -->
-  <div class="vintage-card form-column" *ngIf="isEditing">
-    <div class="card-header-banner">
-      <h2>Editar Información</h2>
-      <p>Modificando registro seleccionado</p>
+  <header class="editor-header">
+
+    <div>
+
+      <span class="editor-badge">
+        {{ isEditing ? 'EDICIÓN' : 'CONSULTA' }}
+      </span>
+
+      <h2>
+        {{ isEditing
+          ? 'Editar información'
+          : 'Información del establecimiento'
+        }}
+      </h2>
+
+      <p>
+        {{
+          isEditing
+            ? 'Actualiza los datos generales de tu barbería.'
+            : 'Consulta los datos principales registrados.'
+        }}
+      </p>
+
     </div>
 
-    <form [formGroup]="infoForm" (ngSubmit)="saveGeneralConfig()" class="vintage-form">
-      <div class="form-group">
-        <label>Nombre del Establecimiento</label>
-        <input type="text" formControlName="nombre" placeholder="Ej. Barbería El Capo" />
+  </header>
+
+
+  <!-- ======================================================
+       CONSULTA
+  ======================================================= -->
+
+  <div
+    class="read-only-content"
+    *ngIf="!isEditing"
+  >
+
+    <div class="read-only-message">
+
+      <span class="message-icon">
+        ✦
+      </span>
+
+      <div>
+
+        <strong>
+          ¿Quieres actualizar algún dato?
+        </strong>
+
+        <p>
+          Selecciona <strong>Editar información</strong>
+          en el registro de tu barbería para modificar
+          los datos generales del establecimiento.
+        </p>
+
       </div>
 
-      <div class="form-group">
-        <label>Razón Social</label>
-        <input type="text" formControlName="razon_social" placeholder="Ej. Inversiones Barber S.A.S." />
+    </div>
+
+
+    <div class="read-only-grid">
+
+      <div>
+        <span>ESTABLECIMIENTO</span>
+        <strong>
+          {{ infoForm.get('nombre')?.value || '—' }}
+        </strong>
       </div>
 
-      <div class="form-group" style="display: flex; gap: 10px;">
-        <div style="flex: 1;">
-          <label>Tipo de Documento</label>
-          <input type="text" formControlName="tipo_documento" placeholder="Ej. NIT" />
-        </div>
-        <div style="flex: 2;">
-          <label>Número de Documento</label>
-          <input type="text" formControlName="documento" placeholder="Ej. 900123456-1" />
-        </div>
+      <div>
+        <span>RAZÓN SOCIAL</span>
+        <strong>
+          {{ infoForm.get('razonSocial')?.value || '—' }}
+        </strong>
       </div>
 
-      <div class="form-group">
-        <label>Teléfono / Celular</label>
-        <input type="text" formControlName="celular" placeholder="Ej. 3001234567" />
+      <div>
+        <span>DOCUMENTO</span>
+        <strong>
+          {{
+            infoForm.get('tipoDocumento')?.value
+              || '—'
+          }}
+          {{
+            infoForm.get('documento')?.value
+              || ''
+          }}
+        </strong>
       </div>
 
-      <div class="form-group">
-        <label>Ubicación / Dirección</label>
-        <input type="text" formControlName="ubicacion" placeholder="Ej. Calle Principal #12-34" />
+      <div>
+        <span>TELÉFONO</span>
+        <strong>
+          {{ infoForm.get('telefono')?.value || '—' }}
+        </strong>
       </div>
 
-      <div class="form-group">
-        <label>Descripción / Slogan</label>
-        <textarea formControlName="descripcion" rows="2" placeholder="Especialistas en cortes clásicos..."></textarea>
+      <div>
+        <span>UBICACIÓN</span>
+        <strong>
+          {{ infoForm.get('ubicacion')?.value || '—' }}
+        </strong>
       </div>
 
-      <div class="form-group">
-        <label>Estado</label>
-        <input type="text" formControlName="estado" placeholder="Ej. ACTIVO" />
+      <div>
+        <span>DESCRIPCIÓN</span>
+        <strong>
+          {{ infoForm.get('descripcion')?.value || '—' }}
+        </strong>
       </div>
 
-      <div class="form-actions-flex">
-        <button type="submit" class="vintage-btn gold" [disabled]="infoForm.invalid">
-          💾 Guardar Cambios
-        </button>
-        <button type="button" class="vintage-btn cancel" (click)="cancelEdit()">
-          Cancelar
-        </button>
-      </div>
-    </form>
+    </div>
+
   </div>
 
-  <!-- Mensaje de instrucción cuando no se está editando -->
-  <div class="vintage-card form-column placeholder-card" *ngIf="!isEditing">
-    <div class="card-header-banner">
-      <h2>Panel de Edición</h2>
-    </div>
-    <div class="helper-text-box">
-      <p>💡 <strong>Instrucción:</strong> Selecciona el icono de editar (✏️) en la tabla de la derecha para desplegar y modificar la información del establecimiento seleccionado.</p>
-    </div>
-  </div>
 
-  <!-- COLUMNA DERECHA: Tabla Estilo Dashboard con todos los campos -->
-  <div class="vintage-card table-column" style="flex: 2;">
-    <div class="table-top-bar">
-      <div class="count-info">
-        <span>Total de registros: <strong>{{ barberList.length }}</strong></span>
-      </div>
-      <div class="search-box">
-        <label>Buscar:</label>
-        <input type="text" [(ngModel)]="searchTerm" placeholder="Filtrar..." class="vintage-input-sm" />
-      </div>
-    </div>
+  <!-- ======================================================
+       EDICIÓN
+  ======================================================= -->
 
-    <div class="table-responsive">
-      <table class="vintage-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Razón Social</th>
-            <th>Doc.</th>
-            <th>Teléfono</th>
-            <th>Ubicación</th>
-            <th>Estado</th>
-            <th>Creación</th>
-            <th>Modificación</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of barberList; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td><strong>{{ item.nombre }}</strong></td>
-            <td>{{ item.razon_social || 'N/A' }}</td>
-            <td>{{ item.tipo_documento }}: {{ item.documento }}</td>
-            <td>{{ item.celular }}</td>
-            <td>{{ item.ubicacion }}</td>
-            <td>{{ item.estado || 'ACTIVO' }}</td>
-            <td>{{ item.fecha_creacion ? (item.fecha_creacion | date:'short') : 'N/A' }}</td>
-            <td>{{ item.fecha_modificacion ? (item.fecha_modificacion | date:'short') : 'N/A' }}</td>
-            <td class="actions-cell">
-              <button type="button" class="btn-action view" title="Consultar" (click)="selectForView(item)">
-                🔍
-              </button>
-              <button type="button" class="btn-action edit" title="Editar" (click)="selectForEdit(item)">
-                ✏️
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="barberList.length === 0">
-            <td colspan="10" class="empty-row">Cargando registros desde el backend...</td>
-          </tr>
-        </tbody>
-      </table>
+  <form
+    *ngIf="isEditing"
+    [formGroup]="infoForm"
+    (ngSubmit)="saveGeneralConfig()"
+    class="editor-form"
+  >
+
+    <div class="form-field">
+
+      <label for="nombre">
+        Nombre del establecimiento
+      </label>
+
+      <input
+        id="nombre"
+        type="text"
+        formControlName="nombre"
+        placeholder="Ej. Smart Barber"
+      />
+
+      <small *ngIf="getFieldInvalid('nombre')">
+        El nombre es obligatorio.
+      </small>
+
     </div>
 
-    <div class="table-footer-pagination">
-      <span>Mostrando registros del 1 al {{ barberList.length }} de un total de {{ barberList.length }}</span>
-      <div class="pagination-buttons">
-        <button type="button" class="page-btn active">1</button>
-      </div>
+
+    <div class="form-field">
+
+      <label for="razonSocial">
+        Razón social
+      </label>
+
+      <input
+        id="razonSocial"
+        type="text"
+        formControlName="razonSocial"
+        placeholder="Ej. Smart Barber S.A.S."
+      />
+
     </div>
-  </div>
+
+
+    <div class="form-row">
+
+      <div class="form-field">
+
+        <label for="tipoDocumento">
+          Tipo de documento
+        </label>
+
+        <select
+          id="tipoDocumento"
+          formControlName="tipoDocumento"
+        >
+
+          <option value="">
+            Selecciona
+          </option>
+
+          <option value="NIT">
+            NIT
+          </option>
+
+          <option value="CC">
+            CC
+          </option>
+
+          <option value="CE">
+            CE
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-field">
+
+        <label for="documento">
+          Documento
+        </label>
+
+        <input
+          id="documento"
+          type="text"
+          formControlName="documento"
+          placeholder="Ej. 900123456-1"
+        />
+
+      </div>
+
+    </div>
+
+
+    <div class="form-field">
+
+      <label for="telefono">
+        Teléfono
+      </label>
+
+      <input
+        id="telefono"
+        type="text"
+        formControlName="telefono"
+        placeholder="Ej. 3001234567"
+      />
+
+    </div>
+
+
+    <div class="form-field">
+
+      <label for="ubicacion">
+        Ubicación
+      </label>
+
+      <input
+        id="ubicacion"
+        type="text"
+        formControlName="ubicacion"
+        placeholder="Ej. Soacha, Cundinamarca"
+      />
+
+    </div>
+
+
+    <div class="form-field">
+
+      <label for="descripcion">
+        Descripción
+      </label>
+
+      <textarea
+        id="descripcion"
+        formControlName="descripcion"
+        rows="3"
+        placeholder="Describe brevemente tu establecimiento..."
+      ></textarea>
+
+    </div>
+
+
+    <div
+      class="form-error"
+      *ngIf="formError"
+    >
+      {{ formError }}
+    </div>
+
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="button-secondary"
+        (click)="cancelEdit()"
+        [disabled]="saving"
+      >
+        Cancelar
+      </button>
+
+
+      <button
+        type="submit"
+        class="button-primary"
+        [disabled]="
+          infoForm.invalid ||
+          saving
+        "
+      >
+
+        {{
+          saving
+            ? 'GUARDANDO...'
+            : 'GUARDAR CAMBIOS'
+        }}
+
+      </button>
+
+    </div>
+
+  </form>
 
 </div>

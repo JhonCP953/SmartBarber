@@ -87,6 +87,14 @@ export class LoginComponent {
                         'No fue posible validar tu identidad.';
                     break;
 
+                case 'MISSING_AUTH_USERID':
+                case 'MISSING_AUTH_CUSTOMERID':
+                case 'MISSING_AUTH_EMPLOYEEID':
+                case 'MISSING_AUTH_BARBERSHOPID':
+                    this.errorMessage =
+                        'El backend validó tu cuenta, pero no devolvió todos los datos del perfil asociado.';
+                    break;
+
                 default:
                     this.errorMessage =
                         'No fue posible iniciar sesión. Inténtalo nuevamente.';

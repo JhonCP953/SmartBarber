@@ -1,4 +1,3 @@
-
 export type UserRole = 'CLIENT' | 'ADMIN' | 'BARBER';
 
 export type UserStatus = 'ACTIVE' | 'BLOCKED' | 'INACTIVE';

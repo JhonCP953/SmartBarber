@@ -1,165 +1,218 @@
 <div class="subscription-page-container">
-  
   <main class="content-card-grid">
-    
-    <!-- Columna Izquierda: Plan Básico -->
-    <section class="plan-summary-box">
-      <div class="popular-pill">PLAN INICIAL</div>
-      
-      <h2 class="plan-heading">PLAN BÁSICO</h2>
-      <div class="price-tag-container">
-        <span class="currency-symbol">$</span>
-        <span class="price-value">30.000</span>
-        <span class="price-period">/ mes</span>
+    <section class="plan-summary-box" aria-labelledby="selected-plan-heading">
+      <span class="popular-pill">ADQUISICIÓN DE PLAN</span>
+
+      <div class="plan-summary-content">
+        <span class="section-eyebrow">SUSCRIPCIÓN PARA TU BARBERÍA</span>
+        <h1 id="selected-plan-heading" class="plan-heading">
+          {{ selectedPlan()?.name || 'Elige tu plan' }}
+        </h1>
+
+        <div *ngIf="selectedPlan() as plan" class="price-tag-container">
+          <span class="price-value">{{ formatCurrency(plan.price) }}</span>
+          <span class="price-period">Precio del catálogo</span>
+        </div>
+
+        <p *ngIf="selectedPlan() as plan" class="plan-info-text">
+          {{ plan.description }}
+        </p>
+
+        <p *ngIf="!selectedPlan()" class="plan-info-text">
+          Selecciona uno de los planes disponibles para ver su valor y continuar.
+        </p>
+
+        <div *ngIf="loading()" class="plan-state" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Consultando planes disponibles...</span>
+        </div>
+
+        <div *ngIf="!loading() && plans().length" class="available-plans">
+          <h2>Planes disponibles</h2>
+          <button
+            *ngFor="let plan of plans()"
+            type="button"
+            class="available-plan"
+            [class.selected]="selectedPlanId() === plan.id"
+            [attr.aria-pressed]="selectedPlanId() === plan.id"
+            (click)="selectPlan(plan.id)">
+            <span>
+              <strong>{{ plan.name }}</strong>
+              <small>{{ plan.description }}</small>
+            </span>
+            <span class="available-plan-price">{{ formatCurrency(plan.price) }}</span>
+          </button>
+        </div>
       </div>
 
-      <p class="plan-info-text">
-        Plan básico para barberías con funcionalidades esenciales.
-      </p>
-
-      <ul class="perks-list">
-        <li><span class="check-mark">✓</span> Gestión de citas y agenda</li>
-        <li><span class="check-mark">✓</span> Control de servicios y barberos</li>
-        <li><span class="check-mark">✓</span> Módulo de clientes y perfil</li>
-        <li><span class="check-mark">✓</span> Acceso al panel de administración</li>
-        <li><span class="check-mark">✓</span> Soporte estándar</li>
-      </ul>
-
-      <!-- Imagen PNG con el nombre solicitado y difuminado integrado -->
       <div class="plan-image-fade-container">
-        <img src="/suscripcionpag.png" alt="Herramientas de suscripción" class="faded-barber-img" />
+        <img
+          src="/suscripcionpag.png"
+          alt=""
+          aria-hidden="true"
+          class="faded-barber-img">
       </div>
     </section>
 
-    <!-- Columna Derecha: Formulario de Datos de Pago (Simulador) -->
-    <section class="payment-section-box">
+    <section class="payment-section-box" aria-labelledby="payment-title">
+      <a class="back-link" routerLink="/panel/subscription">← Volver a suscripción</a>
+
       <div class="payment-header-group">
-        <h1 class="main-title">Datos de pago</h1>
+        <span class="section-eyebrow">PAGO DE SUSCRIPCIÓN</span>
+        <h2 id="payment-title" class="main-title">Datos de pago</h2>
         <p class="main-subtitle">
-          Entorno de pruebas activo. Ingresa datos ficticios para validar la transacción de forma segura.
+          Completa los campos para continuar con la solicitud. Esta interfaz no procesa ni transmite datos reales de tarjeta.
         </p>
       </div>
 
-      <form [formGroup]="subscriptionForm" (ngSubmit)="onSubmit()" class="clean-payment-form">
-        
-        <div class="field-container">
-          <label for="fullName">Nombre completo</label>
-          <div class="input-icon-wrapper">
-            <span class="icon-prefix">👤</span>
-            <input 
-              id="fullName" 
-              type="text" 
-              formControlName="fullName" 
-              class="form-control-input" 
-              placeholder="Ej. Juan Pérez"
-            />
-          </div>
-        </div>
+      <div *ngIf="errorMessage()" class="form-alert form-alert-error" role="alert">
+        {{ errorMessage() }}
+      </div>
 
-        <div class="field-container">
-          <label for="email">Correo electrónico</label>
-          <div class="input-icon-wrapper">
-            <span class="icon-prefix">✉️</span>
-            <input 
-              id="email" 
-              type="email" 
-              formControlName="email" 
-              class="form-control-input" 
-              placeholder="juan@ejemplo.com"
-            />
-          </div>
-        </div>
+      <div *ngIf="createdSubscription()" class="form-alert form-alert-success" role="status">
+        Solicitud creada con estado {{ createdSubscription()?.status }}.
+        Referencia: {{ createdSubscription()?.orderId }}
+      </div>
+
+      <div *ngIf="paymentMessage()" class="form-alert form-alert-info" role="status" aria-live="polite">
+        {{ paymentMessage() }}
+      </div>
+
+      <form
+        [formGroup]="subscriptionForm"
+        (ngSubmit)="acquireSubscription()"
+        class="clean-payment-form"
+        novalidate>
+        <label class="field-container">
+          <span>Nombre completo</span>
+          <span class="input-icon-wrapper">
+            <span class="icon-prefix" aria-hidden="true">👤</span>
+            <input
+              type="text"
+              formControlName="fullName"
+              class="form-control-input"
+              placeholder="Ej. Juan Pérez"
+              autocomplete="name">
+          </span>
+          <small *ngIf="isFieldInvalid('fullName')" class="field-error">
+            {{ fieldError('fullName') }}
+          </small>
+        </label>
+
+        <label class="field-container">
+          <span>Correo electrónico</span>
+          <span class="input-icon-wrapper">
+            <span class="icon-prefix" aria-hidden="true">✉️</span>
+            <input
+              type="email"
+              formControlName="email"
+              class="form-control-input"
+              placeholder="nombre@ejemplo.com"
+              autocomplete="email">
+          </span>
+          <small *ngIf="isFieldInvalid('email')" class="field-error">
+            {{ fieldError('email') }}
+          </small>
+        </label>
 
         <div class="form-row-double">
-          <div class="field-container">
-            <label for="cardNumber">Número de tarjeta</label>
-            <div class="input-icon-wrapper">
-              <span class="icon-prefix">💳</span>
-              <input 
-                id="cardNumber" 
-                type="text" 
-                formControlName="cardNumber" 
-                class="form-control-input" 
-                placeholder="4000 1234 5678 9010" 
+          <label class="field-container">
+            <span>Número de tarjeta (solo validación local)</span>
+            <span class="input-icon-wrapper">
+              <span class="icon-prefix" aria-hidden="true">💳</span>
+              <input
+                type="text"
+                inputmode="numeric"
+                formControlName="cardNumber"
+                class="form-control-input"
+                placeholder="16 dígitos"
                 maxlength="16"
-              />
-            </div>
-          </div>
+                autocomplete="off">
+            </span>
+            <small *ngIf="isFieldInvalid('cardNumber')" class="field-error">
+              {{ fieldError('cardNumber') }}
+            </small>
+          </label>
 
-          <div class="field-container">
-            <label for="expirationDate">Fecha de expiración</label>
-            <div class="input-icon-wrapper">
-              <span class="icon-prefix">📅</span>
-              <input 
-                id="expirationDate" 
-                type="text" 
-                formControlName="expirationDate" 
-                class="form-control-input" 
-                placeholder="MM / AA" 
-                maxlength="5"
-              />
-            </div>
-          </div>
+          <label class="field-container">
+            <span>Fecha de expiración</span>
+            <span class="input-icon-wrapper">
+              <span class="icon-prefix" aria-hidden="true">📅</span>
+              <input
+                type="text"
+                formControlName="expirationDate"
+                class="form-control-input"
+                placeholder="MM/AA"
+                maxlength="7"
+                autocomplete="off">
+            </span>
+            <small *ngIf="isFieldInvalid('expirationDate')" class="field-error">
+              {{ fieldError('expirationDate') }}
+            </small>
+          </label>
         </div>
 
-        <div class="field-container">
-          <label for="cvv">Código de seguridad (CVV)</label>
-          <div class="input-icon-wrapper">
-            <span class="icon-prefix">🔒</span>
-            <input 
-              id="cvv" 
-              type="password" 
-              formControlName="cvv" 
-              class="form-control-input" 
-              placeholder="123" 
+        <label class="field-container">
+          <span>CVV (solo validación local)</span>
+          <span class="input-icon-wrapper">
+            <span class="icon-prefix" aria-hidden="true">🔒</span>
+            <input
+              type="password"
+              inputmode="numeric"
+              formControlName="cvv"
+              class="form-control-input"
+              placeholder="3 o 4 dígitos"
               maxlength="4"
-            />
-          </div>
-        </div>
+              autocomplete="off">
+          </span>
+          <small *ngIf="isFieldInvalid('cvv')" class="field-error">
+            {{ fieldError('cvv') }}
+          </small>
+        </label>
 
         <div class="auto-renewal-card">
           <div class="renewal-text-block">
             <span class="renewal-title">Activar renovación automática</span>
-            <p class="renewal-sub">Simula la renovación mensual automática en este entorno de pruebas.</p>
+            <p class="renewal-sub">La preferencia se incluye en la solicitud de suscripción.</p>
           </div>
           <label class="switch-toggle">
-            <input type="checkbox" formControlName="autoRenew" />
+            <input type="checkbox" formControlName="autoRenew" aria-label="Activar renovación automática">
             <span class="toggle-slider round"></span>
           </label>
         </div>
 
-        <button type="submit" class="btn-complete-payment" [disabled]="isSubmitting">
-          <span class="btn-card-icon">💳</span>
-          {{ isSubmitting ? 'PROCESANDO SIMULACIÓN...' : 'Completar transacción de prueba' }}
+        <button
+          type="submit"
+          class="btn-complete-payment"
+          [disabled]="submitting() || loading() || selectedPlanId() === null || !plans().length">
+          <span class="btn-card-icon" aria-hidden="true">💳</span>
+          {{ submitting() ? 'PROCESANDO SOLICITUD...' : 'Continuar con la adquisición' }}
         </button>
       </form>
 
-      <!-- Insignias indicando que es simulador -->
       <div class="security-features-footer">
         <div class="sec-badge-item">
-          <span class="badge-emoji">🧪</span>
+          <span class="badge-emoji" aria-hidden="true">ℹ️</span>
           <div>
-            <strong>Simulador de pruebas</strong>
-            <p>Entorno académico sin cobros reales.</p>
+            <strong>Datos de prueba</strong>
+            <p>No ingreses información bancaria real.</p>
           </div>
         </div>
         <div class="sec-badge-item">
-          <span class="badge-emoji">🛡️</span>
+          <span class="badge-emoji" aria-hidden="true">🛡️</span>
           <div>
-            <strong>Sin datos bancarios</strong>
-            <p>No almacenamos información real.</p>
+            <strong>Sin envío de tarjeta</strong>
+            <p>Los datos de tarjeta no se incluyen en la solicitud HTTP.</p>
           </div>
         </div>
         <div class="sec-badge-item">
-          <span class="badge-emoji">⚡</span>
+          <span class="badge-emoji" aria-hidden="true">⚡</span>
           <div>
-            <strong>WebSocket en vivo</strong>
-            <p>Respuesta de estado en tiempo real.</p>
+            <strong>Estado de pago</strong>
+            <p>Se escucha la actualización asociada al orderId cuando el backend lo devuelve.</p>
           </div>
         </div>
       </div>
-
     </section>
-
   </main>
 </div>

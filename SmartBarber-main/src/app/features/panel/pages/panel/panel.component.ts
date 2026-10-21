@@ -3,6 +3,7 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
+  computed,
   inject,
   signal
 } from '@angular/core';
@@ -27,6 +28,7 @@ import {
 } from '../../domain/models/panel-navigation.model';
 
 import { PanelNavigationService } from '../../application/services/panel-navigation.service';
+import { BarbershopSubscriptionAccessService } from '../../../subscription/application/services/barbershop-subscription-access.service';
 
 
 @Component({
@@ -59,6 +61,9 @@ export class PanelComponent
   private readonly navigationService =
     inject(PanelNavigationService);
 
+  readonly subscriptionAccess =
+    inject(BarbershopSubscriptionAccessService);
+
 
   private readonly router =
     inject(Router);
@@ -68,7 +73,11 @@ export class PanelComponent
 
 
   readonly navigationGroups =
-    signal<PanelNavigationGroup[]>([]);
+    computed<PanelNavigationGroup[]>(() =>
+      this.navigationService.getNavigationForAccess(
+        this.subscriptionAccess.restrictsModules
+      )
+    );
 
 
   readonly mobileMenuOpen =
@@ -103,8 +112,103 @@ export class PanelComponent
       this.sessionService.session$.subscribe(() => {
 
         this.loadPanel();
+        this.subscriptionAccess.refresh();
 
       });
+  }
+
+
+  retrySubscriptionCheck(): void {
+    this.subscriptionAccess.refresh();
+  }
+
+
+  subscriptionAlertTitle(): string {
+    switch (this.subscriptionAccess.state().status) {
+      case 'loading':
+        return 'Verificando el plan de tu barbería';
+      case 'approved':
+        return 'La suscripción fue aprobada y está pendiente de activación';
+      case 'inactive':
+        return 'Tu barbería no tiene un plan activo';
+      case 'pending':
+        return 'El pago de tu suscripción está pendiente';
+      case 'expired':
+        return 'La suscripción de tu barbería está vencida';
+      case 'declined':
+        return 'El pago de tu suscripción fue rechazado';
+      case 'error':
+        return 'No fue posible consultar la suscripción';
+      case 'unavailable':
+        return 'No se puede verificar la suscripción todavía';
+      case 'active':
+        return 'Suscripción activa';
+    }
+  }
+
+
+  subscriptionAlertMessage(): string {
+    const state = this.subscriptionAccess.state();
+    const isBarber = this.sessionService.currentSession?.role === 'BARBER';
+
+    if (isBarber) {
+      switch (state.status) {
+        case 'inactive':
+          return 'La barbería no tiene un plan activo. Avísale al administrador para que adquiera una suscripción.';
+        case 'approved':
+          return 'La solicitud fue aprobada, pero el backend aún no confirma un plan activo. Consulta con el administrador de la barbería.';
+        case 'pending':
+          return 'El pago o la confirmación del plan de la barbería está pendiente. Consulta con su administrador.';
+        case 'expired':
+          return 'El plan de la barbería venció. Avísale al administrador para que lo renueve o adquiera otro.';
+        case 'declined':
+          return 'El pago del plan fue rechazado. El administrador debe revisar las opciones de adquisición o renovación.';
+        case 'loading':
+          return 'Estamos consultando el estado del plan de la barbería.';
+        case 'active':
+          return 'La barbería cuenta con una suscripción activa y vigente.';
+        case 'error':
+          return state.message ?? 'No fue posible consultar el estado. Puedes reintentar o avisar al administrador.';
+        case 'unavailable':
+          return 'La integración de consulta está pendiente de confirmar. No se bloquearán módulos por falta de respuesta; consulta con el administrador de tu barbería.';
+      }
+    }
+
+    switch (state.status) {
+      case 'loading':
+        return 'Estamos consultando el estado de la suscripción con el backend.';
+      case 'inactive':
+        return 'Para utilizar los módulos de la plataforma, tu barbería necesita una suscripción activa. Puedes consultar los planes disponibles.';
+      case 'approved':
+        return 'El estado aprobado no habilita por sí solo los módulos. Espera a que el backend confirme que el plan está activo y vigente.';
+      case 'pending':
+        return 'El pago o la confirmación del plan todavía está pendiente. Puedes revisar los módulos de suscripción mientras se confirma.';
+      case 'expired':
+        return 'El plan ya venció. Renueva o adquiere una suscripción para volver a habilitar los módulos de la plataforma.';
+      case 'declined':
+        return 'El pago no fue aprobado. Revisa las opciones disponibles para adquirir o renovar tu plan.';
+      case 'error':
+        return state.message ?? 'Ocurrió un error al consultar el estado. Puedes reintentar sin perder el acceso a tu perfil.';
+      case 'unavailable':
+        return 'La integración de consulta aún no está conectada porque falta confirmar el contrato del backend. No se bloquearán módulos ni se asumirá que el plan está activo.';
+      case 'active':
+        return 'Tu barbería cuenta con una suscripción activa y vigente.';
+    }
+  }
+
+
+  subscriptionAlertIcon(): string {
+    switch (this.subscriptionAccess.state().status) {
+      case 'active':
+        return '✓';
+      case 'loading':
+        return '…';
+      case 'unavailable':
+      case 'error':
+        return 'i';
+      default:
+        return '!';
+    }
   }
 
 
@@ -130,18 +234,10 @@ export class PanelComponent
 
 
     if (!session) {
-
-      this.navigationGroups.set([]);
-
       this.summary.set(null);
 
       return;
     }
-
-
-    this.navigationGroups.set(
-      this.navigationService.getNavigation()
-    );
 
 
     this.summary.set({
@@ -336,6 +432,12 @@ export class PanelComponent
     void this.router.navigateByUrl(
       item.route
     );
+  }
+
+
+  navigateToSubscriptionAcquisition(): void {
+    this.closeMobileMenu();
+    void this.router.navigateByUrl('/panel/subscription/status');
   }
 
 

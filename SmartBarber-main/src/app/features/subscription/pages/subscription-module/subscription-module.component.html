@@ -1,0 +1,23 @@
+<main class="module-page">
+  <a class="back-link" routerLink="/panel/subscription">← Volver a suscripción</a>
+
+  <header class="module-heading">
+    <span class="eyebrow">GESTIÓN DE BARBERÍA</span>
+    <h1>{{ module.title }}</h1>
+    <p>{{ module.description }}</p>
+  </header>
+
+  <section class="availability-card" role="status">
+    <span class="availability-icon" aria-hidden="true">i</span>
+    <div>
+      <span class="availability-label">INTEGRACIÓN CON BACKEND</span>
+      <h2>Esta opción aún no puede consultar o modificar datos</h2>
+      <p>{{ module.availability }}</p>
+      <p class="safety-note">
+        La barbería objetivo se obtiene del perfil autenticado. No se utilizarán IDs ingresados manualmente ni datos simulados.
+      </p>
+    </div>
+  </section>
+
+  <a class="dashboard-link" routerLink="/panel/subscription">Regresar al panel de módulos</a>
+</main>

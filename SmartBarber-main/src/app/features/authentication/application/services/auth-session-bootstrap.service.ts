@@ -20,13 +20,8 @@ import {
 } from '../../domain/repositories/auth.repository';
 
 import {
-    BackendRoleResponse
-} from '../../domain/models/auth-session.model';
-
-import {
-    AuthSession,
-    UserRole
-} from '../../../../core/auth/model/auth-session.model';
+    mapBackendAuthentication
+} from '../mapper/auth-session.mapper';
 
 
 @Injectable({
@@ -80,75 +75,16 @@ export class AuthSessionBootstrapService {
              * =================================================
              */
 
-            const backendRole =
+            const backendAuthentication =
                 await firstValueFrom(
                     this.authRepository
                         .verifyAuthentication()
                 );
 
-
-            const role =
-                this.mapRole(
-                    backendRole
-                );
-
-
-            const previousSession =
-                this.sessionService
-                    .currentSession;
-
-
-            const sameFirebaseUser =
-                previousSession?.firebaseUid ===
-                firebaseUser.uid;
-
-
-            const session:
-                AuthSession = {
-
-                userId:
-                    sameFirebaseUser
-                        ? previousSession?.userId ?? ''
-                        : '',
-
-                clientId:
-                    sameFirebaseUser
-                        ? previousSession?.clientId ?? null
-                        : null,
-
-                firebaseUid:
-                    firebaseUser.uid,
-
-                email:
-                    firebaseUser.email ?? '',
-
-                displayName:
-                    firebaseUser.displayName ?? '',
-
-                role,
-
-                status:
-                    'ACTIVE',
-
-                tenantId:
-                    sameFirebaseUser
-                        ? previousSession?.tenantId ?? null
-                        : null,
-
-                photoUrl:
-                    firebaseUser.photoURL ?? null,
-
-                barberId:
-                    sameFirebaseUser
-                        ? previousSession?.barberId ?? null
-                        : null,
-
-                barbershopId:
-                    sameFirebaseUser
-                        ? previousSession?.barbershopId ?? null
-                        : null
-
-            };
+            const session = mapBackendAuthentication(
+                backendAuthentication,
+                firebaseUser
+            );
 
 
             this.sessionService
@@ -157,7 +93,7 @@ export class AuthSessionBootstrapService {
                 );
 
 
-        } catch {
+        } catch (error: unknown) {
 
             /*
              * Si Firebase tiene sesión pero el usuario no
@@ -168,56 +104,10 @@ export class AuthSessionBootstrapService {
             this.sessionService
                 .clearSession();
 
-        }
-
-    }
-
-
-    private mapRole(
-        role: BackendRoleResponse
-    ):
-        UserRole {
-
-
-        switch (role) {
-
-
-            case 'CUSTOMER':
-
-                return 'CLIENT';
-
-
-            case 'BARBER':
-
-                return 'BARBER';
-
-
-            case 'ADMIN':
-
-                return 'ADMIN';
-
-
-            case 'Cliente':
-
-                return 'CLIENT';
-
-
-            case 'Barbero':
-
-                return 'BARBER';
-
-
-            case 'Administrador':
-
-                return 'ADMIN';
-
-
-            default:
-
-                throw new Error(
-                    'INVALID_ROLE'
-                );
-
+            console.error(
+                'No fue posible restaurar la sesión autenticada:',
+                error
+            );
         }
 
     }

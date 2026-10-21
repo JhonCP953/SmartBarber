@@ -1,108 +1,363 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
-import { BarberShopApiService as BarberConfigApiService } from '../../../infrastructure/services/barber-shop-api.service';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+
+import {
+  BarberShopApiService
+} from '../../../infrastructure/services/barber-shop-api.service';
+
+import {
+  BarberShopResponse
+} from '../../../domain/models/barber-shop.model';
+
 
 @Component({
   selector: 'app-barberias-registros',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './barberias-registros.component.html',
-  styleUrls: ['../shared/vintage-shared.css', './barberias-registros.component.css']
-})
-export class BarberiasRegistrosComponent implements OnInit {
-  @Input() barberList: any[] = [];
-  @Input() barberId = '';
 
-  // Cuando el padre cambia el registro seleccionado (ej. desde "Sede Activa"), se rellena el formulario
-  @Input() set seleccionado(item: any) {
-    if (item && this.infoForm) {
+  standalone: true,
+
+  imports: [
+    CommonModule,
+    ReactiveFormsModule
+  ],
+
+  templateUrl:
+    './barberias-registros.component.html',
+
+  styleUrls: [
+    './barberias-registros.component.css'
+  ]
+})
+export class BarberiasRegistrosComponent
+  implements OnInit {
+
+
+  @Input()
+  barberList: BarberShopResponse[] = [];
+
+
+  @Input()
+  barberId = '';
+
+  @Input()
+  set editing(value: boolean) {
+    this.isEditing = value;
+  }
+
+  private selectedBarber: BarberShopResponse | null = null;
+
+  @Input()
+  set seleccionado(
+    item: BarberShopResponse | null
+  ) {
+    this.selectedBarber = item;
+
+    if (
+      item &&
+      this.infoForm
+    ) {
+
       this.patchFormValues(item);
+
+      this.selectedId =
+        String(item.id ?? '');
     }
   }
 
-  @Output() barberiaSeleccionada = new EventEmitter<any>();
-  @Output() guardado = new EventEmitter<void>();
+
+  @Output()
+  barberiaSeleccionada =
+    new EventEmitter<BarberShopResponse>();
+
+
+  @Output()
+  guardado =
+    new EventEmitter<void>();
+
+
+  infoForm!: FormGroup;
 
   isEditing = false;
-  searchTerm = '';
-  infoForm!: FormGroup;
+
+  selectedId = '';
+
+  saving = false;
+
+  formError = '';
+
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly configApiService: BarberConfigApiService
+
+    private readonly api:
+      BarberShopApiService
   ) {}
+
 
   ngOnInit(): void {
     this.initForm();
+
+    if (this.selectedBarber) {
+      this.patchFormValues(this.selectedBarber);
+      this.selectedId = String(this.selectedBarber.id ?? '');
+    }
   }
+
 
   private initForm(): void {
-    this.infoForm = this.fb.group({
-      nombre: ['', Validators.required],
-      razon_social: [''],
-      tipo_documento: ['', Validators.required],
-      documento: ['', Validators.required],
-      celular: ['', Validators.required],
-      ubicacion: ['', Validators.required],
-      descripcion: [''],
-      estado: ['ACTIVO']
+
+    this.infoForm =
+      this.fb.group({
+
+        nombre: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(100)
+          ]
+        ],
+
+        razonSocial: [
+          '',
+          Validators.maxLength(150)
+        ],
+
+        tipoDocumento: [
+          '',
+          Validators.required
+        ],
+
+        documento: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(50)
+          ]
+        ],
+
+        telefono: [
+          '',
+          Validators.required
+        ],
+
+        ubicacion: [
+          '',
+          Validators.required
+        ],
+
+        descripcion: [
+          '',
+          Validators.maxLength(500)
+        ]
+
+      });
+  }
+
+
+  // ============================================================
+  // SELECCIONAR PARA EDITAR
+  // ============================================================
+
+  edit(item: BarberShopResponse): void {
+
+    this.isEditing = true;
+
+    this.selectedId =
+      String(item.id ?? '');
+
+    this.patchFormValues(item);
+
+    this.barberiaSeleccionada.emit(item);
+  }
+
+
+  // ============================================================
+  // CONSULTAR
+  // ============================================================
+
+  view(item: BarberShopResponse): void {
+
+    this.isEditing = false;
+
+    this.selectedId =
+      String(item.id ?? '');
+
+    this.patchFormValues(item);
+
+    this.barberiaSeleccionada.emit(item);
+  }
+
+
+  // ============================================================
+  // FORMULARIO
+  // ============================================================
+
+  private patchFormValues(
+    item: BarberShopResponse
+  ): void {
+
+    this.infoForm.patchValue({
+
+      nombre:
+        item.name ?? '',
+
+      razonSocial:
+        item.companyName ?? '',
+
+      tipoDocumento:
+        item.documentType ?? '',
+
+      documento:
+        item.document ?? '',
+
+      telefono:
+        item.phone ?? '',
+
+      ubicacion:
+        item.location ?? '',
+
+      descripcion:
+        item.description ?? ''
+
     });
   }
 
-  selectForEdit(item: any): void {
-    this.isEditing = true;
-    this.patchFormValues(item);
-    this.barberiaSeleccionada.emit(item);
-  }
 
-  selectForView(item: any): void {
-    this.isEditing = false;
-    this.patchFormValues(item);
-    this.barberiaSeleccionada.emit(item);
-  }
+  // ============================================================
+  // CANCELAR
+  // ============================================================
 
   cancelEdit(): void {
+
     this.isEditing = false;
+
+    this.formError = '';
   }
 
-  private patchFormValues(item: any): void {
-    this.infoForm.patchValue({
-      nombre: item.nombre ?? item.name ?? '',
-      razon_social: item.razon_social ?? item.razonSocial ?? '',
-      tipo_documento: item.tipo_documento ?? item.tipoDocumento ?? '',
-      documento: item.documento ?? '',
-      celular: item.celular ?? item.phone ?? '',
-      ubicacion: item.ubicacion ?? item.location ?? '',
-      descripcion: item.descripcion ?? item.description ?? '',
-      estado: item.estado ?? 'ACTIVO'
-    });
-  }
+
+  // ============================================================
+  // GUARDAR
+  // ============================================================
 
   saveGeneralConfig(): void {
-    if (this.infoForm.invalid) return;
 
-    const formValue = this.infoForm.value;
+    if (
+      this.infoForm.invalid ||
+      this.saving
+    ) {
 
-    this.configApiService.update(this.barberId, {
-      name: formValue.nombre,
-      companyName: formValue.razon_social,
-      documentType: formValue.tipo_documento,
-      document: formValue.documento,
-      phone: formValue.celular,
-      location: formValue.ubicacion,
-      description: formValue.descripcion
-    }).subscribe({
-      next: () => {
-        console.log('✅ [BACKEND] Información general actualizada con éxito.');
-        alert('¡Información actualizada con éxito!');
-        this.isEditing = false;
-        this.guardado.emit(); // el padre recarga la lista
-      },
-      error: (err: any) => {
-        console.error('❌ [ERROR GENERAL]:', err);
-        alert('Error al actualizar la información.');
-      }
-    });
+      this.infoForm.markAllAsTouched();
+
+      return;
+    }
+
+
+    if (!this.selectedId) {
+
+      this.formError =
+        'No se identificó la barbería que deseas actualizar.';
+
+      return;
+    }
+
+
+    const value =
+      this.infoForm.getRawValue();
+
+
+    this.saving = true;
+
+    this.formError = '';
+
+
+    this.api
+      .update(
+        this.selectedId,
+        {
+
+          name:
+            value.nombre.trim(),
+
+          companyName:
+            value.razonSocial?.trim() || '',
+
+          documentType:
+            value.tipoDocumento,
+
+          document:
+            value.documento.trim(),
+
+          phone:
+            value.telefono.trim(),
+
+          location:
+            value.ubicacion.trim(),
+
+          description:
+            value.descripcion?.trim() || ''
+
+        }
+      )
+      .subscribe({
+
+        next: (updated) => {
+
+          this.saving = false;
+
+          this.isEditing = false;
+
+          this.barberiaSeleccionada.emit(
+            updated
+          );
+
+          this.guardado.emit();
+        },
+
+        error: (error) => {
+
+          console.error(
+            '[Mi barbería] Error actualizando:',
+            error
+          );
+
+          this.saving = false;
+
+          this.formError =
+            'No fue posible actualizar la información de la barbería.';
+        }
+
+      });
+  }
+
+
+  // ============================================================
+  // HELPERS
+  // ============================================================
+
+  getFieldInvalid(
+    field: string
+  ): boolean {
+
+    const control =
+      this.infoForm.get(field);
+
+    return !!control &&
+      control.invalid &&
+      control.touched;
   }
 }
