@@ -1,58 +1,570 @@
-<!-- GESTIÓN DE HORARIO DE EMPLEADO (horario_empleado) -->
-<div class="vintage-card">
-  <div class="card-header-banner">
-    <h2>Horarios de Atención</h2>
-    <p>Configuración de Turno de Empleado</p>
-  </div>
+<div class="schedule-page">
 
-  <!-- Selector de Empleado -->
-  <div class="card-subheader-selector" style="margin-bottom: 20px;">
-    <label>EMPLEADO ACTIVO:</label>
-    <select class="vintage-select-sm" [(ngModel)]="selectedEmpleadoUuid" (ngModelChange)="selectedEmpleadoUuidChange.emit($event)" name="selectedEmpleadoUuid">
-      <option value="" disabled>Seleccione un empleado...</option>
-      <option *ngFor="let emp of barberList" [value]="emp.idEmpleado || emp.id_empleado || emp.uuid || emp.id">
-        {{ emp.nombre || emp.nombres || emp.name || 'Sin Nombre' }}
-      </option>
-    </select>
-  </div>
+  <section class="schedule-card">
 
-  <form [formGroup]="horarioForm" (ngSubmit)="saveHorarios()">
-    <div class="hours-form-container" style="display: flex; flex-direction: column; gap: 15px;">
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
 
-      <!-- Horario de Trabajo Principal -->
-      <div class="form-row-schedule" style="display: flex; align-items: center; justify-content: space-between;">
-        <label><strong>Jornada Laboral:</strong></label>
-        <div class="time-inputs">
-          <input type="time" formControlName="horaInicio" class="vintage-input-time" />
-          <span style="margin: 0 8px;">a</span>
-          <input type="time" formControlName="horaFin" class="vintage-input-time" />
+    <header class="schedule-header">
+
+      <div class="header-content">
+
+        <span class="badge-tag">
+          🕐 GESTIÓN DE HORARIOS
+        </span>
+
+        <h1>
+          Horarios de atención
+        </h1>
+
+        <p>
+          Configura la jornada laboral de cada
+          barbero de tu establecimiento.
+        </p>
+
+      </div>
+
+      <div
+        class="employee-count"
+        *ngIf="!loadingEmployees"
+      >
+        <strong>
+          {{ employees.length }}
+        </strong>
+
+        <span>
+          {{
+            employees.length === 1
+              ? 'barbero'
+              : 'barberos'
+          }}
+        </span>
+      </div>
+
+    </header>
+
+
+    <!-- ======================================================
+         ERROR GENERAL
+    ======================================================= -->
+
+    <div
+      class="message error"
+      *ngIf="errorMessage"
+    >
+      <span class="message-icon">
+        ⚠
+      </span>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+    </div>
+
+
+    <!-- ======================================================
+         CONTENIDO PRINCIPAL
+    ======================================================= -->
+
+    <div class="schedule-content">
+
+      <!-- ====================================================
+           EQUIPO DE TRABAJO
+      ===================================================== -->
+
+      <section class="employee-panel">
+
+        <div class="panel-heading">
+
+          <span class="section-label">
+            EQUIPO DE TRABAJO
+          </span>
+
+          <h2>
+            Selecciona un barbero
+          </h2>
+
+          <p>
+            El horario se configura de manera
+            independiente para cada empleado.
+          </p>
+
         </div>
-      </div>
 
-      <!-- Horario de Almuerzo -->
-      <div class="form-row-schedule" style="display: flex; align-items: center; justify-content: space-between;">
-        <label><strong>Turno de Almuerzo:</strong></label>
-        <div class="time-inputs">
-          <input type="time" formControlName="horaInicioAlmuerzo" class="vintage-input-time" />
-          <span style="margin: 0 8px;">a</span>
-          <input type="time" formControlName="horaFinAlmuerzo" class="vintage-input-time" />
+
+        <!-- CARGANDO EMPLEADOS -->
+
+        <div
+          class="loading-box"
+          *ngIf="loadingEmployees"
+        >
+          <span class="loading-spinner"></span>
+
+          <span>
+            Cargando equipo de trabajo...
+          </span>
         </div>
-      </div>
 
-      <!-- Estado de Vacaciones -->
-      <div class="form-row-schedule" style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
-        <label><strong>¿En Vacaciones?</strong></label>
-        <label class="switch-container">
-          <input type="checkbox" formControlName="vacaciones" />
-          <span class="slider"></span>
-        </label>
-      </div>
+
+        <!-- LISTADO DE EMPLEADOS -->
+
+        <div
+          class="employee-list"
+          *ngIf="
+            !loadingEmployees &&
+            employees.length > 0
+          "
+        >
+
+          <button
+            type="button"
+            class="employee-item"
+            *ngFor="let employee of employees"
+            [class.active]="
+              employee.id === selectedEmpleadoUuid
+            "
+            (click)="
+              selectedEmpleadoUuid = employee.id;
+              onEmployeeChange()
+            "
+          >
+
+            <span class="employee-avatar">
+              {{
+                employee.name
+                  ? employee.name
+                      .charAt(0)
+                      .toUpperCase()
+                  : '?'
+              }}
+            </span>
+
+
+            <span class="employee-info">
+
+              <strong>
+                {{ employee.name }}
+              </strong>
+
+              <small>
+                {{
+                  employee.specialty ||
+                  'Barbero'
+                }}
+              </small>
+
+            </span>
+
+
+            <span
+              class="employee-status"
+              *ngIf="
+                employee.id ===
+                selectedEmpleadoUuid
+              "
+            >
+              ✓
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- SIN EMPLEADOS -->
+
+        <div
+          class="empty-employees"
+          *ngIf="
+            !loadingEmployees &&
+            employees.length === 0
+          "
+        >
+
+          <span class="empty-icon">
+            👤
+          </span>
+
+          <strong>
+            No hay barberos registrados
+          </strong>
+
+          <p>
+            Registra al equipo de trabajo de tu
+            barbería para poder configurar sus
+            horarios.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           CONFIGURACIÓN DEL HORARIO
+      ===================================================== -->
+
+      <section class="schedule-panel">
+
+        <div class="panel-heading">
+
+          <span class="section-label">
+            CONFIGURACIÓN
+          </span>
+
+          <h2>
+            {{
+              selectedEmployeeName ||
+              'Selecciona un empleado'
+            }}
+          </h2>
+
+          <p *ngIf="selectedEmpleadoUuid">
+            {{
+              scheduleExists
+                ? 'Horario actualmente configurado para este empleado.'
+                : 'Configura la jornada de atención para este empleado.'
+            }}
+          </p>
+
+          <p *ngIf="!selectedEmpleadoUuid">
+            Selecciona un barbero para comenzar.
+          </p>
+
+        </div>
+
+
+        <!-- CARGANDO HORARIO -->
+
+        <div
+          class="loading-box"
+          *ngIf="loadingSchedule"
+        >
+          <span class="loading-spinner"></span>
+
+          <span>
+            Consultando horario...
+          </span>
+        </div>
+
+
+        <!-- ==================================================
+             FORMULARIO
+        =================================================== -->
+
+        <form
+          *ngIf="
+            !loadingSchedule &&
+            selectedEmpleadoUuid
+          "
+          [formGroup]="horarioForm"
+          (ngSubmit)="saveHorarios()"
+          class="schedule-form"
+        >
+
+          <!-- ==================================================
+               JORNADA LABORAL
+          =================================================== -->
+
+          <div class="time-section">
+
+            <div class="field-header">
+
+              <div>
+
+                <strong>
+                  Jornada laboral
+                </strong>
+
+                <span>
+                  Define el inicio y finalización
+                  de la atención.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="time-grid">
+
+              <div class="time-field">
+
+                <label for="horaInicio">
+                  Inicio
+                </label>
+
+                <input
+                  id="horaInicio"
+                  type="time"
+                  formControlName="horaInicio"
+                />
+
+                <small
+                  class="field-error"
+                  *ngIf="
+                    horarioForm.get('horaInicio')?.touched &&
+                    horarioForm.get('horaInicio')?.invalid
+                  "
+                >
+                  Indica la hora de inicio.
+                </small>
+
+              </div>
+
+
+              <div class="time-separator">
+                —
+              </div>
+
+
+              <div class="time-field">
+
+                <label for="horaFin">
+                  Finalización
+                </label>
+
+                <input
+                  id="horaFin"
+                  type="time"
+                  formControlName="horaFin"
+                />
+
+                <small
+                  class="field-error"
+                  *ngIf="
+                    horarioForm.get('horaFin')?.touched &&
+                    horarioForm.get('horaFin')?.invalid
+                  "
+                >
+                  Indica la hora de finalización.
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ==================================================
+               PAUSA DE ALMUERZO
+          =================================================== -->
+
+          <div class="time-section">
+
+            <div class="field-header">
+
+              <div>
+
+                <strong>
+                  Pausa de almuerzo
+                </strong>
+
+                <span>
+                  Define el periodo en el que
+                  el empleado no estará disponible.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="time-grid">
+
+              <div class="time-field">
+
+                <label for="horaInicioAlmuerzo">
+                  Inicio
+                </label>
+
+                <input
+                  id="horaInicioAlmuerzo"
+                  type="time"
+                  formControlName="horaInicioAlmuerzo"
+                />
+
+              </div>
+
+
+              <div class="time-separator">
+                —
+              </div>
+
+
+              <div class="time-field">
+
+                <label for="horaFinAlmuerzo">
+                  Finalización
+                </label>
+
+                <input
+                  id="horaFinAlmuerzo"
+                  type="time"
+                  formControlName="horaFinAlmuerzo"
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ==================================================
+               VACACIONES
+          =================================================== -->
+
+          <div class="vacation-card">
+
+            <div class="vacation-content">
+
+              <span class="vacation-icon">
+                🌴
+              </span>
+
+              <div>
+
+                <strong>
+                  Empleado en vacaciones
+                </strong>
+
+                <span>
+                  Al activar esta opción no se
+                  utilizará una jornada laboral.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <label
+              class="switch"
+              aria-label="Empleado en vacaciones"
+            >
+
+              <input
+                type="checkbox"
+                formControlName="vacaciones"
+              />
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+
+          <!-- ==================================================
+               INFORMACIÓN DEL ESTADO
+          =================================================== -->
+
+          <div
+            class="schedule-status"
+            *ngIf="scheduleExists"
+          >
+
+            <span class="status-dot"></span>
+
+            <span>
+              Este empleado ya tiene un horario
+              configurado. Los cambios actualizarán
+              la configuración existente.
+            </span>
+
+          </div>
+
+
+          <div
+            class="schedule-status new"
+            *ngIf="
+              !scheduleExists &&
+              selectedEmpleadoUuid
+            "
+          >
+
+            <span class="status-dot"></span>
+
+            <span>
+              Este empleado todavía no tiene un
+              horario configurado. Al guardar se
+              creará uno nuevo.
+            </span>
+
+          </div>
+
+
+          <!-- ==================================================
+               ACCIONES
+          =================================================== -->
+
+          <div class="form-actions">
+
+            <button
+              type="submit"
+              class="save-button"
+              [disabled]="
+                saving ||
+                horarioForm.invalid ||
+                !selectedEmpleadoUuid
+              "
+            >
+
+              <span *ngIf="!saving">
+                {{
+                  scheduleExists
+                    ? 'ACTUALIZAR HORARIO'
+                    : 'CREAR HORARIO'
+                }}
+              </span>
+
+              <span *ngIf="saving">
+                GUARDANDO...
+              </span>
+
+            </button>
+
+          </div>
+
+        </form>
+
+
+        <!-- ==================================================
+             SIN EMPLEADO SELECCIONADO
+        =================================================== -->
+
+        <div
+          class="empty-schedule"
+          *ngIf="
+            !loadingSchedule &&
+            !loadingEmployees &&
+            employees.length > 0 &&
+            !selectedEmpleadoUuid
+          "
+        >
+
+          <span class="empty-schedule-icon">
+            🕐
+          </span>
+
+          <strong>
+            Selecciona un barbero
+          </strong>
+
+          <p>
+            Elige un integrante del equipo para
+            consultar o configurar su horario.
+          </p>
+
+        </div>
+
+      </section>
 
     </div>
 
-    <!-- Botón para Guardar Horario de Empleado -->
-    <div class="card-footer-action" style="margin-top: 20px; text-align: right;">
-      <button type="submit" class="vintage-btn">GUARDAR HORARIO EMPLEADO</button>
-    </div>
-  </form>
+  </section>
+
 </div>

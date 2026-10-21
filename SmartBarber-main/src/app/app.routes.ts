@@ -21,9 +21,9 @@ export const routes: Routes = [
       },
       {
         path: 'subscription',
-        loadChildren: () =>
-          import('./features/subscription/subscription.routes')
-            .then(m => m.SUBSCRIPTION_ROUTES)
+        loadComponent: () =>
+          import('./features/subscription/components/subscription/subscription.component')
+            .then(m => m.SubscriptionComponent)
       },
       {
         path: 'reservar',

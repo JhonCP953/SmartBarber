@@ -20,7 +20,7 @@ import {
 } from '../../domain/repositories/auth.repository';
 
 import {
-    BackendRoleResponse
+    BackendAuthenticationResponse
 } from '../../domain/models/auth-session.model';
 
 
@@ -40,9 +40,9 @@ export class AuthApiService
 
 
     override verifyAuthentication():
-        Observable<BackendRoleResponse> {
+        Observable<BackendAuthenticationResponse> {
 
-        return this.http.post<BackendRoleResponse>(
+        return this.http.post<BackendAuthenticationResponse>(
             this.apiUrl,
             null
         );

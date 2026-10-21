@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AuthSession } from '../model/auth-session.model';
@@ -26,26 +25,25 @@ export class SessionService {
     }
   }
 
-  clearSession(): void {
-    this.sessionSubject.next(null);
+  updateSession(patch: Partial<AuthSession>): void {
+    const current = this.currentSession;
 
-    try {
-      localStorage.removeItem(this.storageKey);
-    } catch {
-      // El almacenamiento puede estar deshabilitado.
+    if (!current) {
+      return;
     }
+
+    this.setSession({
+      ...current,
+      ...patch
+    });
   }
 
-  isAuthenticated(): boolean {
-    return this.currentSession !== null;
+  getBarbershopId(): string | null {
+    return this.currentSession?.barbershopId ?? null;
   }
 
-  isActive(): boolean {
-    return this.currentSession?.status === 'ACTIVE';
-  }
-
-  hasRole(role: string): boolean {
-    return this.currentSession?.role === role;
+  getTenantId(): string | null {
+    return this.currentSession?.tenantId ?? null;
   }
 
   getUserId(): string | null {
@@ -60,14 +58,45 @@ export class SessionService {
     return this.currentSession?.barberId ?? null;
   }
 
-  getBarbershopId(): string | null {
-    return this.currentSession?.barbershopId ?? null;
+  isAuthenticated(): boolean {
+    return this.currentSession !== null;
+  }
+
+  isActive(): boolean {
+    return this.currentSession?.status === 'ACTIVE';
+  }
+
+  hasRole(role: string): boolean {
+    return this.currentSession?.role === role;
+  }
+
+  clearSession(): void {
+    this.sessionSubject.next(null);
+
+    try {
+      localStorage.removeItem(this.storageKey);
+    } catch {
+      // El almacenamiento puede estar deshabilitado.
+    }
   }
 
   private loadStoredSession(): AuthSession | null {
     try {
       const stored = localStorage.getItem(this.storageKey);
-      return stored ? JSON.parse(stored) as AuthSession : null;
+
+      if (!stored) {
+        return null;
+      }
+
+      const session = JSON.parse(stored) as AuthSession;
+
+      return {
+        ...session,
+        barbershopId: session.barbershopId ?? null,
+        tenantId: session.tenantId ?? session.barbershopId ?? null,
+        barberId: session.barberId ?? null,
+        clientId: session.clientId ?? null
+      };
     } catch {
       return null;
     }

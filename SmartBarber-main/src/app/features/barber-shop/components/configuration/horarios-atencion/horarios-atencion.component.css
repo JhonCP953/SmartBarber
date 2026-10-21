@@ -1,49 +1,672 @@
-/* El host es flex para que la tarjeta se estire a la misma altura que la de festivos */
 :host {
+  display: block;
+  width: 100%;
+}
+
+
+.schedule-page {
+  width: 100%;
+  min-height: 100%;
+
+  padding: 2rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f5f1ea 0%,
+      #e8e1d5 100%
+    );
+
+  color: #2c2416;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* ============================================================
+   TARJETA
+============================================================ */
+
+.schedule-card {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  background: #1b1612;
+
+  border: 1px solid #c5a880;
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 20px 40px
+    rgba(0, 0, 0, 0.3);
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.schedule-header {
   display: flex;
-}
 
-.vintage-card {
-  flex: 1;
-}
-
-.hours-scroll-container {
-  max-height: 280px;
-  overflow-y: auto;
-  padding-right: 5px;
-}
-
-.hour-row {
-  display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px dashed #423628;
+
+  gap: 1rem;
+
+  padding: 2rem;
+
+  background:
+    linear-gradient(
+      145deg,
+      #1f1813 40%,
+      #c5a880 130%
+    );
+
+  border-bottom: 1px solid #5a4736;
 }
 
-.day-label {
-  width: 90px;
+
+.badge-tag {
+  display: inline-block;
+
+  color: #1b1612;
+  background: #c5a880;
+
+  border-radius: 20px;
+
+  padding: 0.3rem 0.75rem;
+
+  font-size: 0.68rem;
+  font-weight: 800;
+
+  letter-spacing: 1.4px;
+}
+
+
+.schedule-header h1 {
+  margin: 0.8rem 0 0.35rem;
+
+  color: #fdfbf7;
+
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+
+.schedule-header p {
+  margin: 0;
+
+  color: #bfa893;
+
   font-size: 0.85rem;
-  color: #d1b88e;
-  font-weight: bold;
 }
 
-.time-inputs {
+
+.employee-count {
+  flex: 0 0 auto;
+
+  padding: 0.45rem 0.75rem;
+
+  color: #e6dfd5;
+  background: #31261d;
+
+  border: 1px solid #5a4736;
+  border-radius: 12px;
+
+  font-size: 0.75rem;
+}
+
+
+/* ============================================================
+   CONTENIDO
+============================================================ */
+
+.schedule-content {
+  display: grid;
+
+  grid-template-columns:
+    minmax(250px, 0.75fr)
+    minmax(0, 1.25fr);
+}
+
+
+/* ============================================================
+   PANELES
+============================================================ */
+
+.employee-panel,
+.schedule-panel {
+  padding: 1.75rem;
+}
+
+
+.employee-panel {
+  border-right: 1px solid #3d3124;
+}
+
+
+.panel-heading {
+  margin-bottom: 1.2rem;
+}
+
+
+.section-label {
+  color: #c5a880;
+
+  font-size: 0.65rem;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+
+.panel-heading h2 {
+  margin: 0.5rem 0 0.3rem;
+
+  color: #fdfbf7;
+
+  font-size: 1.15rem;
+}
+
+
+.panel-heading p {
+  margin: 0;
+
+  color: #9f8d7d;
+
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   EMPLEADOS
+============================================================ */
+
+.employee-list {
   display: flex;
+  flex-direction: column;
+
+  gap: 0.65rem;
+}
+
+
+.employee-item {
+  display: flex;
+
   align-items: center;
-  gap: 8px;
+
+  gap: 0.7rem;
+
+  width: 100%;
+
+  padding: 0.75rem;
+
+  text-align: left;
+
+  color: #d8c9b8;
+  background: #1e1712;
+
+  border: 1px solid #4a3b2c;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
-.time-inputs input[type="time"] {
-  background: #141211;
-  border: 1px solid #7c623b;
-  color: #f3e9d2;
-  padding: 4px;
-  border-radius: 3px;
+
+.employee-item:hover {
+  border-color: #8c704e;
 }
 
-.closed-text {
-  color: #8c7355;
-  font-style: italic;
-  font-size: 0.85rem;
+
+.employee-item.active {
+  color: #1b1612;
+  background: #c5a880;
+
+  border-color: #c5a880;
+}
+
+
+.employee-avatar {
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  width: 35px;
+  height: 35px;
+
+  border-radius: 50%;
+
+  color: #1b1612;
+  background: #c5a880;
+
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+
+.employee-item.active .employee-avatar {
+  color: #c5a880;
+  background: #1b1612;
+}
+
+
+.employee-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.15rem;
+}
+
+
+.employee-info strong {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 0.82rem;
+}
+
+
+.employee-info small {
+  color: #9f8d7d;
+
+  font-size: 0.68rem;
+}
+
+
+.employee-item.active
+.employee-info small {
+  color: #574632;
+}
+
+
+.empty-employees,
+.loading-box {
+  padding: 1rem;
+
+  color: #a99581;
+
+  border: 1px dashed #4a3b2c;
+  border-radius: 8px;
+
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+
+/* ============================================================
+   FORMULARIO
+============================================================ */
+
+.schedule-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+}
+
+
+.time-section {
+  padding: 1rem;
+
+  background: #241d17;
+
+  border: 1px solid #4a3b2c;
+  border-radius: 8px;
+}
+
+
+.field-header {
+  margin-bottom: 0.9rem;
+}
+
+
+.field-header strong {
+  display: block;
+
+  color: #e6dfd5;
+
+  font-size: 0.82rem;
+}
+
+
+.field-header span {
+  display: block;
+
+  margin-top: 0.25rem;
+
+  color: #8f7963;
+
+  font-size: 0.68rem;
+}
+
+
+/* ============================================================
+   HORAS
+============================================================ */
+
+.time-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    20px
+    minmax(0, 1fr);
+
+  align-items: end;
+
+  gap: 0.5rem;
+}
+
+
+.time-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.35rem;
+}
+
+
+.time-field label {
+  color: #9f8d7d;
+
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+
+.time-field input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 0.65rem;
+
+  color: #fdfbf7;
+  background: #120e0b;
+
+  border: 1px solid #4a3b2c;
+  border-radius: 7px;
+
+  outline: none;
+}
+
+
+.time-field input:focus {
+  border-color: #c5a880;
+}
+
+
+.time-separator {
+  color: #c5a880;
+
+  text-align: center;
+
+  padding-bottom: 0.65rem;
+}
+
+
+/* ============================================================
+   VACACIONES
+============================================================ */
+
+.vacation-card {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1rem;
+
+  background: #241d17;
+
+  border: 1px solid #4a3b2c;
+  border-radius: 8px;
+}
+
+
+.vacation-card strong {
+  display: block;
+
+  color: #e6dfd5;
+
+  font-size: 0.82rem;
+}
+
+
+.vacation-card span {
+  display: block;
+
+  margin-top: 0.25rem;
+
+  color: #8f7963;
+
+  font-size: 0.68rem;
+}
+
+
+/* ============================================================
+   SWITCH
+============================================================ */
+
+.switch {
+  position: relative;
+
+  display: block;
+
+  width: 44px;
+  height: 24px;
+
+  flex: 0 0 auto;
+}
+
+
+.switch input {
+  width: 0;
+  height: 0;
+
+  opacity: 0;
+}
+
+
+.slider {
+  position: absolute;
+
+  inset: 0;
+
+  background: #3d3124;
+
+  border: 1px solid #5a4736;
+
+  border-radius: 20px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+
+.slider::before {
+  content: "";
+
+  position: absolute;
+
+  width: 18px;
+  height: 18px;
+
+  left: 2px;
+  top: 2px;
+
+  background: #c5a880;
+
+  border-radius: 50%;
+
+  transition: 0.2s;
+}
+
+
+.switch input:checked + .slider {
+  background: #806744;
+}
+
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+
+/* ============================================================
+   MENSAJES
+============================================================ */
+
+.message {
+  padding: 0.75rem 0.9rem;
+
+  border-radius: 7px;
+
+  font-size: 0.75rem;
+}
+
+
+.message.info {
+  margin-bottom: 0.5rem;
+
+  color: #d8c9b8;
+
+  background: #241d17;
+
+  border: 1px solid #5a4736;
+}
+
+
+.message.error {
+  margin-bottom: 0.5rem;
+
+  color: #efb0b0;
+
+  background: #3a1e1e;
+
+  border: 1px solid #713737;
+}
+
+
+/* ============================================================
+   ACCIÓN
+============================================================ */
+
+.form-actions {
+  padding-top: 0.5rem;
+}
+
+
+.save-button {
+  width: 100%;
+
+  padding: 0.85rem;
+
+  color: #1b1612;
+  background: #c5a880;
+
+  border: 1px solid #c5a880;
+  border-radius: 5px;
+
+  font-size: 0.82rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.save-button:hover:not(:disabled) {
+  background: #d2b98f;
+
+  box-shadow:
+    0 4px 15px
+    rgba(197, 168, 128, 0.2);
+}
+
+
+.save-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 900px) {
+
+  .schedule-content {
+    grid-template-columns: 1fr;
+  }
+
+
+  .employee-panel {
+    border-right: none;
+
+    border-bottom: 1px solid #3d3124;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .schedule-page {
+    padding: 1rem;
+  }
+
+
+  .schedule-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding: 1.25rem;
+  }
+
+
+  .employee-panel,
+  .schedule-panel {
+    padding: 1.25rem;
+  }
+
+
+  .time-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .time-separator {
+    display: none;
+  }
+
 }

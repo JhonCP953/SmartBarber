@@ -1,48 +1,28 @@
 <section class="my-sub-section">
   <div class="wrap">
-    
     <div class="header-content">
       <span class="badge-control">PANEL DE CONTROL</span>
-      <h2>MI SUSCRIPCIÓN ACTIVA</h2>
-      <p>Gestiona los detalles de tu plan actual y el estado de tu cuenta en tiempo real.</p>
+      <h2>MI SUSCRIPCIÓN</h2>
+      <p>Consulta el estado de suscripción asociado a tu barbería.</p>
     </div>
 
-    <!-- Contenedor Principal de la Tarjeta Activa -->
-    <div class="sub-card active-card">
-      
-      <!-- Estado y Icono -->
+    <div class="sub-card">
       <div class="card-status-header">
-        <div class="status-badge">
-          <span class="dot"></span> ACTIVA
-        </div>
-        <div class="barber-pole-icon">💈</div>
+        <span class="status-badge">INFORMACIÓN PENDIENTE</span>
+        <span class="barber-pole-icon" aria-hidden="true">💈</span>
       </div>
 
-      <!-- Información del Plan -->
       <div class="plan-details">
-        <h3 class="plan-title">{{ subscriptionData?.planName || 'Plan Independiente - SmartBarber' }}</h3>
-        <p class="plan-price">{{ subscriptionData?.price || '$30.000 / mes' }}</p>
+        <h3 class="plan-title">Estado no disponible</h3>
+        <p class="plan-price">
+          El backend aún no permite consultar la suscripción vigente asociada al perfil autenticado.
+        </p>
       </div>
 
-      <!-- Fechas Clave / Métricas -->
-      <div class="dates-grid">
-        <div class="date-box">
-          <span class="label">Fecha de Inicio</span>
-          <span class="value">{{ subscriptionData?.startDate || '01 Sep 2026' }}</span>
-        </div>próximo
-        <div class="date-box">
-          <span class="label">Próximo Cobro / Renovación</span>
-          <span class="value">{{ subscriptionData?.renewalDate || '01 Oct 2026' }}</span>
-        </div>
-      </div>
-
-      <!-- Botones de Acción -->
       <div class="card-actions">
-        <button class="btn-primary" (click)="renewOrManage()">Gestionar Pagos</button>
-        <button class="btn-secondary" (click)="goToPlans()">Cambiar de Plan</button>
+        <a class="btn-primary" routerLink="/panel/subscription/status">Ver detalles</a>
+        <a class="btn-secondary" routerLink="/panel/subscription">Volver a módulos</a>
       </div>
-
     </div>
-
   </div>
 </section>

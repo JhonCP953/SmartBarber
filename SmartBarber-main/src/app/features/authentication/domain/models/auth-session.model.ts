@@ -28,3 +28,11 @@ export type LegacyBackendRole =
 export type BackendRoleResponse =
     | BackendRole
     | LegacyBackendRole;
+
+export interface BackendAuthenticationResponse {
+    role: BackendRoleResponse;
+    userId: string;
+    customerId?: string | null;
+    employeeId?: string | null;
+    barbershopId?: string | null;
+}

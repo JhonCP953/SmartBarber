@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
-
 import { SubscriptionRepository } from '../../domain/repositories/subscription.repository';
+import { SubscriptionCatalogPlan } from '../../domain/models/subscription-catalog.model';
 
 import { CurrentSubscription } from '../../domain/models/current-subscription.model';
 
@@ -24,54 +24,47 @@ import { RenewSubscriptionRequest, RenewSubscriptionResponse } from '../../domai
 
 @Injectable()
 export class SubscriptionApiService extends SubscriptionRepository {
-
   private readonly http = inject(HttpClient);
 
-  private readonly baseUrl =
-    `${environment.apiUrl}/subscriptions`;
+  getSubscriptionCatalog(): Observable<SubscriptionCatalogPlan[]> {
+    return this.http.get<SubscriptionCatalogPlan[]>(
+      `${environment.apiUrl}/subscription-service/all`
+    );
+  }
+
+  private readonly unsupported = {
+    current: 'El backend actual no expone la consulta de la suscripción vigente de una barbería.',
+    plans: 'El catálogo del backend usa un DTO distinto al que espera el cliente legado de suscripciones.',
+    change: 'El backend actual no documenta una operación para cambiar el plan de una suscripción.',
+    cancel: 'El backend actual no documenta una operación para cancelar una suscripción.',
+    renew: 'La renovación usa SubscriptionBarbershopRqDto y PUT /subscription-barbershop-service/renew. Utiliza SubscriptionWsService para enviar el contrato respaldado por backend.'
+  };
 
   override getCurrentSubscription():
     Observable<CurrentSubscription> {
-
-    return this.http.get<CurrentSubscription>(
-      `${this.baseUrl}/current`
-    );
+    return throwError(() => new Error(this.unsupported.current));
   }
 
   override getAvailablePlans():
     Observable<SubscriptionPlan[]> {
-
-    return this.http.get<SubscriptionPlan[]>(
-      `${this.baseUrl}/plans`
-    );
+    return throwError(() => new Error(this.unsupported.plans));
   }
 
   override changePlan(
-    request: ChangePlanRequest
+    _request: ChangePlanRequest
   ): Observable<ChangePlanResponse> {
-
-    return this.http.post<ChangePlanResponse>(
-      `${this.baseUrl}/change-plan`,
-      request
-    );
+    return throwError(() => new Error(this.unsupported.change));
   }
 
   override cancelSubscription(
-    request: CancelSubscriptionRequest
+    _request: CancelSubscriptionRequest
   ): Observable<CancelSubscriptionResponse> {
-
-    return this.http.post<CancelSubscriptionResponse>(
-      `${this.baseUrl}/cancel`,
-      request
-    );
+    return throwError(() => new Error(this.unsupported.cancel));
   }
 
   override renewSubscription(
-    request: RenewSubscriptionRequest
+    _request: RenewSubscriptionRequest
   ): Observable<RenewSubscriptionResponse> {
-    return this.http.post<RenewSubscriptionResponse>(
-      `${this.baseUrl}/renew`,
-      request
-    );
+    return throwError(() => new Error(this.unsupported.renew));
   }
 }

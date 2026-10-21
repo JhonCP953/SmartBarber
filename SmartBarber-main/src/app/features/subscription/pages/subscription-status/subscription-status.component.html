@@ -1,165 +1,22 @@
-<div class="subscription-page-container">
-  
-  <main class="content-card-grid">
-    
-    <!-- Columna Izquierda: Plan Básico -->
-    <section class="plan-summary-box">
-      <div class="popular-pill">PLAN INICIAL</div>
-      
-      <h2 class="plan-heading">PLAN BÁSICO</h2>
-      <div class="price-tag-container">
-        <span class="currency-symbol">$</span>
-        <span class="price-value">30.000</span>
-        <span class="price-period">/ mes</span>
-      </div>
+<main class="status-page">
+  <a class="back-link" routerLink="/panel/subscription">← Volver a suscripción</a>
 
-      <p class="plan-info-text">
-        Plan básico para barberías con funcionalidades esenciales.
+  <header>
+    <span class="eyebrow">GESTIÓN DE BARBERÍA</span>
+    <h1>Estado de suscripción</h1>
+    <p>Consulta el plan asociado a tu barbería, su vigencia y el estado de los pagos.</p>
+  </header>
+
+  <section class="notice-card" role="status">
+    <span class="notice-icon" aria-hidden="true">i</span>
+    <div>
+      <span class="eyebrow">INFORMACIÓN NO DISPONIBLE</span>
+      <h2>El backend aún no expone la consulta de suscripción actual</h2>
+      <p>
+        La API documentada permite listar y consultar planes, pero no permite localizar la suscripción vigente de la barbería autenticada. Por eso no se mostrarán estados ni fechas inventadas.
       </p>
+    </div>
+  </section>
 
-      <ul class="perks-list">
-        <li><span class="check-mark">✓</span> Gestión de citas y agenda</li>
-        <li><span class="check-mark">✓</span> Control de servicios y barberos</li>
-        <li><span class="check-mark">✓</span> Módulo de clientes y perfil</li>
-        <li><span class="check-mark">✓</span> Acceso al panel de administración</li>
-        <li><span class="check-mark">✓</span> Soporte estándar</li>
-      </ul>
-
-      <!-- Imagen PNG con el nombre solicitado y difuminado integrado -->
-      <div class="plan-image-fade-container">
-        <img src="/suscripcionpag.png" alt="Herramientas de suscripción" class="faded-barber-img" />
-      </div>
-    </section>
-
-    <!-- Columna Derecha: Formulario de Datos de Pago (Simulador) -->
-    <section class="payment-section-box">
-      <div class="payment-header-group">
-        <h1 class="main-title">Datos de pago</h1>
-        <p class="main-subtitle">
-          Entorno de pruebas activo. Ingresa datos ficticios para validar la transacción de forma segura.
-        </p>
-      </div>
-
-      <form [formGroup]="subscriptionForm" (ngSubmit)="onSubmit()" class="clean-payment-form">
-        
-        <div class="field-container">
-          <label for="fullName">Nombre completo</label>
-          <div class="input-icon-wrapper">
-            <span class="icon-prefix">👤</span>
-            <input 
-              id="fullName" 
-              type="text" 
-              formControlName="fullName" 
-              class="form-control-input" 
-              placeholder="Ej. Juan Pérez"
-            />
-          </div>
-        </div>
-
-        <div class="field-container">
-          <label for="email">Correo electrónico</label>
-          <div class="input-icon-wrapper">
-            <span class="icon-prefix">✉️</span>
-            <input 
-              id="email" 
-              type="email" 
-              formControlName="email" 
-              class="form-control-input" 
-              placeholder="juan@ejemplo.com"
-            />
-          </div>
-        </div>
-
-        <div class="form-row-double">
-          <div class="field-container">
-            <label for="cardNumber">Número de tarjeta</label>
-            <div class="input-icon-wrapper">
-              <span class="icon-prefix">💳</span>
-              <input 
-                id="cardNumber" 
-                type="text" 
-                formControlName="cardNumber" 
-                class="form-control-input" 
-                placeholder="4000 1234 5678 9010" 
-                maxlength="16"
-              />
-            </div>
-          </div>
-
-          <div class="field-container">
-            <label for="expirationDate">Fecha de expiración</label>
-            <div class="input-icon-wrapper">
-              <span class="icon-prefix">📅</span>
-              <input 
-                id="expirationDate" 
-                type="text" 
-                formControlName="expirationDate" 
-                class="form-control-input" 
-                placeholder="MM / AA" 
-                maxlength="5"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="field-container">
-          <label for="cvv">Código de seguridad (CVV)</label>
-          <div class="input-icon-wrapper">
-            <span class="icon-prefix">🔒</span>
-            <input 
-              id="cvv" 
-              type="password" 
-              formControlName="cvv" 
-              class="form-control-input" 
-              placeholder="123" 
-              maxlength="4"
-            />
-          </div>
-        </div>
-
-        <div class="auto-renewal-card">
-          <div class="renewal-text-block">
-            <span class="renewal-title">Activar renovación automática</span>
-            <p class="renewal-sub">Simula la renovación mensual automática en este entorno de pruebas.</p>
-          </div>
-          <label class="switch-toggle">
-            <input type="checkbox" formControlName="autoRenew" />
-            <span class="toggle-slider round"></span>
-          </label>
-        </div>
-
-        <button type="submit" class="btn-complete-payment" [disabled]="isSubmitting">
-          <span class="btn-card-icon">💳</span>
-          {{ isSubmitting ? 'PROCESANDO SIMULACIÓN...' : 'Completar transacción de prueba' }}
-        </button>
-      </form>
-
-      <!-- Insignias indicando que es simulador -->
-      <div class="security-features-footer">
-        <div class="sec-badge-item">
-          <span class="badge-emoji">🧪</span>
-          <div>
-            <strong>Simulador de pruebas</strong>
-            <p>Entorno académico sin cobros reales.</p>
-          </div>
-        </div>
-        <div class="sec-badge-item">
-          <span class="badge-emoji">🛡️</span>
-          <div>
-            <strong>Sin datos bancarios</strong>
-            <p>No almacenamos información real.</p>
-          </div>
-        </div>
-        <div class="sec-badge-item">
-          <span class="badge-emoji">⚡</span>
-          <div>
-            <strong>WebSocket en vivo</strong>
-            <p>Respuesta de estado en tiempo real.</p>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-  </main>
-</div>
+  <a class="return-link" routerLink="/panel/subscription">Regresar a los módulos</a>
+</main>

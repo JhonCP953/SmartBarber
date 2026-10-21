@@ -5,12 +5,10 @@
     <p>Configuración de Excepciones</p>
   </div>
 
-  <!-- Selector de sede ubicado exactamente debajo de la línea divisoria -->
+  <!-- La sede se deriva de la sesión autenticada. -->
   <div class="card-subheader-selector">
     <label>Sede Activa:</label>
-    <select class="vintage-select-sm" [(ngModel)]="barberId" (ngModelChange)="barberIdChange.emit($event)">
-      <option *ngFor="let b of barberList" [value]="b.id">{{ b.name }}</option>
-    </select>
+    <strong>{{ barberList[0]?.name || 'No disponible' }}</strong>
   </div>
 
   <div class="holiday-add-box">

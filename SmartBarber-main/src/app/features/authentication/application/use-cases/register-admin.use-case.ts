@@ -35,6 +35,14 @@ import {
     USER_ROLE_IDS
 } from '../../domain/models/user-role.model';
 
+import {
+    AuthRepository
+} from '../../domain/repositories/auth.repository';
+
+import {
+    mapBackendAuthentication
+} from '../mapper/auth-session.mapper';
+
 
 @Injectable()
 export class RegisterAdminUseCase {
@@ -48,7 +56,10 @@ export class RegisterAdminUseCase {
             FirebaseAuthService,
 
         private readonly sessionService:
-            SessionService
+            SessionService,
+
+        private readonly authRepository:
+            AuthRepository
     ) { }
 
 
@@ -168,113 +179,54 @@ export class RegisterAdminUseCase {
             )
             .pipe(
 
-
                 switchMap(
                     (
                         onboardingResponse:
                             BarberShopOnboardingResponse
                     ) => {
 
-                        return this.repository
-                            .findBarberShopByName(
-                                onboardingResponse.name
-                            )
+                        return this.authRepository
+                            .verifyAuthentication()
                             .pipe(
 
                                 map(
-                                    barberShop => {
+                                    backendAuthentication => {
+
+                                        const session =
+                                            mapBackendAuthentication(
+                                                backendAuthentication,
+                                                firebaseUser
+                                            );
 
                                         if (
-                                            !barberShop?.id
+                                            session.role !== 'ADMIN' ||
+                                            session.userId !== onboardingResponse.employee.user.id ||
+                                            session.barberId !== onboardingResponse.employee.id
                                         ) {
-
                                             throw new Error(
-                                                'La barbería fue creada, pero el backend no devolvió su ID.'
+                                                'La sesión autenticada no coincide con el administrador recién registrado.'
                                             );
-
                                         }
 
-
-                                        const userId =
-                                            onboardingResponse
-                                                .employee
-                                                .user
-                                                .id;
-
-
-                                        const employeeId =
-                                            onboardingResponse
-                                                .employee
-                                                .id;
-
-
-                                        const barberShopId =
-                                            String(
-                                                barberShop.id
+                                        if (
+                                            !session.barberId ||
+                                            !session.barbershopId
+                                        ) {
+                                            throw new Error(
+                                                'La sesión autenticada no contiene la barbería del administrador.'
                                             );
-
-
-                                        /*
-                                         * =============================================
-                                         * CREAR SESIÓN
-                                         * =============================================
-                                         */
+                                        }
 
                                         this.sessionService
-                                            .setSession({
-
-                                                userId,
-
-                                                clientId:
-                                                    null,
-
-                                                firebaseUid:
-                                                    firebaseUser.uid,
-
-                                                email:
-                                                    onboardingResponse
-                                                        .employee
-                                                        .email,
-
-                                                displayName:
-                                                    onboardingResponse
-                                                        .employee
-                                                        .name,
-
-                                                role:
-                                                    'ADMIN',
-
-                                                status:
-                                                    onboardingResponse
-                                                        .employee
-                                                        .user
-                                                        .status ===
-                                                    'BLOCKED'
-                                                        ? 'BLOCKED'
-                                                        : 'ACTIVE',
-
-                                                tenantId:
-                                                    null,
-
-                                                photoUrl:
-                                                    firebaseUser.photoURL,
-
-                                                barberId:
-                                                    employeeId,
-
-                                                barbershopId:
-                                                    barberShopId
-
-                                            });
-
+                                            .setSession(session);
 
                                         return {
 
-                                            userId,
+                                            userId: session.userId,
 
-                                            employeeId,
+                                            employeeId: session.barberId,
 
-                                            barberShopId,
+                                            barberShopId: session.barbershopId,
 
                                             message:
                                                 'Barbería, usuario y administrador registrados correctamente.'

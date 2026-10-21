@@ -1,76 +1,149 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
+
+import { SessionService } from '../../../core/auth/services/session.service';
+import { environment } from '../../../../environments/environment';
+
+export type SubscriptionType = 'CREATE' | 'RENEW';
+export type SubscriptionBarberStatus =
+  | 'ACTIVE'
+  | 'APPROVED'
+  | 'PENDING'
+  | 'DECLINED'
+  | 'EXPIRED';
 
 export interface SubscriptionPayload {
-  fullName: string;
-  email: string;
-  cardNumber: string;
-  expirationDate: string;
-  cvv: string;
+  subscriptionId: number;
+  duration: number;
   automaticRenew: boolean;
-  planName: string;
-  price: number;
+}
+
+export interface SubscriptionCreationResponse {
+  id: string;
   barberId: string;
-  subscriptionId: number,
-	status: string,
-	duration: number,
-	type: string,
+  subscriptionId: number;
+  status: SubscriptionBarberStatus;
+  duration: number;
+  subscriptionPrice: number;
+  subscriptionDiscount: number;
+  orderId: string;
+  createdAt: string;
+  updatedAt: string | null;
+  startDate: string | null;
+  expirationDate: string | null;
 }
 
 @Injectable({
   providedIn: 'root'
 })
+export class SubscriptionWsService {
+  private readonly createUrl =
+    `${environment.apiUrl}/subscription-barbershop-service/create`;
+  private readonly paymentStatusSubject =
+    new Subject<unknown>();
 
+  private socket: WebSocket | null = null;
 
-export class SubscriptionService {
-  private apiUrl = 'http://localhost:8080/subscription-barbershop-service/create';
-  private wsUrl = 'ws://localhost:8080/ws/payment?orderId=';
-  
-  private socket$!: WebSocket;
-  private paymentStatusSubject = new Subject<any>();
+  constructor(
+    private readonly http: HttpClient,
+    private readonly sessionService: SessionService
+  ) {}
 
-  constructor(private readonly http: HttpClient) {}
+  createSubscription(
+    payload: SubscriptionPayload
+  ): Observable<SubscriptionCreationResponse> {
+    const barberId = this.getAuthenticatedEmployeeId();
 
-  createSubscription(payload: SubscriptionPayload): Observable<any> {
-    return this.http.post<any>(this.apiUrl, payload);
+    return this.http.post<SubscriptionCreationResponse>(
+      this.createUrl,
+      {
+        ...payload,
+        barberId,
+        status: 'PENDING' satisfies SubscriptionBarberStatus,
+        type: 'CREATE' satisfies SubscriptionType
+      }
+    );
+  }
+
+  renewSubscription(
+    payload: SubscriptionPayload
+  ): Observable<SubscriptionCreationResponse> {
+    const barberId = this.getAuthenticatedEmployeeId();
+
+    return this.http.put<SubscriptionCreationResponse>(
+      `${environment.apiUrl}/subscription-barbershop-service/renew`,
+      {
+        ...payload,
+        barberId,
+        status: 'PENDING' satisfies SubscriptionBarberStatus,
+        type: 'RENEW' satisfies SubscriptionType
+      }
+    );
+  }
+
+  getSubscriptionData(): Observable<never> {
+    return throwError(
+      () => new Error(
+        'El backend no expone una consulta para obtener la suscripción vigente de la barbería.'
+      )
+    );
   }
 
   connectWebSocket(orderId: string): void {
-    this.wsUrl = this.wsUrl.concat(orderId)
-    this.socket$ = new WebSocket(this.wsUrl);
+    this.disconnectWebSocket();
 
-    this.socket$.onopen = () => {
-      console.log('🟢 Conectado al WebSocket de pagos: ', this.wsUrl);
-    };
+    if (!orderId.trim()) {
+      throw new Error('El backend no devolvió un orderId válido para el pago.');
+    }
 
-    this.socket$.onmessage = (event) => {
+    const apiUrl = new URL(environment.apiUrl);
+    const protocol = apiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
+    const paymentUrl =
+      `${protocol}//${apiUrl.host}/ws/payment?orderId=${encodeURIComponent(orderId)}`;
+
+    this.socket = new WebSocket(paymentUrl);
+
+    this.socket.onmessage = event => {
       try {
-        console.log('🟢 Evento recibido: ', event);
-        const data = JSON.parse(event.data);
-        this.paymentStatusSubject.next(data);
-      } catch (e) {
-        console.error('🟢 error capturando el evento' , e);
+        this.paymentStatusSubject.next(JSON.parse(event.data) as unknown);
+      } catch (error: unknown) {
+        console.error('No fue posible interpretar el evento de pago:', error);
         this.paymentStatusSubject.next(event.data);
       }
     };
 
-    this.socket$.onerror = (error) => {
-      console.error('❌ Error en WebSocket:', error);
-    };
-
-    this.socket$.onclose = () => {
-      console.warn('⚠️ WebSocket desconectado');
+    this.socket.onerror = error => {
+      console.error('Error en el WebSocket de pagos:', error);
     };
   }
 
-  getPaymentStatus(): Observable<any> {
+  getPaymentStatus(): Observable<unknown> {
     return this.paymentStatusSubject.asObservable();
   }
 
   disconnectWebSocket(): void {
-    if (this.socket$) {
-      this.socket$.close();
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
     }
   }
+
+  private getAuthenticatedEmployeeId(): string {
+    const session = this.sessionService.currentSession;
+
+    if (
+      session?.role !== 'ADMIN' ||
+      !session.barberId ||
+      !session.barbershopId
+    ) {
+      throw new Error(
+        'No se encontró un perfil de administrador asociado a una barbería.'
+      );
+    }
+
+    return session.barberId;
+  }
 }
+
+export { SubscriptionWsService as SubscriptionService };

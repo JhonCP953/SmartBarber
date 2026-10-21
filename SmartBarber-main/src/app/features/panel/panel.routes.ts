@@ -1,49 +1,88 @@
 import { Routes } from '@angular/router';
 
-import { authGuard } from '../../core/auth/guards/auth.guard';
-import { roleGuard } from '../../core/auth/guards/role.guard';
-import { panelEntryGuard } from './guards/panel-entry.guard';
-import { PanelNavigationService } from './application/services/panel-navigation.service';
+import {
+  authGuard
+} from '../../core/auth/guards/auth.guard';
+
+import {
+  roleGuard
+} from '../../core/auth/guards/role.guard';
+
+import {
+  panelEntryGuard
+} from './guards/panel-entry.guard';
+
+import {
+  PanelNavigationService
+} from './application/services/panel-navigation.service';
+
 
 export const PANEL_ROUTES: Routes = [
+
   {
     path: '',
-    canActivate: [authGuard, panelEntryGuard],
-    providers: [PanelNavigationService],
+
+    canActivate: [
+      authGuard,
+      panelEntryGuard
+    ],
+
+    providers: [
+      PanelNavigationService
+    ],
 
     loadComponent: () =>
       import('./pages/panel/panel.component')
-        .then(m => m.PanelComponent),
+        .then(
+          m => m.PanelComponent
+        ),
 
     children: [
+
+      // ========================================================
+      // INICIO
+      // ========================================================
 
       {
         path: '',
         pathMatch: 'full',
         redirectTo: 'home'
       },
+
+
       {
         path: 'home',
         children: []
       },
 
-      /*
-       * PERFIL
-       */
+
+      // ========================================================
+      // PERFIL
+      // ========================================================
+
       {
         path: 'profile',
-        canActivate: [authGuard],
+
+        canActivate: [
+          authGuard
+        ],
 
         loadChildren: () =>
-          import('../profile/profile.routes')
-            .then(m => m.PROFILE_ROUTES)
+          import(
+            '../profile/profile.routes'
+          ).then(
+            m => m.PROFILE_ROUTES
+          )
       },
 
-      /*
-       * BARBERÍA
-       */
+
+      // ========================================================
+      // MI BARBERÍA
+      // ========================================================
+
       {
         path: 'barbershop',
+
         canActivate: [
           authGuard,
           roleGuard
@@ -61,11 +100,39 @@ export const PANEL_ROUTES: Routes = [
           )
       },
 
-      /*
-       * USUARIOS / BARBEROS
-       */
+
+      // ========================================================
+      // HORARIOS
+      // ========================================================
+
+      {
+        path: 'horarios',
+
+        canActivate: [
+          authGuard,
+          roleGuard
+        ],
+
+        data: {
+          roles: ['ADMIN']
+        },
+
+        loadComponent: () =>
+          import(
+            '../barber-shop/components/configuration/horarios-atencion/horarios-atencion.component'
+          ).then(
+            m => m.HorariosAtencionComponent
+          )
+      },
+
+
+      // ========================================================
+      // USUARIOS / BARBEROS
+      // ========================================================
+
       {
         path: 'users',
+
         canActivate: [
           authGuard,
           roleGuard
@@ -83,11 +150,14 @@ export const PANEL_ROUTES: Routes = [
           )
       },
 
-      /*
-       * SERVICIOS
-       */
+
+      // ========================================================
+      // SERVICIOS
+      // ========================================================
+
       {
         path: 'services',
+
         canActivate: [
           authGuard,
           roleGuard
@@ -105,11 +175,14 @@ export const PANEL_ROUTES: Routes = [
           )
       },
 
-      /*
-       * SUSCRIPCIÓN
-       */
+
+      // ========================================================
+      // SUSCRIPCIÓN
+      // ========================================================
+
       {
         path: 'subscription',
+
         canActivate: [
           authGuard,
           roleGuard
@@ -127,11 +200,14 @@ export const PANEL_ROUTES: Routes = [
           )
       },
 
-      /*
-       * RESERVAS / MÓDULO CLIENTE
-       */
+
+      // ========================================================
+      // RESERVAS
+      // ========================================================
+
       {
         path: 'reservas',
+
         canActivate: [
           authGuard,
           roleGuard
@@ -148,6 +224,7 @@ export const PANEL_ROUTES: Routes = [
             m => m.RESERVATION_ROUTES
           )
       }
+
     ]
   }
 ];

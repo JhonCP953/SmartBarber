@@ -430,12 +430,12 @@ export class PanelNavigationService {
             label: 'Horarios',
 
             description:
-              'Configura los horarios de atención de tu barbería.',
+              'Configura la jornada laboral de los barberos de tu barbería.',
 
             icon: 'clock',
 
             route:
-              '/panel/barbershop',
+              '/panel/horarios',
 
             roles: [
               'ADMIN'
