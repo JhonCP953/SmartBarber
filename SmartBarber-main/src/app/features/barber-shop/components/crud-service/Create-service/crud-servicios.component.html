@@ -118,6 +118,23 @@
         <span class="counter-badge">{{ servicesList.length }} registrados</span>
       </div>
 
+      <!-- Menú desplegable de barberías -->
+<div class="input-group mb-3">
+  <label for="barberiaSelect" class="form-label">Seleccionar Barbería</label>
+  <div class="select-wrapper">
+    <select 
+      id="barberiaSelect"
+      class="styled-select" 
+      [value]="currentBarberiaId"
+      (change)="onBarberiaSelected($event)"
+    >
+      <option value="" disabled>Selecciona una barbería...</option>
+      <option *ngFor="let barberia of barberiasList" [value]="barberia.id">
+        {{ barberia.name || barberia.nombre }} - {{ barberia.address || barberia.direccion }}
+      </option>
+    </select>
+  </div>
+</div>
       <div class="services-scroll">
         <div class="service-item-card" *ngFor="let item of servicesList; let i = index" [class.inactive]="item.isActive === false">
           <div class="card-top">

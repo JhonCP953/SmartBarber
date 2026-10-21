@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; 
 import { BarberServiceService } from '../../../service/barber-service.service';
+import { BarberShopApiService } from '../../../infrastructure/services/barber-shop-api.service';
 
 export interface BarberServicePayload {
   id?: number;
@@ -19,7 +21,7 @@ export interface BarberServicePayload {
 @Component({
   selector: 'app-barber-config',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule], // <-- 2. Incluido FormsModule aquí
   templateUrl: './crud-servicios.component.html',
   styleUrls: ['./crud-servicios.component.css']
 })
@@ -33,13 +35,20 @@ export class BarberServiConfigComponent implements OnInit {
   servicesList: BarberServicePayload[] = [];
   readonly currentBarberiaId = '3563acd0-d8e2-4018-aabf-b47d3d9cde11';
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly barberService: BarberServiceService
-  ) {}
+  // Propiedades para la búsqueda de barbería por ID
+  barberiaId: string = '';
+  barberiaEncontrada: any = null;
+  cargando: boolean = false;
+  errorMensaje: string = '';
+  barberiasList: any[] = [];
+
+  private readonly fb = inject(FormBuilder);
+  private readonly barberShopApiService = inject(BarberShopApiService);
+  private readonly barberService = inject(BarberServiceService);
 
   ngOnInit(): void {
     this.initForm();
+    this.loadBarberias();
     this.loadAllServices();
   }
 
@@ -67,29 +76,23 @@ export class BarberServiConfigComponent implements OnInit {
     });
   }
 
-  // 🟢 Carga directa usando el servicio fuertemente tipado
   loadAllServices(): void {
     this.barberService.getServicesByBarberiaId(this.currentBarberiaId).subscribe({
       next: (data: any) => {
-        console.log('📦 [RAW BACKEND RESPONSE]:', data);
-        
-        // El backend responde un Array [...] como vimos en Insomnia
         const servicesArray = Array.isArray(data) ? data : [data];
 
         this.servicesList = servicesArray.map((item: any) => ({
           ...item,
-          // Mapeamos status (de la BD) a isActive (de la vista)
           isActive: item.status ?? item.isActive ?? true
         }));
-
-        console.log('✅ Servicios procesados correctamente:', this.servicesList);
       },
       error: (err: any) => {
         console.error('❌ Error al obtener los servicios del servidor:', err);
       }
     });
   }
-saveService(): void {
+
+  saveService(): void {
     if (this.serviceForm.invalid) {
       alert('⚠️ Por favor completa todos los campos del servicio correctamente.');
       return;
@@ -97,7 +100,6 @@ saveService(): void {
 
     const formValues = this.serviceForm.value;
 
-    // 🟢 Payload limpio idéntico al que probaste y funcionó en Insomnia
     const payload = {
       barberiaId: formValues.barberiaId,
       name: formValues.name,
@@ -108,13 +110,9 @@ saveService(): void {
       special_price: formValues.special_price
     };
 
-    console.log('📦 [JSON LIMPIO ENVIADO AL BACKEND]:', JSON.stringify(payload));
-
     if (this.isEditMode && this.editingServiceId !== null) {
-      // ✏️ MODO EDICIÓN -> PUT al backend (el ID va solo en la URL)
       this.barberService.updateService(this.editingServiceId, payload).subscribe({
         next: (response: any) => {
-          console.log('✅ [UPDATE SUCCESS]:', response);
           alert('¡Servicio modificado en la base de datos exitosamente! ✏️');
           this.cancelEdit();
           this.loadAllServices();
@@ -125,10 +123,8 @@ saveService(): void {
         }
       });
     } else {
-      // ➕ MODO CREACIÓN -> POST al backend
       this.barberService.createService(payload).subscribe({
         next: (response: any) => {
-          console.log('✅ [CREATE SUCCESS]:', response);
           alert('¡Servicio registrado exitosamente! 💈');
           this.resetForm();
           this.loadAllServices();
@@ -141,7 +137,7 @@ saveService(): void {
     }
   }
 
-editService(index: number): void {
+  editService(index: number): void {
     const service = this.servicesList[index];
     if (!service.id) {
       alert('⚠️ Este servicio no tiene un ID válido para editar.');
@@ -150,7 +146,7 @@ editService(index: number): void {
 
     this.isEditMode = true;
     this.editingIndex = index;
-    this.editingServiceId = service.id; // Capturamos el ID del servicio (ej. 6)
+    this.editingServiceId = service.id;
 
     this.serviceForm.patchValue({
       barberiaId: service.barberiaId || this.currentBarberiaId,
@@ -187,6 +183,31 @@ editService(index: number): void {
       isActive: true
     });
   }
+
+
+// Método para obtener todas las barberías de la BD
+loadBarberias(): void {
+  this.barberShopApiService.getAll().subscribe({
+    next: (data: any) => {
+      this.barberiasList = Array.isArray(data) ? data : [data];
+      console.log('🏢 Barberías cargadas:', this.barberiasList);
+    },
+    error: (err: any) => {
+      console.error('❌ Error al cargar las barberías:', err);
+    }
+  });
+}
+
+// Método que se ejecuta cuando cambias de barbería en el menú desplegable
+onBarberiaSelected(event: any): void {
+  const selectedId = event.target.value;
+  // Actualizamos tanto la variable local como el formulario reactivo
+  (this as any).currentBarberiaId = selectedId;
+  this.serviceForm.patchValue({ barberiaId: selectedId });
+  
+  // Recargamos los servicios correspondientes a esta barbería
+  this.loadAllServices();
+}
 
   deleteService(index: number): void {
     if (confirm('¿Estás seguro de eliminar este servicio?')) {

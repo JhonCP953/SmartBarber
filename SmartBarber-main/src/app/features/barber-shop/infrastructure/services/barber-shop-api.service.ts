@@ -33,7 +33,7 @@ export class BarberShopApiService {
 
   getAll(): Observable<BarberShopResponse[]> {
     return this.http.get<BarberShopResponse[]>(
-      `${this.apiUrl}/obtener-barberia-nombre`
+      `${this.apiUrl}/find-all`
     );
   }
 
