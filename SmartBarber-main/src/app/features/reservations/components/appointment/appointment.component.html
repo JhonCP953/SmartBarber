@@ -127,21 +127,29 @@
         </div>
 
         <!-- Horarios Disponibles -->
-        <div class="input-group mt-3" *ngIf="selectedBarbero">
-          <label class="input-label">Horarios Disponibles para el {{ selectedFecha }}</label>
-          <div class="slots-container">
-            <button 
-              type="button" 
-              *ngFor="let slot of slotsHorarios" 
-              class="slot-btn"
-              [class.active]="selectedHora === slot.hora"
-              [class.disabled]="!slot.disponible"
-              (click)="seleccionarHora(slot)"
-            >
-              {{ slot.hora }} {{ !slot.disponible ? '(' + slot.motivoOcupado + ')' : '' }}
-            </button>
-          </div>
-        </div>
+<div class="input-group mt-3" *ngIf="selectedBarbero">
+  <label class="input-label">Horarios Disponibles para el {{ selectedFecha }}</label>
+
+  <!-- Estado de carga -->
+  <small *ngIf="loadingHorarios" class="text-muted">Cargando horarios...</small>
+
+  <!-- Error o barbero sin turno -->
+  <small *ngIf="!loadingHorarios && errorHorario" class="text-danger">{{ errorHorario }}</small>
+
+  <div class="slots-container" *ngIf="!loadingHorarios">
+    <button
+      type="button"
+      *ngFor="let slot of slotsHorarios"
+      class="slot-btn"
+      [class.active]="selectedHora === slot.hora"
+      [class.disabled]="!slot.disponible"
+      [disabled]="!slot.disponible"
+      (click)="seleccionarHora(slot)"
+    >
+      {{ slot.hora }} {{ !slot.disponible ? '(' + slot.motivoOcupado + ')' : '' }}
+    </button>
+  </div>
+</div>
 
         <!-- Resumen (Valor COP 30,000) -->
         <div class="service-summary-box">

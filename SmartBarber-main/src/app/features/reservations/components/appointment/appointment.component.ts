@@ -14,6 +14,7 @@ import { Barberia, Barbero, SlotHorario } from '../../models/reservation.model';
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent implements OnInit {
+  internalDatabaseUserId: string = getAuth().currentUser?.uid ?? '';
   barberias: Barberia[] = [];
   barberosFiltrados: Barbero[] = [];
 
@@ -78,24 +79,29 @@ export class AppointmentComponent implements OnInit {
     });
   }
 
+  
   cargarEmpleadosPorBarberia(barberiaId: string): void {
+    if (!barberiaId) return;
+    
+    console.log('🔄 Consultando empleados para la barbería ID:', barberiaId);
+
     this.reservationService.getEmployeesByBarberiaId(barberiaId).subscribe({
       next: (res: any) => {
         const rawList = res.data || res;
         const list = Array.isArray(rawList) ? rawList : (rawList ? [rawList] : []);
 
         this.barberosFiltrados = list.map((emp: any) => ({
-          id: emp.id || emp.id_empleado || emp.userId,
-          name: emp.name || emp.nombre || 'Barbero',
+          id: emp.id || emp.id_empleado,
+          name: emp.name || emp.nombre,
           especialidad: emp.specialty || emp.especialidad || 'Barbero Profesional',
           estado: 'libre',
           estadoTexto: 'Libre',
-          foto: emp.foto || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
+          foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
         }));
 
         if (this.barberosFiltrados.length > 0) {
           this.selectedBarbero = this.barberosFiltrados[0];
-          if (this.selectedDia) {
+          if (this.selectedFecha) {
             this.generarHorariosDisponibles();
           }
         } else {
@@ -104,7 +110,7 @@ export class AppointmentComponent implements OnInit {
         }
       },
       error: (err: any) => {
-        console.error('Error al cargar empleados:', err);
+        console.error('❌ Error al cargar empleados para la barbería:', err);
         this.barberosFiltrados = [];
         this.selectedBarbero = null;
         this.slotsHorarios = [];
@@ -113,37 +119,25 @@ export class AppointmentComponent implements OnInit {
   }
 
   cargarServiciosPorBarberia(barberiaId: string): void {
+    if (!barberiaId) return;
+
     this.loadingServicios = true;
     this.reservationService.getServicesByBarberiaId(barberiaId).subscribe({
-      next: (data: any) => {
+      next: (res: any) => {
+        const rawList = res.data || res;
+        this.serviciosDisponibles = Array.isArray(rawList) ? rawList : (rawList ? [rawList] : []);
+        this.selectedServicesIds = this.serviciosDisponibles
+          .map((servicio: any) => servicio.id ?? servicio.id_servicio)
+          .filter((id: any) => id !== undefined && id !== null);
+        this.calcularTotal();
         this.loadingServicios = false;
-        const rawList = data.data || data;
-        const list = Array.isArray(rawList) ? rawList : (rawList ? [rawList] : []);
-        
-        this.serviciosDisponibles = list.map((item: any) => ({
-          ...item,
-          id: item.id || item.id_servicio,
-          name: item.name || item.nombre,
-          price: item.price || item.precio || 0,
-          isActive: item.status ?? item.isActive ?? true
-        }));
-
-        if (this.serviciosDisponibles.length > 0) {
-          // Seleccionamos el ID asegurando el tipo correcto (número o string según tu backend)
-          const primerId = this.serviciosDisponibles[0].id;
-          this.selectedServicesIds = [primerId];
-          this.calcularTotal();
-        } else {
-          this.selectedServicesIds = [];
-          this.precioTotalCalculado = 0;
-        }
       },
       error: (err: any) => {
-        this.loadingServicios = false;
-        console.error('Error al cargar servicios de la barbería:', err);
+        console.error('Error al cargar servicios para la barbería:', err);
         this.serviciosDisponibles = [];
         this.selectedServicesIds = [];
         this.precioTotalCalculado = 0;
+        this.loadingServicios = false;
       }
     });
   }
@@ -155,7 +149,7 @@ export class AppointmentComponent implements OnInit {
       this.cargarServiciosPorBarberia(barberiaId);
     }
   }
-
+  
   onBarberoSelect(barbero: Barbero): void {
     this.selectedBarbero = barbero;
     this.selectedHora = '';
@@ -286,64 +280,59 @@ export class AppointmentComponent implements OnInit {
   }
 
  crearReserva(): void {
-    if (!this.selectedBarbero || !this.selectedHora || !this.selectedFecha) {
-      alert('Por favor selecciona un barbero, una fecha y un horario válido.');
-      return;
-    }
-
-    if (!this.selectedServicesIds || this.selectedServicesIds.length === 0) {
-      alert('⚠️ Debes seleccionar al menos un servicio para la reserva.');
-      return;
-    }
-
-    this.isLoading = true;
-    
-    // Formato UTC exacto con 'Z' idéntico al que probaste en Postman
-    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00Z`;
-
-    // Obtener UID de Firebase activo de forma dinámica sin datos quemados
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-    const customerId = currentUser ? currentUser.uid : '';
-
-    if (!customerId) {
-      this.isLoading = false;
-      alert('⚠️ No hay una sesión de usuario activa.');
-      return;
-    }
-
-    // Asegurar que los IDs de servicios sean números enteros puros limpios
-    const cleanServiceIds = this.selectedServicesIds.map((s: any) => {
-      const idVal = typeof s === 'object' ? (s.id || s.id_servicio) : s;
-      return Number(idVal);
-    }).filter(id => !isNaN(id));
-
-    // Estructura exacta y limpia idéntica a Postman
-    const payload = {
-      customerId: customerId,
-      employeeId: this.selectedBarbero.id,
-      barbershopId: this.selectedBarberiaId,
-      reservationServiceId: cleanServiceIds,
-      startTime: startTimeIso,
-      notes: 'Reserva creada desde Angular'
-    };
-
-    console.log('📦 Payload exacto idéntico a Postman enviado al backend:', payload);
-
-    this.reservationService.createReservation(payload).subscribe({
-      next: (res: any) => {
-        this.isLoading = false;
-        alert('¡Reserva creada exitosamente!');
-        console.log('✅ Respuesta exitosa:', res);
-        this.selectedHora = '';
-        this.generarHorariosDisponibles();
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-        console.error('❌ Error al crear reserva:', err);
-        const mensajeError = err.error?.message || err.error?.data?.message || 'Error al procesar la reserva';
-        alert(`Atención del Sistema: ${mensajeError}`);
-      }
-    });
+  // 1. Validar que el UUID dinámico de la base de datos ya esté cargado
+  if (!this.internalDatabaseUserId) {
+    alert('⚠️ El perfil de usuario aún se está sincronizando. Por favor espera un segundo.');
+    return;
   }
+
+  if (!this.selectedBarbero || !this.selectedHora || !this.selectedFecha) {
+    alert('Por favor selecciona un barbero, una fecha y un horario válido.');
+    return;
+  }
+
+  if (!this.selectedServicesIds || this.selectedServicesIds.length === 0) {
+    alert('⚠️ Debes seleccionar al menos un servicio para la reserva.');
+    return;
+  }
+
+  this.isLoading = true;
+
+  const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00-05:00`;
+
+  const cleanServiceIds = this.selectedServicesIds.map((s: any) => {
+    const idVal = typeof s === 'object' ? (s.id || s.id_servicio) : s;
+    return Number(idVal);
+  }).filter(id => !isNaN(id));
+
+  const rawEmployeeId = String(this.selectedBarbero.id || '').trim();
+
+  // 2. Payload 100% dinámico utilizando la variable de la base de datos
+  const payload = {
+    customerId: this.internalDatabaseUserId, 
+    employeeId: rawEmployeeId,
+    barbershopId: this.selectedBarberiaId,
+    reservationServiceId: cleanServiceIds,
+    startTime: startTimeIso,
+    notes: 'Reserva creada desde Angular'
+  };
+
+  console.log('📦 JSON dinámico enviado al backend:', JSON.stringify(payload, null, 2));
+
+  this.reservationService.createReservation(payload).subscribe({
+    next: (res: any) => {
+      this.isLoading = false;
+      alert('¡Reserva creada exitosamente!');
+      console.log('✅ Respuesta exitosa:', res);
+      this.selectedHora = '';
+      this.generarHorariosDisponibles();
+    },
+    error: (err: any) => {
+      this.isLoading = false;
+      console.error('❌ Error al crear reserva backend:', err);
+      const mensajeError = err.error?.message || err.error?.data?.message || 'Error al procesar la reserva';
+      alert(`Atención del Sistema: ${mensajeError}`);
+    }
+  });
+}
 }

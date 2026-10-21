@@ -53,7 +53,7 @@ export class ReservationService {
     );
   }
 
-  getEmployeesByBarberiaId(barberiaId: string): Observable<any> {
+getEmployeesByBarberiaId(barberiaId: string): Observable<any> {
     return this.getAuthHeaders().pipe(
       switchMap(headers => this.http.get(`${this.apiUrl}/public/employee-service/barbershop/${barberiaId}`, { headers }))
     );
@@ -70,6 +70,11 @@ export class ReservationService {
       switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/id/${employeeId}`, { headers }))
     );
   }
+  getScheduleById(scheduleId: number | string): Observable<any> {
+  return this.getAuthHeaders().pipe(
+    switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/id/${scheduleId}`, { headers }))
+  );
+}
 
   createReservation(payload: any): Observable<any> {
     return this.getAuthHeaders().pipe(
