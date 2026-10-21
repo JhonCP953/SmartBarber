@@ -510,15 +510,16 @@ export class AppointmentComponent implements OnInit {
       })
       .filter(id => !isNaN(id));
 
-    const payload = {
+  const payload = {
       customerId: this.internalDatabaseUserId,
-      employeeId: String(this.selectedBarbero.id || '').trim(),
+      employeeId: String(this.selectedBarbero?.id || '').trim(),
       barbershopId: this.selectedBarberiaId,
       reservationServiceId: cleanServiceIds,
       startTime: startTimeIso,
       notes: 'Reserva creada desde Angular'
     };
 
+    
     this.reservationService.createReservation(payload).subscribe({
       next: () => {
         this.isLoading = false;
@@ -537,6 +538,8 @@ export class AppointmentComponent implements OnInit {
           'Error al procesar la reserva';
         alert(`Atención del Sistema: ${mensajeError}`);
       }
+
+      
     });
   }
 }
