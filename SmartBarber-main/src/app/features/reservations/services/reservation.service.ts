@@ -68,7 +68,7 @@ export class ReservationService {
   // El id es el del HORARIO (numerico), por ejemplo /schedule-service/id/5
   getScheduleById(scheduleId: number | string): Observable<any> {
     return this.getAuthHeaders().pipe(
-      switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/id/${scheduleId}`, { headers }))
+      switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/empleado/${scheduleId}`, { headers }))
     );
   }
 
