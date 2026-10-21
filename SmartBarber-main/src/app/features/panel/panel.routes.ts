@@ -13,6 +13,10 @@ import {
 } from './guards/panel-entry.guard';
 
 import {
+  barbershopSubscriptionGuard
+} from './guards/barbershop-subscription.guard';
+
+import {
   PanelNavigationService
 } from './application/services/panel-navigation.service';
 
@@ -25,6 +29,10 @@ export const PANEL_ROUTES: Routes = [
     canActivate: [
       authGuard,
       panelEntryGuard
+    ],
+
+    canActivateChild: [
+      barbershopSubscriptionGuard
     ],
 
     providers: [

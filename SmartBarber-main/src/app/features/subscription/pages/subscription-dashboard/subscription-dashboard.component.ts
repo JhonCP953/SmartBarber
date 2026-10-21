@@ -33,6 +33,13 @@ export class SubscriptionDashboardComponent implements OnInit {
 
   readonly modules: SubscriptionModuleCard[] = [
     {
+      title: 'Adquirir suscripción',
+      description: 'Selecciona un plan e inicia la transacción para tu barbería.',
+      route: 'status',
+      icon: '+',
+      state: 'Recomendado'
+    },
+    {
       title: 'Estado de suscripción',
       description: 'Revisa el plan actual, su vigencia y el estado del pago.',
       route: 'status',

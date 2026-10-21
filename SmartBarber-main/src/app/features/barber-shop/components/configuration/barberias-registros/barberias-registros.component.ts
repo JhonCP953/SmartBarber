@@ -54,11 +54,18 @@ export class BarberiasRegistrosComponent
   @Input()
   barberId = '';
 
+  @Input()
+  set editing(value: boolean) {
+    this.isEditing = value;
+  }
+
+  private selectedBarber: BarberShopResponse | null = null;
 
   @Input()
   set seleccionado(
     item: BarberShopResponse | null
   ) {
+    this.selectedBarber = item;
 
     if (
       item &&
@@ -104,6 +111,11 @@ export class BarberiasRegistrosComponent
 
   ngOnInit(): void {
     this.initForm();
+
+    if (this.selectedBarber) {
+      this.patchFormValues(this.selectedBarber);
+      this.selectedId = String(this.selectedBarber.id ?? '');
+    }
   }
 
 

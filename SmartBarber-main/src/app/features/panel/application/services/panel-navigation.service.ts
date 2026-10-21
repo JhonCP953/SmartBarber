@@ -71,6 +71,30 @@ export class PanelNavigationService {
               true
           },
 
+          {
+            id: 'subscription-acquire',
+
+            label: 'Adquirir suscripción',
+
+            description:
+              'Selecciona un plan e inicia la transacción para tu barbería.',
+
+            icon: 'wallet',
+
+            route:
+              '/panel/subscription/status',
+
+            roles: [
+              'ADMIN'
+            ],
+
+            status:
+              'AVAILABLE',
+
+            visible:
+              true
+          },
+
 
           {
             id: 'profile',
@@ -484,6 +508,14 @@ export class PanelNavigationService {
   getNavigation():
     PanelNavigationGroup[] {
 
+    return this.getNavigationForAccess(false);
+  }
+
+
+  getNavigationForAccess(
+    subscriptionRestricted: boolean
+  ): PanelNavigationGroup[] {
+
     const role =
       this.sessionService
         .currentSession
@@ -516,8 +548,22 @@ export class PanelNavigationService {
                 item.visible &&
                 item.roles.includes(
                   role
-                )
-            )
+                  ) &&
+                  (
+                    subscriptionRestricted
+                        ? ['dashboard', 'profile', 'subscription'].includes(item.id)
+                        : true
+                  )
+              ).map(item =>
+                subscriptionRestricted && item.id === 'subscription'
+                  ? {
+                      ...item,
+                      label: 'Adquirir suscripción',
+                      description: 'Selecciona un plan e inicia la transacción para tu barbería.',
+                      route: '/panel/subscription/status'
+                    }
+                  : item
+              )
 
         })
       )

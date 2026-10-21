@@ -22,7 +22,7 @@
   align-items: center;
   gap: 8px;
   color: #9b774f;
-  font-size: 11px;
+  font-size: 11.66px;
   font-weight: 800;
   letter-spacing: 1.5px;
 }
@@ -30,7 +30,7 @@
 .dashboard-heading h1 {
   margin: 11px 0 8px;
   color: #251c18;
-  font-size: clamp(30px, 4vw, 42px);
+  font-size: clamp(31.8px, 4.24vw, 44.52px);
   line-height: 1.1;
 }
 
@@ -70,7 +70,7 @@
   background: #342720;
   color: #d7b780;
   font-family: Georgia, serif;
-  font-size: 19px;
+  font-size: 20.14px;
   font-weight: 700;
 }
 
@@ -81,7 +81,7 @@
 
 .summary-copy > span {
   color: #9b774f;
-  font-size: 10px;
+  font-size: 10.6px;
   font-weight: 800;
   letter-spacing: 1.1px;
 }
@@ -89,13 +89,13 @@
 .summary-copy h2 {
   margin: 5px 0 2px;
   color: #30231d;
-  font-size: 20px;
+  font-size: 21.2px;
 }
 
 .summary-copy p {
   margin: 0;
   color: #82756a;
-  font-size: 13px;
+  font-size: 13.78px;
 }
 
 .shop-status {
@@ -104,7 +104,7 @@
   border-radius: 999px;
   background: #f0f7f1;
   color: #377348;
-  font-size: 10px;
+  font-size: 10.6px;
   font-weight: 800;
   letter-spacing: .7px;
 }
@@ -126,12 +126,12 @@
 .section-heading h2 {
   margin: 7px 0 0;
   color: #30231d;
-  font-size: 25px;
+  font-size: 26.5px;
 }
 
 .section-heading > p {
   max-width: 380px;
-  font-size: 13px;
+  font-size: 13.78px;
 }
 
 .module-grid {
@@ -173,6 +173,31 @@
   outline: none;
 }
 
+.module-card.acquire-card {
+  border-color: #b68a4e;
+  background: linear-gradient(135deg, #332720 0%, #201a17 100%);
+  color: #fff;
+}
+
+.module-card.acquire-card .module-icon {
+  background: rgba(201, 169, 122, .16);
+  color: #e2c18d;
+}
+
+.module-card.acquire-card h3,
+.module-card.acquire-card .module-link {
+  color: #f2dfbd;
+}
+
+.module-card.acquire-card p {
+  color: #d0c2b1;
+}
+
+.module-card.acquire-card .module-state {
+  background: rgba(201, 169, 122, .16);
+  color: #f0d6a9;
+}
+
 .module-icon {
   display: grid;
   width: 44px;
@@ -181,7 +206,7 @@
   border-radius: 13px;
   background: #f5efe5;
   color: #987445;
-  font-size: 23px;
+  font-size: 24.38px;
 }
 
 .module-state {
@@ -193,7 +218,7 @@
   border-radius: 999px;
   background: #f8f4ec;
   color: #8c7048;
-  font-size: 10px;
+  font-size: 10.6px;
   font-weight: 700;
   text-align: right;
 }
@@ -201,14 +226,14 @@
 .module-card h3 {
   margin: 17px 0 6px;
   color: #30231d;
-  font-size: 18px;
+  font-size: 19.08px;
 }
 
 .module-card p {
   max-width: 450px;
   margin: 0 0 20px;
   color: #7b7067;
-  font-size: 13px;
+  font-size: 13.78px;
   line-height: 1.55;
 }
 
@@ -218,7 +243,7 @@
   align-items: center;
   margin-top: auto;
   color: #86643a;
-  font-size: 12px;
+  font-size: 12.72px;
   font-weight: 800;
 }
 
@@ -249,7 +274,7 @@
 .integration-note p {
   margin: 1px 0 0;
   color: #74675c;
-  font-size: 12px;
+  font-size: 12.72px;
   line-height: 1.6;
 }
 
@@ -269,7 +294,7 @@
 
 .state-card h2 {
   margin: 0 0 5px;
-  font-size: 18px;
+  font-size: 19.08px;
 }
 
 .error-card {
@@ -350,7 +375,7 @@
 
   .module-state {
     max-width: 48%;
-    font-size: 9px;
+    font-size: 9.54px;
   }
 }
 
@@ -361,5 +386,134 @@
 
   .spinner {
     animation-duration: 1.5s;
+  }
+}
+
+.subscription-dashboard {
+  padding: 34px;
+  border: 1px solid #c5a880;
+  border-radius: 16px;
+  background: #1b1612;
+  color: #fdfbf7;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+}
+
+.dashboard-heading h1,
+.section-heading h2 {
+  color: #fdfbf7;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.dashboard-heading p,
+.section-heading > p {
+  color: #bfa893;
+}
+
+.eyebrow,
+.summary-copy > span {
+  color: #c5a880;
+}
+
+.barbershop-summary,
+.state-card,
+.module-card,
+.integration-note {
+  border-color: #4a3b2c;
+  background: linear-gradient(135deg, #282018 0%, #1e1712 100%);
+  color: #fdfbf7;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+}
+
+.barbershop-summary {
+  border-left: 4px solid #c5a880;
+}
+
+.summary-mark {
+  border: 1px solid #705844;
+  background: #120e0b;
+  color: #c5a880;
+}
+
+.summary-copy h2,
+.module-card h3,
+.state-card h2 {
+  color: #fdfbf7;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.summary-copy p,
+.module-card p,
+.state-card p,
+.integration-note p {
+  color: #bfa893;
+}
+
+.shop-status {
+  border-color: #55745b;
+  background: #1b2c1e;
+  color: #a8d3ae;
+}
+
+.shop-status.inactive {
+  border-color: #8c3a32;
+  background: #3a1c19;
+  color: #f0aaa2;
+}
+
+.module-card {
+  border-radius: 10px;
+}
+
+.module-card:hover,
+.module-card:focus-visible {
+  border-color: #c5a880;
+  box-shadow: 0 10px 26px rgba(197, 168, 128, .16);
+}
+
+.module-card.acquire-card {
+  border-color: #c5a880;
+  background: linear-gradient(135deg, #423323 0%, #2b2118 100%);
+}
+
+.module-icon {
+  border: 1px solid #5a4736;
+  background: #120e0b;
+  color: #c5a880;
+}
+
+.module-state {
+  border: 1px solid #5a4736;
+  background: #31261d;
+  color: #e6dfd5;
+}
+
+.module-link {
+  color: #d2b88f;
+}
+
+.integration-note {
+  background: #241d17;
+  box-shadow: none;
+}
+
+.note-icon,
+.state-icon {
+  background: #c5a880;
+  color: #1b1612;
+}
+
+.error-card {
+  border-color: #873b34;
+  background: linear-gradient(135deg, #321b18, #211411);
+}
+
+.spinner {
+  border-color: #4a3b2c;
+  border-top-color: #c5a880;
+}
+
+@media (max-width: 700px) {
+  .subscription-dashboard {
+    padding: 22px 16px;
   }
 }

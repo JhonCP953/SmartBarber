@@ -12,7 +12,7 @@
 
 .back-link {
   color: #85643b;
-  font-size: 13px;
+  font-size: 13.78px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -27,7 +27,7 @@
 
 .eyebrow {
   color: #987548;
-  font-size: 10px;
+  font-size: 10.6px;
   font-weight: 800;
   letter-spacing: 1.35px;
 }
@@ -35,7 +35,7 @@
 .page-heading h1 {
   margin: 9px 0;
   color: #30231d;
-  font-size: clamp(30px, 5vw, 40px);
+  font-size: clamp(31.8px, 5.3vw, 42.4px);
 }
 
 .page-heading p,
@@ -81,13 +81,13 @@
 
 .shop-banner h2 {
   margin: 5px 0 2px;
-  font-size: 18px;
+  font-size: 19.08px;
 }
 
 .shop-banner p {
   margin: 0;
   color: #82756a;
-  font-size: 12px;
+  font-size: 12.72px;
 }
 
 .section-heading {
@@ -100,12 +100,12 @@
 
 .section-heading h2 {
   margin: 7px 0 0;
-  font-size: 24px;
+  font-size: 25.44px;
 }
 
 .plan-count {
   color: #806a50;
-  font-size: 12px;
+  font-size: 12.72px;
   font-weight: 700;
 }
 
@@ -144,7 +144,7 @@
   border-radius: 12px;
   background: #f5efe5;
   color: #987548;
-  font-size: 20px;
+  font-size: 21.2px;
 }
 
 .discount-badge {
@@ -152,13 +152,13 @@
   border-radius: 999px;
   background: #f2eadc;
   color: #8d693b;
-  font-size: 10px;
+  font-size: 10.6px;
   font-weight: 800;
 }
 
 .plan-label {
   color: #9b774f;
-  font-size: 9px;
+  font-size: 9.54px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -166,13 +166,13 @@
 .plan-card h3 {
   margin: 7px 0;
   color: #30231d;
-  font-size: 20px;
+  font-size: 21.2px;
 }
 
 .plan-description {
   min-height: 62px;
   margin: 0 0 17px;
-  font-size: 12px;
+  font-size: 12.72px;
 }
 
 .plan-price {
@@ -186,12 +186,12 @@
 
 .plan-price strong {
   color: #30231d;
-  font-size: 22px;
+  font-size: 23.32px;
 }
 
 .plan-price span {
   color: #88796c;
-  font-size: 11px;
+  font-size: 11.66px;
 }
 
 .renew-disabled,
@@ -201,7 +201,7 @@
   border: 0;
   border-radius: 10px;
   font: inherit;
-  font-size: 11px;
+  font-size: 11.66px;
   font-weight: 800;
 }
 
@@ -249,7 +249,7 @@
 .integration-note p {
   margin: 1px 0 0;
   color: #74675c;
-  font-size: 12px;
+  font-size: 12.72px;
   line-height: 1.65;
 }
 
@@ -274,7 +274,7 @@
 
 .state-card h2 {
   margin: 0 0 6px;
-  font-size: 17px;
+  font-size: 18.02px;
 }
 
 .error-card {
@@ -340,5 +340,134 @@
 
   .spinner {
     animation-duration: 1.5s;
+  }
+}
+
+.renewal-page {
+  padding: 34px;
+  border: 1px solid #c5a880;
+  border-radius: 16px;
+  background: #1b1612;
+  color: #fdfbf7;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+}
+
+.page-heading h1,
+.section-heading h2,
+.shop-banner h2,
+.plan-card h3,
+.state-card h2 {
+  color: #fdfbf7;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.page-heading p,
+.shop-banner p,
+.plan-description,
+.state-card p,
+.integration-note p {
+  color: #bfa893;
+}
+
+.eyebrow,
+.plan-label {
+  color: #c5a880;
+}
+
+.back-link {
+  color: #d2b88f;
+}
+
+.shop-banner,
+.state-card,
+.plan-card,
+.integration-note {
+  border-color: #4a3b2c;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #282018 0%, #1e1712 100%);
+  color: #fdfbf7;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+}
+
+.shop-banner {
+  border-left: 4px solid #c5a880;
+}
+
+.shop-icon,
+.plan-mark {
+  border: 1px solid #5a4736;
+  background: #120e0b;
+  color: #c5a880;
+}
+
+.plan-card {
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.plan-card:hover {
+  border-color: #c5a880;
+  box-shadow: 0 10px 26px rgba(197, 168, 128, .16);
+}
+
+.discount-badge {
+  background: #8f1d19;
+  color: #fff;
+}
+
+.plan-price {
+  border-color: #4a3b2c;
+}
+
+.plan-price strong {
+  color: #d2b88f;
+}
+
+.plan-price span {
+  color: #bfa893;
+}
+
+.renew-disabled {
+  border: 1px solid #5a4736;
+  background: #241d17;
+  color: #bfa893;
+}
+
+.primary-button {
+  background: #c5a880;
+  color: #1b1612;
+}
+
+.primary-button:hover {
+  background: #b89b72;
+}
+
+.integration-note {
+  background: #241d17;
+  box-shadow: none;
+}
+
+.note-icon,
+.state-icon {
+  background: #c5a880;
+  color: #1b1612;
+}
+
+.integration-note code {
+  color: #e6d2b4;
+}
+
+.error-card {
+  border-color: #873b34;
+  background: linear-gradient(135deg, #321b18, #211411);
+}
+
+.spinner {
+  border-color: #4a3b2c;
+  border-top-color: #c5a880;
+}
+
+@media (max-width: 620px) {
+  .renewal-page {
+    padding: 24px 16px;
   }
 }

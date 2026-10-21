@@ -1,22 +1,218 @@
-<main class="status-page">
-  <a class="back-link" routerLink="/panel/subscription">← Volver a suscripción</a>
+<div class="subscription-page-container">
+  <main class="content-card-grid">
+    <section class="plan-summary-box" aria-labelledby="selected-plan-heading">
+      <span class="popular-pill">ADQUISICIÓN DE PLAN</span>
 
-  <header>
-    <span class="eyebrow">GESTIÓN DE BARBERÍA</span>
-    <h1>Estado de suscripción</h1>
-    <p>Consulta el plan asociado a tu barbería, su vigencia y el estado de los pagos.</p>
-  </header>
+      <div class="plan-summary-content">
+        <span class="section-eyebrow">SUSCRIPCIÓN PARA TU BARBERÍA</span>
+        <h1 id="selected-plan-heading" class="plan-heading">
+          {{ selectedPlan()?.name || 'Elige tu plan' }}
+        </h1>
 
-  <section class="notice-card" role="status">
-    <span class="notice-icon" aria-hidden="true">i</span>
-    <div>
-      <span class="eyebrow">INFORMACIÓN NO DISPONIBLE</span>
-      <h2>El backend aún no expone la consulta de suscripción actual</h2>
-      <p>
-        La API documentada permite listar y consultar planes, pero no permite localizar la suscripción vigente de la barbería autenticada. Por eso no se mostrarán estados ni fechas inventadas.
-      </p>
-    </div>
-  </section>
+        <div *ngIf="selectedPlan() as plan" class="price-tag-container">
+          <span class="price-value">{{ formatCurrency(plan.price) }}</span>
+          <span class="price-period">Precio del catálogo</span>
+        </div>
 
-  <a class="return-link" routerLink="/panel/subscription">Regresar a los módulos</a>
-</main>
+        <p *ngIf="selectedPlan() as plan" class="plan-info-text">
+          {{ plan.description }}
+        </p>
+
+        <p *ngIf="!selectedPlan()" class="plan-info-text">
+          Selecciona uno de los planes disponibles para ver su valor y continuar.
+        </p>
+
+        <div *ngIf="loading()" class="plan-state" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Consultando planes disponibles...</span>
+        </div>
+
+        <div *ngIf="!loading() && plans().length" class="available-plans">
+          <h2>Planes disponibles</h2>
+          <button
+            *ngFor="let plan of plans()"
+            type="button"
+            class="available-plan"
+            [class.selected]="selectedPlanId() === plan.id"
+            [attr.aria-pressed]="selectedPlanId() === plan.id"
+            (click)="selectPlan(plan.id)">
+            <span>
+              <strong>{{ plan.name }}</strong>
+              <small>{{ plan.description }}</small>
+            </span>
+            <span class="available-plan-price">{{ formatCurrency(plan.price) }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="plan-image-fade-container">
+        <img
+          src="/suscripcionpag.png"
+          alt=""
+          aria-hidden="true"
+          class="faded-barber-img">
+      </div>
+    </section>
+
+    <section class="payment-section-box" aria-labelledby="payment-title">
+      <a class="back-link" routerLink="/panel/subscription">← Volver a suscripción</a>
+
+      <div class="payment-header-group">
+        <span class="section-eyebrow">PAGO DE SUSCRIPCIÓN</span>
+        <h2 id="payment-title" class="main-title">Datos de pago</h2>
+        <p class="main-subtitle">
+          Completa los campos para continuar con la solicitud. Esta interfaz no procesa ni transmite datos reales de tarjeta.
+        </p>
+      </div>
+
+      <div *ngIf="errorMessage()" class="form-alert form-alert-error" role="alert">
+        {{ errorMessage() }}
+      </div>
+
+      <div *ngIf="createdSubscription()" class="form-alert form-alert-success" role="status">
+        Solicitud creada con estado {{ createdSubscription()?.status }}.
+        Referencia: {{ createdSubscription()?.orderId }}
+      </div>
+
+      <div *ngIf="paymentMessage()" class="form-alert form-alert-info" role="status" aria-live="polite">
+        {{ paymentMessage() }}
+      </div>
+
+      <form
+        [formGroup]="subscriptionForm"
+        (ngSubmit)="acquireSubscription()"
+        class="clean-payment-form"
+        novalidate>
+        <label class="field-container">
+          <span>Nombre completo</span>
+          <span class="input-icon-wrapper">
+            <span class="icon-prefix" aria-hidden="true">👤</span>
+            <input
+              type="text"
+              formControlName="fullName"
+              class="form-control-input"
+              placeholder="Ej. Juan Pérez"
+              autocomplete="name">
+          </span>
+          <small *ngIf="isFieldInvalid('fullName')" class="field-error">
+            {{ fieldError('fullName') }}
+          </small>
+        </label>
+
+        <label class="field-container">
+          <span>Correo electrónico</span>
+          <span class="input-icon-wrapper">
+            <span class="icon-prefix" aria-hidden="true">✉️</span>
+            <input
+              type="email"
+              formControlName="email"
+              class="form-control-input"
+              placeholder="nombre@ejemplo.com"
+              autocomplete="email">
+          </span>
+          <small *ngIf="isFieldInvalid('email')" class="field-error">
+            {{ fieldError('email') }}
+          </small>
+        </label>
+
+        <div class="form-row-double">
+          <label class="field-container">
+            <span>Número de tarjeta (solo validación local)</span>
+            <span class="input-icon-wrapper">
+              <span class="icon-prefix" aria-hidden="true">💳</span>
+              <input
+                type="text"
+                inputmode="numeric"
+                formControlName="cardNumber"
+                class="form-control-input"
+                placeholder="16 dígitos"
+                maxlength="16"
+                autocomplete="off">
+            </span>
+            <small *ngIf="isFieldInvalid('cardNumber')" class="field-error">
+              {{ fieldError('cardNumber') }}
+            </small>
+          </label>
+
+          <label class="field-container">
+            <span>Fecha de expiración</span>
+            <span class="input-icon-wrapper">
+              <span class="icon-prefix" aria-hidden="true">📅</span>
+              <input
+                type="text"
+                formControlName="expirationDate"
+                class="form-control-input"
+                placeholder="MM/AA"
+                maxlength="7"
+                autocomplete="off">
+            </span>
+            <small *ngIf="isFieldInvalid('expirationDate')" class="field-error">
+              {{ fieldError('expirationDate') }}
+            </small>
+          </label>
+        </div>
+
+        <label class="field-container">
+          <span>CVV (solo validación local)</span>
+          <span class="input-icon-wrapper">
+            <span class="icon-prefix" aria-hidden="true">🔒</span>
+            <input
+              type="password"
+              inputmode="numeric"
+              formControlName="cvv"
+              class="form-control-input"
+              placeholder="3 o 4 dígitos"
+              maxlength="4"
+              autocomplete="off">
+          </span>
+          <small *ngIf="isFieldInvalid('cvv')" class="field-error">
+            {{ fieldError('cvv') }}
+          </small>
+        </label>
+
+        <div class="auto-renewal-card">
+          <div class="renewal-text-block">
+            <span class="renewal-title">Activar renovación automática</span>
+            <p class="renewal-sub">La preferencia se incluye en la solicitud de suscripción.</p>
+          </div>
+          <label class="switch-toggle">
+            <input type="checkbox" formControlName="autoRenew" aria-label="Activar renovación automática">
+            <span class="toggle-slider round"></span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-complete-payment"
+          [disabled]="submitting() || loading() || selectedPlanId() === null || !plans().length">
+          <span class="btn-card-icon" aria-hidden="true">💳</span>
+          {{ submitting() ? 'PROCESANDO SOLICITUD...' : 'Continuar con la adquisición' }}
+        </button>
+      </form>
+
+      <div class="security-features-footer">
+        <div class="sec-badge-item">
+          <span class="badge-emoji" aria-hidden="true">ℹ️</span>
+          <div>
+            <strong>Datos de prueba</strong>
+            <p>No ingreses información bancaria real.</p>
+          </div>
+        </div>
+        <div class="sec-badge-item">
+          <span class="badge-emoji" aria-hidden="true">🛡️</span>
+          <div>
+            <strong>Sin envío de tarjeta</strong>
+            <p>Los datos de tarjeta no se incluyen en la solicitud HTTP.</p>
+          </div>
+        </div>
+        <div class="sec-badge-item">
+          <span class="badge-emoji" aria-hidden="true">⚡</span>
+          <div>
+            <strong>Estado de pago</strong>
+            <p>Se escucha la actualización asociada al orderId cuando el backend lo devuelve.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

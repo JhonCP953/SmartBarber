@@ -21,7 +21,8 @@
         <button class="primary-button" type="button" (click)="reload()">Intentar de nuevo</button>
       </div>
     </section>
-  } @else if (barberShop(); as shop) {
+  } @else {
+    @if (barberShop(); as shop) {
     <section class="shop-banner" aria-label="Barbería asociada">
       <span class="shop-icon" aria-hidden="true">SB</span>
       <div>
@@ -79,5 +80,6 @@
         Esta pantalla muestra el catálogo recibido de <code>GET /subscription-service/all</code> y lo carga después de verificar la barbería del administrador. El backend todavía no expone qué plan contratado está vigente ni su duración; por eso no se marca un plan como actual y no se envía una renovación hasta disponer de esos datos.
       </p>
     </aside>
+    }
   }
 </main>

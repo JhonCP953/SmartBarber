@@ -349,7 +349,7 @@
               <button
                 type="button"
                 class="action-button secondary"
-                (click)="onBarberiaSeleccionada(item)"
+                (click)="onBarberiaSeleccionada(item, false)"
               >
 
                 <span>
@@ -364,7 +364,7 @@
               <button
                 type="button"
                 class="action-button primary"
-                (click)="onBarberiaSeleccionada(item)"
+                (click)="onBarberiaSeleccionada(item, true)"
               >
 
                 <span>
@@ -408,6 +408,21 @@
 
     </section>
 
+  </section>
+
+  <section
+    class="secondary-section"
+    *ngIf="selectedItem as item"
+  >
+    <app-barberias-registros
+      [barberList]="barberList"
+      [barberId]="barberId"
+      [seleccionado]="item"
+      [editing]="isEditing"
+      (barberiaSeleccionada)="onBarberiaSeleccionada($event, false)"
+      (guardado)="loadMyBarbershop()"
+    >
+    </app-barberias-registros>
   </section>
 
 

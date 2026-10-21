@@ -17,6 +17,15 @@ export interface SubscriptionPayload {
   subscriptionId: number;
   duration: number;
   automaticRenew: boolean;
+  // Optional UI-only values; toRequest deliberately excludes them from HTTP.
+  fullName?: string | null;
+  email?: string | null;
+  cardNumber?: string | null;
+  expirationDate?: string | null;
+  cvv?: string | null;
+  autoRenew?: boolean;
+  planName?: string;
+  price?: number;
 }
 
 export interface SubscriptionCreationResponse {
@@ -37,9 +46,11 @@ export interface SubscriptionCreationResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class SubscriptionWsService {
+export class SubscriptionService {
   private readonly createUrl =
     `${environment.apiUrl}/subscription-barbershop-service/create`;
+  private readonly renewUrl =
+    `${environment.apiUrl}/subscription-barbershop-service/renew`;
   private readonly paymentStatusSubject =
     new Subject<unknown>();
 
@@ -57,12 +68,7 @@ export class SubscriptionWsService {
 
     return this.http.post<SubscriptionCreationResponse>(
       this.createUrl,
-      {
-        ...payload,
-        barberId,
-        status: 'PENDING' satisfies SubscriptionBarberStatus,
-        type: 'CREATE' satisfies SubscriptionType
-      }
+      this.toRequest(payload, barberId, 'CREATE')
     );
   }
 
@@ -72,20 +78,15 @@ export class SubscriptionWsService {
     const barberId = this.getAuthenticatedEmployeeId();
 
     return this.http.put<SubscriptionCreationResponse>(
-      `${environment.apiUrl}/subscription-barbershop-service/renew`,
-      {
-        ...payload,
-        barberId,
-        status: 'PENDING' satisfies SubscriptionBarberStatus,
-        type: 'RENEW' satisfies SubscriptionType
-      }
+      this.renewUrl,
+      this.toRequest(payload, barberId, 'RENEW')
     );
   }
 
   getSubscriptionData(): Observable<never> {
     return throwError(
       () => new Error(
-        'El backend no expone una consulta para obtener la suscripción vigente de la barbería.'
+        'La consulta de suscripción vigente no está disponible: el contrato de ese endpoint aún no está confirmado.'
       )
     );
   }
@@ -102,19 +103,34 @@ export class SubscriptionWsService {
     const paymentUrl =
       `${protocol}//${apiUrl.host}/ws/payment?orderId=${encodeURIComponent(orderId)}`;
 
-    this.socket = new WebSocket(paymentUrl);
+    const socket = new WebSocket(paymentUrl);
+    this.socket = socket;
 
-    this.socket.onmessage = event => {
+    socket.onopen = () => {
+      console.info('Conectado al WebSocket de pagos.');
+    };
+
+    socket.onmessage = event => {
       try {
         this.paymentStatusSubject.next(JSON.parse(event.data) as unknown);
       } catch (error: unknown) {
-        console.error('No fue posible interpretar el evento de pago:', error);
+        console.warn('El evento de pago no contiene JSON válido:', error);
         this.paymentStatusSubject.next(event.data);
       }
     };
 
-    this.socket.onerror = error => {
+    socket.onerror = error => {
       console.error('Error en el WebSocket de pagos:', error);
+    };
+
+    socket.onclose = event => {
+      if (this.socket === socket) {
+        this.socket = null;
+      }
+
+      console.info(
+        `WebSocket de pagos cerrado (código ${event.code}).`
+      );
     };
   }
 
@@ -123,10 +139,37 @@ export class SubscriptionWsService {
   }
 
   disconnectWebSocket(): void {
-    if (this.socket) {
-      this.socket.close();
-      this.socket = null;
+    const socket = this.socket;
+    this.socket = null;
+
+    if (
+      socket &&
+      (
+        socket.readyState === WebSocket.CONNECTING ||
+        socket.readyState === WebSocket.OPEN
+      )
+    ) {
+      socket.close();
     }
+  }
+
+  private toRequest(
+    payload: SubscriptionPayload,
+    barberId: string,
+    type: SubscriptionType
+  ): SubscriptionPayload & {
+    barberId: string;
+    status: SubscriptionBarberStatus;
+    type: SubscriptionType;
+  } {
+    return {
+      subscriptionId: payload.subscriptionId,
+      duration: payload.duration,
+      automaticRenew: payload.automaticRenew,
+      barberId,
+      status: 'PENDING',
+      type
+    };
   }
 
   private getAuthenticatedEmployeeId(): string {
@@ -146,4 +189,4 @@ export class SubscriptionWsService {
   }
 }
 
-export { SubscriptionWsService as SubscriptionService };
+export { SubscriptionService as SubscriptionWsService };

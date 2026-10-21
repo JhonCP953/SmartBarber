@@ -13,7 +13,7 @@
 .back-link,
 .dashboard-link {
   color: #85643b;
-  font-size: 13px;
+  font-size: 13.78px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -30,14 +30,14 @@
 .eyebrow,
 .availability-label {
   color: #987548;
-  font-size: 10px;
+  font-size: 10.6px;
   font-weight: 800;
   letter-spacing: 1.35px;
 }
 
 .module-heading h1 {
   margin: 9px 0;
-  font-size: clamp(30px, 5vw, 40px);
+  font-size: clamp(31.8px, 5.3vw, 42.4px);
 }
 
 .module-heading p {
@@ -71,7 +71,7 @@
 
 .availability-card h2 {
   margin: 9px 0;
-  font-size: 19px;
+  font-size: 20.14px;
 }
 
 .availability-card p {
@@ -84,7 +84,7 @@
   margin-top: 17px;
   padding-top: 14px;
   border-top: 1px solid #f0ebe4;
-  font-size: 12px;
+  font-size: 12.72px;
 }
 
 .dashboard-link {
@@ -100,5 +100,67 @@
 
   .availability-card {
     padding: 20px 17px;
+  }
+}
+
+.module-page {
+  padding: 34px;
+  border: 1px solid #c5a880;
+  border-radius: 16px;
+  background: #1b1612;
+  color: #fdfbf7;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+}
+
+.module-heading h1 {
+  color: #fdfbf7;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.module-heading p {
+  color: #bfa893;
+}
+
+.eyebrow,
+.availability-label {
+  color: #c5a880;
+}
+
+.back-link,
+.dashboard-link {
+  color: #d2b88f;
+}
+
+.availability-card {
+  border-color: #4a3b2c;
+  border-left: 4px solid #c5a880;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #282018 0%, #1e1712 100%);
+  color: #fdfbf7;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+}
+
+.availability-card h2 {
+  color: #fdfbf7;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.availability-card p {
+  color: #bfa893;
+}
+
+.availability-card .safety-note {
+  border-color: #4a3b2c;
+  color: #d2b88f;
+}
+
+.availability-icon {
+  background: #c5a880;
+  color: #1b1612;
+}
+
+@media (max-width: 600px) {
+  .module-page {
+    padding: 24px 16px;
   }
 }

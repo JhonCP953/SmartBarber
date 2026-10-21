@@ -376,6 +376,48 @@
 
             <section class="panel-home" *ngIf="isPanelHome()">
 
+                <section
+                    *ngIf="summary()?.roleLabel === 'Administrador' || summary()?.roleLabel === 'Barbero'"
+                    class="subscription-access-alert"
+                    [class.subscription-access-alert--pending]="subscriptionAccess.state().status === 'pending'"
+                    [class.subscription-access-alert--error]="subscriptionAccess.state().status === 'error'"
+                    [hidden]="subscriptionAccess.state().status === 'active'"
+                    role="status"
+                    aria-live="polite">
+
+                    <span class="subscription-alert-icon" aria-hidden="true">
+                        {{ subscriptionAlertIcon() }}
+                    </span>
+
+                    <div class="subscription-alert-copy">
+                        <span class="section-eyebrow">ESTADO DE SUSCRIPCIÓN</span>
+                        <h2>{{ subscriptionAlertTitle() }}</h2>
+                        <p>{{ subscriptionAlertMessage() }}</p>
+                    </div>
+
+                    <button
+                        *ngIf="summary()?.roleLabel === 'Administrador' && subscriptionAccess.state().status !== 'loading'"
+                        type="button"
+                        class="subscription-alert-action"
+                        (click)="navigateToSubscriptionAcquisition()">
+                        Adquirir suscripción
+                        <span aria-hidden="true">→</span>
+                    </button>
+
+                    <button
+                        *ngIf="subscriptionAccess.state().status === 'error'"
+                        type="button"
+                        class="subscription-alert-retry"
+                        (click)="retrySubscriptionCheck()">
+                        Reintentar
+                    </button>
+
+                    <span
+                        *ngIf="subscriptionAccess.state().status === 'loading'"
+                        class="subscription-alert-loading"
+                        aria-label="Consultando suscripción">
+                    </span>
+                </section>
 
                 <!-- =================================================
                      PANEL DE CONTROL

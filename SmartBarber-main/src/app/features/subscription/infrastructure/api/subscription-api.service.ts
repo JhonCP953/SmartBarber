@@ -22,7 +22,16 @@ import {
 
 import { RenewSubscriptionRequest, RenewSubscriptionResponse } from '../../domain/models/renew-subscription.model';
 
-@Injectable()
+export class SubscriptionStatusContractUnavailableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'SubscriptionStatusContractUnavailableError';
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
 export class SubscriptionApiService extends SubscriptionRepository {
   private readonly http = inject(HttpClient);
 
@@ -33,7 +42,7 @@ export class SubscriptionApiService extends SubscriptionRepository {
   }
 
   private readonly unsupported = {
-    current: 'El backend actual no expone la consulta de la suscripción vigente de una barbería.',
+    current: 'La consulta de la suscripción vigente está pendiente de confirmar. La ruta propuesta GET /subscription-barbershop-service/my-status y su respuesta no están conectadas.',
     plans: 'El catálogo del backend usa un DTO distinto al que espera el cliente legado de suscripciones.',
     change: 'El backend actual no documenta una operación para cambiar el plan de una suscripción.',
     cancel: 'El backend actual no documenta una operación para cancelar una suscripción.',
@@ -42,7 +51,9 @@ export class SubscriptionApiService extends SubscriptionRepository {
 
   override getCurrentSubscription():
     Observable<CurrentSubscription> {
-    return throwError(() => new Error(this.unsupported.current));
+    return throwError(() =>
+      new SubscriptionStatusContractUnavailableError(this.unsupported.current)
+    );
   }
 
   override getAvailablePlans():

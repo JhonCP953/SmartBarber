@@ -7,7 +7,6 @@ import { BarberShopApiService } from '../../infrastructure/services/barber-shop-
 import { BarberShopResponse } from '../../domain/models/barber-shop.model';
 
 import { BarberiasRegistrosComponent } from './barberias-registros/barberias-registros.component';
-import { HorariosAtencionComponent } from './horarios-atencion/horarios-atencion.component';
 import { DiasFestivosComponent } from './dias-festivos/dias-festivos.component';
 
 @Component({
@@ -16,7 +15,6 @@ import { DiasFestivosComponent } from './dias-festivos/dias-festivos.component';
   imports: [
     CommonModule,
     BarberiasRegistrosComponent,
-    HorariosAtencionComponent,
     DiasFestivosComponent
   ],
   templateUrl: './config.component.html',
@@ -33,6 +31,7 @@ export class BarberConfigComponent implements OnInit {
 
   loading = false;
   errorMessage = '';
+  isEditing = false;
 
   ngOnInit(): void {
     this.loadMyBarbershop();
@@ -76,7 +75,10 @@ export class BarberConfigComponent implements OnInit {
       });
   }
 
-  onBarberiaSeleccionada(item: BarberShopResponse): void {
+  onBarberiaSeleccionada(
+    item: BarberShopResponse,
+    editing = false
+  ): void {
     if (!item.id) {
       return;
     }
@@ -84,5 +86,6 @@ export class BarberConfigComponent implements OnInit {
     this.barberId = item.id;
     this.selectedBarberName = item.name;
     this.selectedItem = item;
+    this.isEditing = editing;
   }
 }
