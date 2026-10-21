@@ -14,7 +14,7 @@
       <!-- COLUMNA 1: Paso 1 - Barbería y Barberos -->
       <div class="step-card">
         <div class="step-header">
-          <h3>Paso 1: Seleccionar Barbería (Sede)</h3>
+          <h3> Seleccionar Barbería (Sede)</h3>
         </div>
 
         <div class="input-group">
@@ -48,12 +48,58 @@
             </div>
           </div>
         </div>
+        <div class="services-section mt-4">
+  <label class="section-title">Servicios Disponibles *</label>
+
+  <!-- Spinner / Estado de carga de servicios -->
+  <div *ngIf="loadingServicios" class="text-center py-3">
+    <small class="text-muted">Cargando servicios de la sede...</small>
+  </div>
+
+  <!-- Mensaje si no hay servicios -->
+  <div *ngIf="!loadingServicios && serviciosDisponibles.length === 0" class="alert alert-warning py-2 text-center">
+    <small>No hay servicios disponibles para esta barbería.</small>
+  </div>
+
+  <!-- Contenedor de Tarjetas / Lista de Servicios -->
+  <div *ngIf="!loadingServicios && serviciosDisponibles.length > 0" class="services-grid">
+    <div 
+      *ngFor="let servicio of serviciosDisponibles" 
+      class="service-card" 
+      [class.selected]="isServiceSelected(servicio.id)"
+      (click)="toggleServiceSelection(servicio)"
+    >
+      <div class="service-info">
+        <div class="service-name-row">
+          <input 
+            type="checkbox" 
+            [checked]="isServiceSelected(servicio.id)" 
+            class="service-checkbox" 
+            readonly
+          />
+          <h5 class="service-name">{{ servicio.name }}</h5>
+        </div>
+        <p class="service-desc" *ngIf="servicio.description">{{ servicio.description }}</p>
+        <span class="service-duration" *ngIf="servicio.duration">
+          ⏱️ {{ servicio.duration }} min
+        </span>
+      </div>
+
+      <div class="service-price-badge">
+        <span class="price-amount">COP {{ (servicio.special_price || servicio.price) | number }}</span>
+        <small class="old-price" *ngIf="servicio.offert && servicio.price > servicio.special_price">
+          COP {{ servicio.price | number }}
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
 
       <!-- COLUMNA 2: Paso 2 - Calendario y Confirmación -->
       <div class="step-card">
         <div class="step-header">
-          <h3>Paso 2: Seleccionar Barbero y Hora (Limpio y Fácil)</h3>
+          <h3>Seleccionar Barbero y Hora </h3>
         </div>
 
         <!-- Calendario Dinámico -->

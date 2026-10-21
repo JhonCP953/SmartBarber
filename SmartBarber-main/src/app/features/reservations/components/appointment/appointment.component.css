@@ -331,3 +331,100 @@
   font-weight: bold;
   border-color: #c29b68 !important;
 }
+.services-section {
+  margin-top: 24px;
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.services-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.service-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.service-card:hover {
+  border-color: #c5a059;
+  transform: translateY(-1px);
+}
+
+.service-card.selected {
+  border-color: #c5a059;
+  background-color: #fdfbf7;
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.2);
+}
+
+.service-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.service-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.service-checkbox {
+  accent-color: #c5a059;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.service-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.service-desc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.service-duration {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  font-weight: 500;
+}
+
+.service-price-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.price-amount {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.old-price {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  text-decoration: line-through;
+}

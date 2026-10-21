@@ -59,6 +59,18 @@ export class ReservationService {
     );
   }
 
+  getServicesByBarberiaId(barberiaId: string): Observable<any> {
+    return this.getAuthHeaders().pipe(
+      switchMap(headers => this.http.get(`${this.apiUrl}/services-service/barberia/${barberiaId}`, { headers }))
+    );
+  }
+
+  getScheduleByEmployeeId(employeeId: string): Observable<any> {
+    return this.getAuthHeaders().pipe(
+      switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/id/${employeeId}`, { headers }))
+    );
+  }
+
   createReservation(payload: any): Observable<any> {
     return this.getAuthHeaders().pipe(
       switchMap(headers => this.http.post(`${this.apiUrl}/reservation-service/create`, payload, { headers }))
