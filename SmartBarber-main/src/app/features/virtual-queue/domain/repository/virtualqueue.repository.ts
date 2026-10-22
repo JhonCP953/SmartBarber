@@ -7,6 +7,12 @@ import {QueueSnapshotResponse} from '../../domain/model/reservation-queue.model'
 import {CompleteCurrentTurnResponse} from '../../domain/model/reservation-queue.model'
 import {NextCustomerResponse} from '../../domain/model/reservation-queue.model'
 import {CloseQueueResponse} from '../../domain/model/reservation-queue.model'
+import { Injectable } from '@angular/core';
+
+
+@Injectable({
+  providedIn: 'root'
+})
 
 export abstract class VirtualQueueRepository {
 

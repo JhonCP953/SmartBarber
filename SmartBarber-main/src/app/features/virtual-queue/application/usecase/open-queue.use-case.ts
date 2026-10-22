@@ -3,7 +3,9 @@ import { Observable } from 'rxjs';
 import { VirtualQueueRepository } from '../../domain/repository/virtualqueue.repository';
 import {OpenQueueResponse} from '../../domain/model/reservation-queue.model'
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class OpenQueueUseCase {
 
   constructor(
