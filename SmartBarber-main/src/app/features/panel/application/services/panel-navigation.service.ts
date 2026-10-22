@@ -302,7 +302,7 @@ export class PanelNavigationService {
             ],
 
             status:
-              'COMING_SOON',
+              'AVAILABLE',
 
             visible:
               true

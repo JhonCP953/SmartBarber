@@ -42,14 +42,11 @@ import {
 
 @Component({
     selector: 'app-profile',
-
     standalone: true,
-
     imports: [
         CommonModule,
         ReactiveFormsModule
     ],
-
     templateUrl:
         './profile.component.html',
 

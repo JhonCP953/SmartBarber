@@ -32,6 +32,12 @@ export const routes: Routes = [
             .then(m => m.RESERVATION_ROUTES)
       },
       {
+        path: 'virtual-queue',
+        loadChildren: () =>
+          import('./features/virtual-queue/virtual-queue.routes')
+            .then(m => m.VIRTUAL_QUEUE_ROUTES)
+      },
+      {
         path: 'auth',
         loadChildren: () =>
           import('./features/authentication/authentication.routes')
