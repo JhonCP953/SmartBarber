@@ -13,11 +13,18 @@
       </h1>
 
       <p>
-        Administra los clientes que ingresan
-        a tu cola virtual en tiempo real.
+        Administra los clientes que ingresan a tu cola virtual en tiempo real.
       </p>
 
     </header>
+
+    @if(errorMessage()) {
+
+      <div class="error-message">
+        {{ errorMessage() }}
+      </div>
+
+    }
 
     <div class="metrics">
 
@@ -29,9 +36,9 @@
 
         <strong>
           {{
-            acceptingClients
-            ? 'ABIERTA'
-            : 'CERRADA'
+            acceptingClients()
+              ? 'ABIERTA'
+              : 'CERRADA'
           }}
         </strong>
 
@@ -44,7 +51,7 @@
         </span>
 
         <strong>
-          {{ waitingCount }}
+          {{ waitingCount() }}
         </strong>
 
       </div>
@@ -57,9 +64,9 @@
 
         <strong>
           {{
-            currentTurn
-            ? currentTurn?.status
-            : 'SIN TURNO'
+            currentTurn()
+              ? currentTurn()!.status
+              : 'SIN TURNO'
           }}
         </strong>
 
@@ -75,7 +82,7 @@
           Turno Actual
         </h2>
 
-        @if(currentTurn) {
+        @if(currentTurn()) {
 
           <div class="turn-detail">
 
@@ -84,7 +91,7 @@
             </span>
 
             <strong>
-              {{ currentTurn?.id }}
+              {{ currentTurn()!.id }}
             </strong>
 
           </div>
@@ -96,7 +103,7 @@
             </span>
 
             <strong>
-              {{ currentTurn?.duration }} min
+              {{ currentTurn()!.duration }} min
             </strong>
 
           </div>
@@ -108,7 +115,7 @@
             </span>
 
             <strong>
-              {{ currentTurn?.status }}
+              {{ currentTurn()!.status }}
             </strong>
 
           </div>
@@ -129,22 +136,28 @@
           Acciones
         </h2>
 
-        @if(!acceptingClients) {
+        @if(!acceptingClients()) {
 
           <button
             class="primary-btn"
+            [disabled]="actionLoading()"
             (click)="openQueue()">
 
-            Abrir Cola
+            @if(actionLoading()) {
+              Abriendo...
+            } @else {
+              Abrir Cola
+            }
 
           </button>
 
         }
 
-        @if(acceptingClients) {
+        @if(acceptingClients()) {
 
           <button
             class="primary-btn"
+            [disabled]="actionLoading()"
             (click)="nextCustomer()">
 
             Llamar Siguiente
@@ -153,6 +166,7 @@
 
           <button
             class="secondary-btn"
+            [disabled]="actionLoading()"
             (click)="completeTurn()">
 
             Finalizar Turno
@@ -161,6 +175,7 @@
 
           <button
             class="danger-btn"
+            [disabled]="actionLoading()"
             (click)="closeQueue()">
 
             Cerrar Cola
@@ -179,7 +194,7 @@
         Clientes en Espera
       </h2>
 
-      @if(waitingTurns.length === 0) {
+      @if(waitingTurns().length === 0) {
 
         <div class="empty-state">
 
@@ -187,32 +202,34 @@
 
         </div>
 
-      }
+      } @else {
 
-      @for(
-        turn of waitingTurns;
-        track turn.id
-      ) {
+        @for(
+          turn of waitingTurns();
+          track turn.id
+        ) {
 
-        <div class="waiting-item">
+          <div class="waiting-item">
 
-          <div>
+            <div>
 
-            <strong>
-              {{ turn.id }}
-            </strong>
+              <strong>
+                {{ turn.id }}
+              </strong>
+
+            </div>
+
+            <div>
+              {{ turn.status }}
+            </div>
+
+            <div>
+              {{ turn.duration }} min
+            </div>
 
           </div>
 
-          <div>
-            {{ turn.status }}
-          </div>
-
-          <div>
-            {{ turn.duration }} min
-          </div>
-
-        </div>
+        }
 
       }
 
