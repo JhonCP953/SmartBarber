@@ -231,8 +231,28 @@ export const PANEL_ROUTES: Routes = [
           ).then(
             m => m.RESERVATION_ROUTES
           )
-      }
+      },
+      /*
+       * COLA VIRTUAL
+       */
+      {
+        path: 'virtual-queue',
+        canActivate: [
+          authGuard,
+          roleGuard
+        ],
 
+        data: {
+          roles: ['BARBER']
+        },
+
+        loadChildren: () =>
+          import(
+            '../virtual-queue/virtual-queue.routes'
+          ).then(
+            m => m.VIRTUAL_QUEUE_ROUTES
+          )
+      }
     ]
   }
 ];

@@ -1,0 +1,223 @@
+<section class="queue-page">
+
+  <div class="queue-card">
+
+    <header class="queue-header">
+
+      <span class="eyebrow">
+        COLA VIRTUAL
+      </span>
+
+      <h1>
+        Gestión de Turnos
+      </h1>
+
+      <p>
+        Administra los clientes que ingresan
+        a tu cola virtual en tiempo real.
+      </p>
+
+    </header>
+
+    <div class="metrics">
+
+      <div class="metric-card">
+
+        <span>
+          Estado
+        </span>
+
+        <strong>
+          {{
+            acceptingClients
+            ? 'ABIERTA'
+            : 'CERRADA'
+          }}
+        </strong>
+
+      </div>
+
+      <div class="metric-card">
+
+        <span>
+          En espera
+        </span>
+
+        <strong>
+          {{ waitingCount }}
+        </strong>
+
+      </div>
+
+      <div class="metric-card">
+
+        <span>
+          Turno actual
+        </span>
+
+        <strong>
+          {{
+            currentTurn
+            ? currentTurn?.status
+            : 'SIN TURNO'
+          }}
+        </strong>
+
+      </div>
+
+    </div>
+
+    <div class="main-grid">
+
+      <div class="current-turn">
+
+        <h2>
+          Turno Actual
+        </h2>
+
+        @if(currentTurn) {
+
+          <div class="turn-detail">
+
+            <span>
+              Reserva
+            </span>
+
+            <strong>
+              {{ currentTurn?.id }}
+            </strong>
+
+          </div>
+
+          <div class="turn-detail">
+
+            <span>
+              Duración
+            </span>
+
+            <strong>
+              {{ currentTurn?.duration }} min
+            </strong>
+
+          </div>
+
+          <div class="turn-detail">
+
+            <span>
+              Estado
+            </span>
+
+            <strong>
+              {{ currentTurn?.status }}
+            </strong>
+
+          </div>
+
+        } @else {
+
+          <p>
+            No existe un turno activo.
+          </p>
+
+        }
+
+      </div>
+
+      <div class="actions-card">
+
+        <h2>
+          Acciones
+        </h2>
+
+        @if(!acceptingClients) {
+
+          <button
+            class="primary-btn"
+            (click)="openQueue()">
+
+            Abrir Cola
+
+          </button>
+
+        }
+
+        @if(acceptingClients) {
+
+          <button
+            class="primary-btn"
+            (click)="nextCustomer()">
+
+            Llamar Siguiente
+
+          </button>
+
+          <button
+            class="secondary-btn"
+            (click)="completeTurn()">
+
+            Finalizar Turno
+
+          </button>
+
+          <button
+            class="danger-btn"
+            (click)="closeQueue()">
+
+            Cerrar Cola
+
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+    <div class="waiting-list">
+
+      <h2>
+        Clientes en Espera
+      </h2>
+
+      @if(waitingTurns.length === 0) {
+
+        <div class="empty-state">
+
+          No existen clientes en espera.
+
+        </div>
+
+      }
+
+      @for(
+        turn of waitingTurns;
+        track turn.id
+      ) {
+
+        <div class="waiting-item">
+
+          <div>
+
+            <strong>
+              {{ turn.id }}
+            </strong>
+
+          </div>
+
+          <div>
+            {{ turn.status }}
+          </div>
+
+          <div>
+            {{ turn.duration }} min
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</section>
