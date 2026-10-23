@@ -269,32 +269,30 @@ export class EmployeeRegisterComponent {
                 roleId: USER_ROLE_IDS.BARBER
             },
 
-            employee: {
-                barberiaId:
-                    this.barberiaId,
+            barberiaId:
+                this.barberiaId,
 
-                name:
-                    value.name.trim(),
+            name:
+                value.name.trim(),
 
-                document:
-                    value.document.trim(),
+            document:
+                value.document.trim(),
 
-                documentType:
-                    value.documentType,
+            documentType:
+                value.documentType,
 
-                cell:
-                    value.cell.trim(),
+            cell:
+                value.cell.trim(),
 
-                email:
-                    value.email
-                        .trim()
-                        .toLowerCase(),
+            email:
+                value.email
+                    .trim()
+                    .toLowerCase(),
 
-                specialty:
-                    Array.from(
-                        this.selectedSpecialties
-                    ).join(', ')
-            }
+            specialty:
+                Array.from(
+                    this.selectedSpecialties
+                ).join(', ')
         };
 
         this.isSubmitting = true;

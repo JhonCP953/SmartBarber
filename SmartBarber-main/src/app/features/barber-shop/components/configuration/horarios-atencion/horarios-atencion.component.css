@@ -670,3 +670,189 @@
   }
 
 }
+
+.schedule-page {
+  min-width: 0;
+  padding: 18px 0;
+  background: transparent;
+  color: #29231e;
+}
+
+.schedule-card {
+  max-width: 1180px;
+  border-color: #e6ded2;
+  border-radius: 10px;
+  background: #fffdfa;
+  box-shadow: 0 8px 24px rgba(45, 34, 24, .055);
+}
+
+.schedule-header {
+  border-color: #ece5db;
+  background: linear-gradient(120deg, #342720, #201a17);
+}
+
+.schedule-header h1 {
+  color: #fffdfa;
+  font-size: clamp(1.75rem, 3vw, 2.2rem);
+}
+
+.schedule-header p {
+  color: #e0d4c4;
+  font-size: .95rem;
+}
+
+.badge-tag {
+  border: 1px solid #d7bd91;
+  background: #f2e8d8;
+  color: #60451f;
+  font-size: .75rem;
+}
+
+.employee-count {
+  border-color: rgba(215, 189, 145, .45);
+  background: rgba(255, 253, 250, .08);
+  color: #fffdfa;
+  font-size: .9rem;
+}
+
+.employee-panel,
+.schedule-panel {
+  background: #fffdfa;
+}
+
+.employee-panel {
+  border-color: #ece5db;
+}
+
+.section-label {
+  color: #80613a;
+  font-size: .75rem;
+}
+
+.panel-heading h2,
+.field-header strong,
+.vacation-card strong {
+  color: #302820;
+  font-size: 1.2rem;
+}
+
+.panel-heading p,
+.field-header span,
+.vacation-card span {
+  color: #71685e;
+  font-size: .9rem;
+}
+
+.employee-item {
+  border-color: #e6ded2;
+  background: #fff;
+  color: #51483e;
+}
+
+.employee-item:hover,
+.employee-item.active {
+  border-color: #a77b43;
+}
+
+.employee-item.active {
+  background: #f3ece0;
+  color: #392e22;
+}
+
+.employee-avatar {
+  background: #f2e8d8;
+  color: #765a35;
+}
+
+.employee-item.active .employee-avatar {
+  background: #8b683b;
+  color: #fffdfa;
+}
+
+.employee-info strong,
+.employee-info small,
+.employee-item.active .employee-info small {
+  color: #51483e;
+  font-size: .95rem;
+}
+
+.empty-employees,
+.loading-box {
+  border-color: #ded6ca;
+  color: #71685e;
+  font-size: .9rem;
+}
+
+.time-section,
+.vacation-card {
+  border-color: #e6ded2;
+  background: #fbf9f5;
+}
+
+.time-field label {
+  color: #51483e;
+  font-size: .85rem;
+}
+
+.time-field input {
+  min-height: 44px;
+  border-color: #ded6ca;
+  background: #fff;
+  color: #29231e;
+  font-size: .95rem;
+}
+
+.time-field input:focus {
+  border-color: #a77b43;
+  box-shadow: 0 0 0 3px rgba(167, 123, 67, .12);
+}
+
+.time-separator {
+  color: #8b683b;
+}
+
+.slider {
+  border-color: #d8cbb8;
+  background: #e9e1d5;
+}
+
+.slider::before {
+  background: #8b683b;
+}
+
+.switch input:checked + .slider {
+  background: #d7c09b;
+}
+
+.message.info {
+  border-color: #e5d5bb;
+  background: #fbf7ef;
+  color: #765a35;
+  font-size: .9rem;
+}
+
+.message.error {
+  border-color: #e7c3bc;
+  background: #fff6f4;
+  color: #8e3931;
+  font-size: .9rem;
+}
+
+.save-button {
+  min-height: 46px;
+  border-color: #8b683b;
+  border-radius: 6px;
+  background: #8b683b;
+  color: #fffdfa;
+  font-size: .9rem;
+}
+
+.save-button:hover:not(:disabled) {
+  background: #73542f;
+}
+
+@media (max-width: 600px) {
+  .schedule-page {
+    padding: 12px 0;
+  }
+}

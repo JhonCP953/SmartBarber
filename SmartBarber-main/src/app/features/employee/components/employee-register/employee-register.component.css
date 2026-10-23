@@ -256,3 +256,127 @@ fieldset>small {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+.registration-card {
+    border-color: #e6ded2;
+    border-radius: 10px;
+    background: #fffdfa;
+    color: #29231e;
+    box-shadow: 0 8px 24px rgba(45, 34, 24, .055);
+}
+
+.section-eyebrow,
+.field-eyebrow {
+    color: #8b683b;
+}
+
+.registration-heading h2 {
+    color: #29231e;
+}
+
+.registration-heading p,
+.account-link p {
+    color: #71685e;
+}
+
+.account-link {
+    border-color: #e6ded2;
+    border-radius: 7px;
+    background: #faf7f1;
+}
+
+.account-link strong {
+    color: #3a3128;
+}
+
+.form-field label {
+    color: #51483e;
+}
+
+.form-field input,
+.form-field select {
+    border-color: #ded6ca;
+    border-radius: 6px;
+    background: #fff;
+    color: #29231e;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    border-color: #a77b43;
+    box-shadow: 0 0 0 3px rgba(167, 123, 67, .12);
+}
+
+.form-field input[readonly] {
+    color: #665e54;
+    background: #f8f5ef;
+}
+
+.form-field small,
+fieldset>small {
+    color: #a6473e;
+}
+
+.form-field .field-hint {
+    color: #81776b;
+}
+
+fieldset {
+    border-color: #e6ded2;
+    border-radius: 7px;
+}
+
+fieldset legend {
+    color: #8b683b;
+}
+
+.specialty-options label {
+    color: #51483e;
+}
+
+.specialty-options input {
+    accent-color: #8b683b;
+}
+
+.primary-button {
+    border-color: #8b683b;
+    background: #8b683b;
+    color: #fffdfa;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: #73542f;
+}
+
+.secondary-button {
+    border-color: #d8cbb8;
+    color: #6b5333;
+}
+
+.secondary-button:hover:not(:disabled) {
+    border-color: #a77b43;
+    background: #f3ece0;
+    color: #372d22;
+}
+
+.text-button {
+    border-color: #ded6ca;
+    color: #71685e;
+}
+
+.text-button:hover:not(:disabled) {
+    border-color: #b9a17e;
+    color: #44372a;
+}
+
+.error-message {
+    border-color: #e7c3bc;
+    background: #fff6f4;
+    color: #8e3931;
+}
+
+.success-message {
+    border-color: #c9ddcc;
+    background: #f3f8f2;
+    color: #3d7248;
+}

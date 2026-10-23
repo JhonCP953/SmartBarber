@@ -159,7 +159,7 @@ export class PanelComponent
         case 'inactive':
           return 'La barbería no tiene un plan activo. Avísale al administrador para que adquiera una suscripción.';
         case 'approved':
-          return 'La solicitud fue aprobada, pero el backend aún no confirma un plan activo. Consulta con el administrador de la barbería.';
+          return 'La solicitud fue aprobada y está pendiente la activación del plan. Consulta con el administrador de la barbería.';
         case 'pending':
           return 'El pago o la confirmación del plan de la barbería está pendiente. Consulta con su administrador.';
         case 'expired':
@@ -175,17 +175,17 @@ export class PanelComponent
         case 'error':
           return state.message ?? 'No fue posible consultar el estado. Puedes reintentar o avisar al administrador.';
         case 'unavailable':
-          return 'La integración de consulta está pendiente de confirmar. No se bloquearán módulos por falta de respuesta; consulta con el administrador de tu barbería.';
+          return 'Aún no es posible confirmar el estado del plan. Consulta con el administrador de tu barbería.';
       }
     }
 
     switch (state.status) {
       case 'loading':
-        return 'Estamos consultando el estado de la suscripción con el backend.';
+        return 'Estamos consultando el estado de la suscripción.';
       case 'inactive':
         return 'Para utilizar los módulos de la plataforma, tu barbería necesita una suscripción activa. Puedes consultar los planes disponibles.';
       case 'approved':
-        return 'El estado aprobado no habilita por sí solo los módulos. Espera a que el backend confirme que el plan está activo y vigente.';
+        return 'El pago fue aprobado y el plan está pendiente de activación. Espera un momento y vuelve a consultar su estado.';
       case 'pending':
         return 'El pago o la confirmación del plan todavía está pendiente. Puedes revisar los módulos de suscripción mientras se confirma.';
       case 'expired':
@@ -197,7 +197,7 @@ export class PanelComponent
       case 'error':
         return state.message ?? 'Ocurrió un error al consultar el estado. Puedes reintentar sin perder el acceso a tu perfil.';
       case 'unavailable':
-        return 'No fue posible verificar el estado de la suscripción. Los módulos permanecerán restringidos hasta poder confirmarlo.';
+        return 'No fue posible confirmar el estado de la suscripción. Inténtalo de nuevo más tarde.';
       case 'active':
         return 'Tu barbería cuenta con una suscripción activa y vigente.';
     }
@@ -314,6 +314,14 @@ export class PanelComponent
           )
         ) ?? null
     );
+  }
+
+  get currentModuleId(): string {
+    return this.currentModule?.id ?? 'dashboard';
+  }
+
+  get isAdminUser(): boolean {
+    return this.sessionService.currentSession?.role === 'ADMIN';
   }
 
 

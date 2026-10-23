@@ -1,4 +1,7 @@
-<div class="panel-shell">
+<div
+    class="panel-shell"
+    [class.panel-shell--admin]="isAdminUser"
+    [attr.data-module]="currentModuleId">
 
     <!-- OVERLAY MOBILE -->
     <div *ngIf="mobileMenuOpen()" class="mobile-overlay" (click)="closeMobileMenu()" aria-hidden="true">
@@ -379,9 +382,9 @@
                 <section
                     *ngIf="summary()?.roleLabel === 'Administrador' || summary()?.roleLabel === 'Barbero'"
                     class="subscription-access-alert"
+                    [class.subscription-access-alert--active]="subscriptionAccess.state().status === 'active'"
                     [class.subscription-access-alert--pending]="subscriptionAccess.state().status === 'pending'"
                     [class.subscription-access-alert--error]="subscriptionAccess.state().status === 'error'"
-                    [hidden]="subscriptionAccess.state().status === 'active'"
                     role="status"
                     aria-live="polite">
 
@@ -396,7 +399,11 @@
                     </div>
 
                     <button
-                        *ngIf="summary()?.roleLabel === 'Administrador' && subscriptionAccess.state().status !== 'loading'"
+                        *ngIf="
+                            summary()?.roleLabel === 'Administrador' &&
+                            subscriptionAccess.state().status !== 'loading' &&
+                            subscriptionAccess.state().status !== 'active'
+                        "
                         type="button"
                         class="subscription-alert-action"
                         (click)="navigateToSubscriptionAcquisition()">
@@ -850,7 +857,13 @@
 
             <!-- ROUTER CHILDREN -->
 
-            <router-outlet></router-outlet>
+            <div
+                class="panel-module-stage"
+                [class.panel-module-stage--enabled]="true"
+                [class.admin-module-stage--enabled]="isAdminUser"
+                [attr.data-module]="currentModuleId">
+                <router-outlet></router-outlet>
+            </div>
 
         </div>
 

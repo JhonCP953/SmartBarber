@@ -3,7 +3,7 @@
     <div class="heading-copy">
       <span class="eyebrow"><span aria-hidden="true">💈</span> PANEL DE ADMINISTRACIÓN</span>
       <h1>Suscripción y pagos</h1>
-      <p>Administra desde un solo lugar el plan de tu barbería y sus pagos.</p>
+      <p>Consulta el estado de tu plan, su vigencia y las opciones disponibles para mantener activa tu barbería.</p>
     </div>
   </header>
 
@@ -29,9 +29,53 @@
         <h2>{{ shop.name }}</h2>
         <p>{{ shop.location || 'Ubicación no registrada' }}</p>
       </div>
-      <span class="shop-status" [class.inactive]="!isBarbershopActive(shop.status)">
-        {{ shop.status || 'ACTIVA' }}
+      <span
+        class="shop-status"
+        [class.inactive]="subscriptionStatus().status !== 'active'"
+        [attr.data-status]="subscriptionStatus().status">
+        {{ subscriptionStatusLabel() }}
       </span>
+    </section>
+
+    <section
+      *ngIf="subscriptionStatus().status === 'active'"
+      class="current-subscription-details"
+      aria-labelledby="current-subscription-title">
+      <div class="current-subscription-heading">
+        <h2 id="current-subscription-title">Suscripción actual</h2>
+        <span
+          *ngIf="actualSubscription() as subscription"
+          class="current-subscription-status"
+          [attr.data-status]="subscription.status">
+          {{ actualSubscriptionStatusLabel(subscription.status) }}
+        </span>
+      </div>
+      <p *ngIf="subscriptionDetailsLoading()" role="status">
+        Consultando los detalles de vigencia...
+      </p>
+      <p *ngIf="subscriptionDetailsError()" class="subscription-details-error" role="alert">
+        {{ subscriptionDetailsError() }}
+      </p>
+      <div *ngIf="actualSubscription() as subscription" class="subscription-details-grid">
+        <div>
+          <span>Plan</span>
+          <strong>{{ actualPlanName() }}</strong>
+        </div>
+        <div>
+          <span>Valor registrado</span>
+          <strong>{{ formatCurrency(subscription.subscriptionPrice) }}</strong>
+        </div>
+        <div>
+          <span>Duración</span>
+          <strong>{{ subscription.duration }} días</strong>
+        </div>
+        <div>
+          <span>Vigente hasta</span>
+          <strong>
+            {{ subscription.expirationDate ? (subscription.expirationDate | date:'mediumDate') : 'Sin fecha registrada' }}
+          </strong>
+        </div>
+      </div>
     </section>
 
     <section class="modules-section" aria-labelledby="modules-title">
@@ -40,7 +84,7 @@
           <span class="eyebrow">ADMINISTRACIÓN</span>
           <h2 id="modules-title">Módulos de suscripción</h2>
         </div>
-        <p>Selecciona una opción para consultar o gestionar tu suscripción.</p>
+        <p>Encuentra aquí la información y las opciones para mantener el servicio de tu barbería al día.</p>
       </div>
 
       <div class="module-grid">
@@ -48,12 +92,18 @@
           <a
             class="module-card"
             [class.acquire-card]="module.title === 'Adquirir suscripción'"
-            [routerLink]="['/panel/subscription', module.route]">
+            [class.module-card--unavailable]="!module.available"
+            [routerLink]="module.available ? ['/panel/subscription', module.route] : null"
+            [attr.aria-disabled]="module.available ? null : 'true'"
+            [attr.tabindex]="module.available ? 0 : -1">
             <span class="module-icon" aria-hidden="true">{{ module.icon }}</span>
             <span class="module-state">{{ module.state }}</span>
             <h3>{{ module.title }}</h3>
             <p>{{ module.description }}</p>
-            <span class="module-link">Abrir módulo <span aria-hidden="true">→</span></span>
+            <span class="module-link">
+              {{ module.available ? 'Abrir módulo' : 'No disponible' }}
+              <span *ngIf="module.available" aria-hidden="true">→</span>
+            </span>
           </a>
         }
       </div>
@@ -62,7 +112,7 @@
     <aside class="integration-note">
       <span class="note-icon" aria-hidden="true">i</span>
       <p>
-        Los módulos se vinculan a la barbería <strong>{{ shop.name }}</strong> detectada por el backend a partir de tu sesión. Algunas consultas y operaciones requieren endpoints que aún no están documentados.
+        El plan corresponde a <strong>{{ shop.name }}</strong>. Desde este espacio puedes consultar su estado y vigencia. La renovación se realiza manualmente; el historial detallado de pagos aún no está disponible.
       </p>
     </aside>
     }

@@ -6,26 +6,28 @@ import { SessionService } from '../../../core/auth/services/session.service';
 import { environment } from '../../../../environments/environment';
 
 export type SubscriptionType = 'CREATE' | 'RENEW';
+export const SUBSCRIPTION_DURATION = 60;
 export type SubscriptionBarberStatus =
   | 'ACTIVE'
   | 'APPROVED'
   | 'PENDING'
   | 'DECLINED'
-  | 'EXPIRED';
+  | 'EXPIRED'
+  | 'REFUNDED'
+  | 'NOT_SUBSCRIPTION'
+  | 'CANCELED';
 
 export interface SubscriptionPayload {
   subscriptionId: number;
   duration: number;
   automaticRenew: boolean;
-  // Optional UI-only values; toRequest deliberately excludes them from HTTP.
-  fullName?: string | null;
-  email?: string | null;
-  cardNumber?: string | null;
-  expirationDate?: string | null;
-  cvv?: string | null;
-  autoRenew?: boolean;
-  planName?: string;
-  price?: number;
+}
+
+export interface SubscriptionBarbershopRequest
+  extends SubscriptionPayload {
+  barberId: string;
+  status: SubscriptionBarberStatus;
+  type: SubscriptionType;
 }
 
 export interface SubscriptionCreationResponse {
@@ -64,22 +66,22 @@ export class SubscriptionService {
   createSubscription(
     payload: SubscriptionPayload
   ): Observable<SubscriptionCreationResponse> {
-    const barbershopId = this.getAuthenticatedBarbershopId();
+    const barberId = this.getAuthenticatedEmployeeId();
 
     return this.http.post<SubscriptionCreationResponse>(
       this.createUrl,
-      this.toRequest(payload, barbershopId, 'CREATE')
+      this.toRequest(payload, barberId, 'CREATE')
     );
   }
 
   renewSubscription(
     payload: SubscriptionPayload
   ): Observable<SubscriptionCreationResponse> {
-    const barbershopId = this.getAuthenticatedBarbershopId();
+    const barberId = this.getAuthenticatedEmployeeId();
 
     return this.http.put<SubscriptionCreationResponse>(
       this.renewUrl,
-      this.toRequest(payload, barbershopId, 'RENEW')
+      this.toRequest(payload, barberId, 'RENEW')
     );
   }
 
@@ -155,36 +157,33 @@ export class SubscriptionService {
 
   private toRequest(
     payload: SubscriptionPayload,
-    barbershopId: string,
+    barberId: string,
     type: SubscriptionType
-  ): SubscriptionPayload & {
-    barberId: string;
-    status: SubscriptionBarberStatus;
-    type: SubscriptionType;
-  } {
+  ): SubscriptionBarbershopRequest {
     return {
       subscriptionId: payload.subscriptionId,
       duration: payload.duration,
       automaticRenew: payload.automaticRenew,
-      barberId: barbershopId,
+      barberId,
       status: 'PENDING',
       type
     };
   }
 
-  private getAuthenticatedBarbershopId(): string {
+  private getAuthenticatedEmployeeId(): string {
     const session = this.sessionService.currentSession;
 
     if (
       session?.role !== 'ADMIN' ||
+      !session.barberId ||
       !session.barbershopId
     ) {
       throw new Error(
-        'No se encontró una barbería asociada al administrador autenticado.'
+        'No se encontró un perfil de administrador asociado a una barbería.'
       );
     }
 
-    return session.barbershopId;
+    return session.barberId;
   }
 }
 

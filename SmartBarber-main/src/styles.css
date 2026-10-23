@@ -105,3 +105,213 @@ img{max-width:100%; display:block;}
 @media (max-width: 540px){
   section{padding:64px 0;}
 }
+
+.panel-shell--admin {
+  --admin-accent: #76592f;
+  --admin-accent-contrast: #fffdfa;
+  --admin-accent-soft: #f2e8d8;
+}
+
+.panel-shell--admin[data-module="barbershop"] {
+  --admin-accent: #875a3b;
+  --admin-accent-soft: #f3e9df;
+}
+
+.panel-shell--admin[data-module="barbers"] {
+  --admin-accent: #84632f;
+  --admin-accent-soft: #f4eddc;
+}
+
+.panel-shell--admin[data-module="services"] {
+  --admin-accent: #45695f;
+  --admin-accent-soft: #e8f0ed;
+}
+
+.panel-shell--admin[data-module="subscription"] {
+  --admin-accent: #66527c;
+  --admin-accent-soft: #eee9f3;
+}
+
+.panel-shell--admin[data-module="schedules"] {
+  --admin-accent: #3f657b;
+  --admin-accent-soft: #e8eff3;
+}
+
+.panel-module-stage--enabled {
+  --admin-accent: #8b683b;
+  --admin-accent-contrast: #fffdfa;
+  --admin-accent-soft: #f2e8d8;
+  min-height: calc(100vh - 76px);
+  width: 100%;
+  min-width: 0;
+  padding: 16px clamp(16px, 2.7vw, 38px) 42px;
+  background: #f5f2ec;
+  color: #29231e;
+}
+
+.panel-module-stage--enabled > * {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.panel-module-stage--enabled[data-module="barbershop"] {
+  --admin-accent: #875a3b;
+  --admin-accent-soft: #f3e9df;
+}
+
+.panel-module-stage--enabled[data-module="barbers"] {
+  --admin-accent: #84632f;
+  --admin-accent-soft: #f4eddc;
+}
+
+.panel-module-stage--enabled[data-module="services"] {
+  --admin-accent: #45695f;
+  --admin-accent-soft: #e8f0ed;
+}
+
+.panel-module-stage--enabled[data-module="subscription"] {
+  --admin-accent: #66527c;
+  --admin-accent-soft: #eee9f3;
+}
+
+.panel-module-stage--enabled[data-module="schedules"] {
+  --admin-accent: #3f657b;
+  --admin-accent-soft: #e8eff3;
+}
+
+.panel-module-stage--enabled :is(
+  .profile-container,
+  .profile-page,
+  .barber-config-page,
+  .schedule-card,
+  .schedule-page,
+  .user-management,
+  .subscription-dashboard,
+  .subscription-page-container,
+  .renewal-page,
+  .barbershop-summary,
+  .barbershop-list,
+  .service-management,
+  .services-page,
+  .schedule-page
+) {
+  width: 100%;
+  max-width: 1180px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.panel-module-stage--enabled :is(
+  .profile-page,
+  .schedule-page,
+  .barber-config-page,
+  .subscription-dashboard,
+  .subscription-page-container,
+  .renewal-page
+) {
+  min-width: 0;
+  font-size: 15px;
+}
+
+.panel-module-stage--enabled :is(h1, h2, h3) {
+  font-family: Inter, "Segoe UI", sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+.panel-module-stage--enabled :is(
+  .management-card,
+  .registration-card,
+  .table-card,
+  .filters-card,
+  .state-card,
+  .config-card,
+  .service-card,
+  .schedule-card,
+  .module-card,
+  .plan-card,
+  .barbershop-summary,
+  .shop-banner,
+  .profile-card,
+  .editor-card,
+  .schedule-card,
+  .current-subscription-details
+) {
+  border-radius: 10px;
+  border-color: #e6ded2;
+  box-shadow: 0 8px 24px rgba(45, 34, 24, .055);
+}
+
+.panel-module-stage--enabled :is(
+  .primary-button,
+  .primary-action,
+  .submit-button,
+  .register-employee-button,
+  .btn-primary,
+  .btn-complete-payment,
+  .renew-action
+) {
+  min-height: 42px;
+  border: 1px solid var(--admin-accent);
+  border-radius: 6px;
+  background: var(--admin-accent);
+  color: var(--admin-accent-contrast);
+  font-weight: 700;
+  transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.panel-module-stage--enabled :is(
+  .primary-button,
+  .primary-action,
+  .submit-button,
+  .register-employee-button,
+  .btn-primary,
+  .btn-complete-payment,
+  .renew-action
+):hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.panel-module-stage--enabled :is(
+  .secondary-button,
+  .text-button,
+  .back-link,
+  .table-action
+) {
+  border-radius: 6px;
+}
+
+.panel-module-stage--enabled :is(
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea
+) {
+  border-radius: 6px;
+}
+
+.panel-module-stage--enabled :is(
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  button,
+  a
+):focus-visible {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 3px;
+}
+
+.panel-shell--admin .navigation-item.active {
+  border-color: color-mix(in srgb, var(--admin-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--admin-accent) 14%, #211d1b);
+}
+
+.panel-shell--admin .navigation-item.active .navigation-icon {
+  color: color-mix(in srgb, var(--admin-accent) 65%, #fff);
+}
+
+@media (max-width: 640px) {
+  .panel-module-stage--enabled {
+    padding: 12px 12px 28px;
+  }
+}

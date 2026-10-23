@@ -4,21 +4,19 @@ export interface EmployeeRegistration {
         roleId: number;
     };
 
-    employee: {
-        barberiaId: string;
+    barberiaId: string;
 
-        document: string;
+    document: string;
 
-        documentType: 'CC' | 'CE';
+    documentType: 'CC' | 'CE';
 
-        name: string;
+    name: string;
 
-        cell: string;
+    cell: string;
 
-        email: string;
+    email: string;
 
-        specialty: string;
-    };
+    specialty: string;
 }
 
 export interface EmployeeRegistrationResponse {

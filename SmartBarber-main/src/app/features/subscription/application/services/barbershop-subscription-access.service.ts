@@ -105,7 +105,7 @@ export class BarbershopSubscriptionAccessService {
       default:
         return {
           status: 'unavailable',
-          message: 'El backend no devolvió un estado de suscripción reconocido para esta barbería.'
+          message: 'No fue posible reconocer el estado del plan de esta barbería.'
         };
     }
   }

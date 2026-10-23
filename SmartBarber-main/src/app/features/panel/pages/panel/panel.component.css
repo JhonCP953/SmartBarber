@@ -1144,6 +1144,18 @@ button {
     box-shadow: 0 10px 28px rgba(130, 28, 20, .11);
 }
 
+.subscription-access-alert--active {
+    border-color: #c9ddcc;
+    border-left-color: #56805b;
+    background: linear-gradient(110deg, #f3f8f2, #fff);
+    box-shadow: 0 10px 28px rgba(45, 94, 55, .08);
+}
+
+.subscription-access-alert--active .subscription-alert-icon {
+    background: #e1efe2;
+    color: #3d7248;
+}
+
 .subscription-alert-icon {
     display: grid;
     width: 42px;

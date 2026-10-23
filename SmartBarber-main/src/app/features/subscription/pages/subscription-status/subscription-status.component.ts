@@ -8,54 +8,40 @@ import {
   inject,
   signal
 } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
 import { SessionService } from '../../../../core/auth/services/session.service';
 import { BarbershopSubscriptionAccessService } from '../../application/services/barbershop-subscription-access.service';
 import { SubscriptionCatalogPlan } from '../../domain/models/subscription-catalog.model';
-import {
-  SubscriptionApiService
-} from '../../infrastructure/api/subscription-api.service';
+import { SubscriptionApiService } from '../../infrastructure/api/subscription-api.service';
 import {
   SubscriptionCreationResponse,
+  SUBSCRIPTION_DURATION,
   SubscriptionWsService
 } from '../../infrastructure/subscription-ws.service';
 
 @Component({
   selector: 'app-subscription-status',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './subscription-status.component.html',
   styleUrl: './subscription-status.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubscriptionStatusComponent implements OnInit, OnDestroy {
-  private readonly formBuilder = inject(FormBuilder);
   private readonly sessionService = inject(SessionService);
   private readonly subscriptionAccess = inject(BarbershopSubscriptionAccessService);
   private readonly subscriptionApi = inject(SubscriptionApiService);
   private readonly subscriptionWs = inject(SubscriptionWsService);
   private paymentSubscription?: Subscription;
 
+  readonly accessState = this.subscriptionAccess.state;
   readonly plans = signal<SubscriptionCatalogPlan[]>([]);
   readonly selectedPlanId = signal<number | null>(null);
   readonly selectedPlan = computed(() =>
     this.plans().find(plan => plan.id === this.selectedPlanId()) ?? null
   );
-  readonly subscriptionForm = this.formBuilder.group({
-    fullName: ['', [Validators.required, Validators.minLength(3)]],
-    email: ['', [Validators.required, Validators.email]],
-    cardNumber: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
-    expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/)]],
-    cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
-    autoRenew: [true]
-  });
   readonly loading = signal(true);
   readonly submitting = signal(false);
   readonly errorMessage = signal('');
@@ -78,43 +64,57 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
     this.createdSubscription.set(null);
   }
 
+  canAcquireSubscription(): boolean {
+    return [
+      'inactive',
+      'expired',
+      'declined',
+      'refunded'
+    ].includes(this.accessState().status);
+  }
+
+  subscriptionStatusLabel(): string {
+    switch (this.accessState().status) {
+      case 'loading':
+        return 'Verificando';
+      case 'active':
+        return 'Activa';
+      case 'approved':
+        return 'Aprobada';
+      case 'pending':
+        return 'Pendiente';
+      case 'inactive':
+        return 'Sin suscripción';
+      case 'expired':
+        return 'Vencida';
+      case 'declined':
+        return 'Rechazada';
+      case 'refunded':
+        return 'Reembolsada';
+      case 'error':
+        return 'No disponible';
+      case 'unavailable':
+        return 'Sin confirmar';
+    }
+  }
+
   acquireSubscription(): void {
-    const planId = this.selectedPlanId();
+    const plan = this.selectedPlan();
 
-    if (planId === null || this.submitting()) {
+    if (!plan || this.submitting() || !this.canAcquireSubscription()) {
       return;
     }
 
-    if (this.subscriptionForm.invalid) {
-      this.subscriptionForm.markAllAsTouched();
-      return;
-    }
-
-    const selectedPlan = this.plans().find(plan => plan.id === planId);
-    if (!selectedPlan) {
-      this.errorMessage.set('Selecciona un plan válido del catálogo.');
-      return;
-    }
-
-    const formValue = this.subscriptionForm.getRawValue();
     this.errorMessage.set('');
     this.paymentMessage.set('');
     this.submitting.set(true);
 
-    let createRequest: Observable<SubscriptionCreationResponse>;
+    let request: Observable<SubscriptionCreationResponse>;
     try {
-      createRequest = this.subscriptionWs.createSubscription({
-        subscriptionId: planId,
-        duration: 60,
-        automaticRenew: formValue.autoRenew ?? false,
-        fullName: formValue.fullName,
-        email: formValue.email,
-        cardNumber: formValue.cardNumber,
-        expirationDate: formValue.expirationDate,
-        cvv: formValue.cvv,
-        autoRenew: formValue.autoRenew ?? false,
-        planName: selectedPlan.name,
-        price: selectedPlan.price
+      request = this.subscriptionWs.createSubscription({
+        subscriptionId: plan.id,
+        duration: SUBSCRIPTION_DURATION,
+        automaticRenew: false
       });
     } catch (error: unknown) {
       this.submitting.set(false);
@@ -126,49 +126,17 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
       return;
     }
 
-    createRequest.subscribe({
+    request.subscribe({
       next: response => {
         this.submitting.set(false);
         this.createdSubscription.set(response);
-        this.subscriptionForm.patchValue({
-          cardNumber: '',
-          expirationDate: '',
-          cvv: ''
-        });
-
-        this.paymentSubscription?.unsubscribe();
-        this.paymentSubscription = this.subscriptionWs.getPaymentStatus().subscribe({
-          next: event => {
-            this.paymentMessage.set(this.getPaymentUpdateMessage(event));
-            this.subscriptionAccess.refresh();
-          },
-          error: (error: unknown) => {
-            console.error('Error al recibir la actualización del pago:', error);
-            this.errorMessage.set(
-              'La solicitud fue creada, pero no se pudo recibir la actualización del pago.'
-            );
-          }
-        });
-
-        try {
-          this.subscriptionWs.connectWebSocket(response.orderId);
-          this.paymentMessage.set(
-            'Solicitud de pago creada. Esperando confirmación de la transacción.'
-          );
-        } catch (error: unknown) {
-          console.error('No fue posible conectar con el estado del pago:', error);
-          this.errorMessage.set(
-            error instanceof Error
-              ? error.message
-              : 'No fue posible conectar con el estado del pago.'
-          );
-        }
+        this.listenForPayment(response);
       },
       error: (error: unknown) => {
         this.submitting.set(false);
         console.error('No fue posible crear la solicitud de suscripción:', error);
         this.errorMessage.set(
-          'No fue posible iniciar la adquisición. Revisa la información e inténtalo nuevamente.'
+          'No fue posible iniciar la adquisición. Inténtalo nuevamente.'
         );
       }
     });
@@ -182,39 +150,8 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
     }).format(value);
   }
 
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.subscriptionForm.get(fieldName);
-    return Boolean(field && field.invalid && field.touched);
-  }
-
-  fieldError(fieldName: string): string {
-    const field = this.subscriptionForm.get(fieldName);
-
-    if (!field?.errors) {
-      return '';
-    }
-
-    if (field.errors['required']) {
-      return 'Este campo es obligatorio.';
-    }
-
-    if (field.errors['email']) {
-      return 'Ingresa un correo electrónico válido.';
-    }
-
-    if (field.errors['minlength']) {
-      return 'Ingresa al menos 3 caracteres.';
-    }
-
-    if (fieldName === 'cardNumber' || fieldName === 'cvv') {
-      return 'Revisa la cantidad de dígitos ingresada.';
-    }
-
-    if (fieldName === 'expirationDate') {
-      return 'Usa el formato MM/AA o MM/AAAA.';
-    }
-
-    return 'Revisa este dato.';
+  reloadPlans(): void {
+    this.loadPlans();
   }
 
   private loadPlans(): void {
@@ -233,6 +170,9 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.loading.set(true);
+    this.errorMessage.set('');
+
     this.subscriptionApi.getSubscriptionCatalog().subscribe({
       next: plans => {
         this.plans.set(plans);
@@ -249,6 +189,38 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       }
     });
+  }
+
+  private listenForPayment(
+    response: SubscriptionCreationResponse
+  ): void {
+    this.paymentSubscription?.unsubscribe();
+    this.paymentSubscription = this.subscriptionWs.getPaymentStatus().subscribe({
+      next: event => {
+        this.paymentMessage.set(this.getPaymentUpdateMessage(event));
+        this.subscriptionAccess.refresh();
+      },
+      error: (error: unknown) => {
+        console.error('Error al recibir la actualización del pago:', error);
+        this.errorMessage.set(
+          'La solicitud se creó, pero no se pudo recibir el estado del pago.'
+        );
+      }
+    });
+
+    try {
+      this.subscriptionWs.connectWebSocket(response.orderId);
+      this.paymentMessage.set(
+        'Solicitud creada. Esperando confirmación del pago.'
+      );
+    } catch (error: unknown) {
+      console.error('No fue posible conectar con el estado del pago:', error);
+      this.errorMessage.set(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible conectar con el estado del pago.'
+      );
+    }
   }
 
   private getPaymentUpdateMessage(event: unknown): string {

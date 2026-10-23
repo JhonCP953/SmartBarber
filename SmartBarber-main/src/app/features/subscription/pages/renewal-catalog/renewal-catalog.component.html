@@ -3,8 +3,8 @@
 
   <header class="page-heading">
     <span class="eyebrow"><span aria-hidden="true">↻</span> RENOVACIÓN</span>
-    <h1>Planes disponibles</h1>
-    <p>Consulta la información de planes que el backend tiene disponibles para tu barbería.</p>
+    <h1>Renueva el plan de tu barbería</h1>
+    <p>Compara las opciones disponibles y elige el plan que mejor se adapte a tu barbería.</p>
   </header>
 
   @if (loading()) {
@@ -30,12 +30,32 @@
         <h2>{{ shop.name }}</h2>
         <p>{{ shop.location || 'Ubicación no registrada' }}</p>
       </div>
+      <span class="subscription-badge" [attr.data-status]="subscriptionStatus().status">
+        {{ subscriptionStatus().status === 'active' ? 'Suscripción activa' :
+           subscriptionStatus().status === 'expired' ? 'Suscripción vencida' :
+           subscriptionStatus().status === 'declined' ? 'Pago rechazado' :
+           subscriptionStatus().status === 'refunded' ? 'Reembolsada' :
+           subscriptionStatus().status === 'pending' ? 'Pago pendiente' :
+           subscriptionStatus().status === 'approved' ? 'Aprobada' :
+           subscriptionStatus().status === 'inactive' ? 'Sin suscripción' :
+           'Estado sin confirmar' }}
+      </span>
     </section>
+
+    <div *ngIf="errorMessage()" class="renewal-alert renewal-alert--error" role="alert">
+      {{ errorMessage() }}
+    </div>
+    <div *ngIf="createdSubscription()" class="renewal-alert renewal-alert--success" role="status">
+      Solicitud creada · Referencia {{ createdSubscription()?.orderId }} · Estado {{ createdSubscription()?.status }}.
+    </div>
+    <div *ngIf="paymentMessage()" class="renewal-alert" role="status" aria-live="polite">
+      {{ paymentMessage() }}
+    </div>
 
     <section class="catalog-section" aria-labelledby="plans-title">
       <header class="section-heading">
         <div>
-          <span class="eyebrow">CATÁLOGO DEL BACKEND</span>
+          <span class="eyebrow">OPCIONES DISPONIBLES</span>
           <h2 id="plans-title">Planes disponibles</h2>
         </div>
         <span class="plan-count">{{ plans().length }} {{ plans().length === 1 ? 'plan' : 'planes' }}</span>
@@ -58,8 +78,12 @@
                 <strong>{{ formatCurrency(plan.price) }}</strong>
                 <span>Valor registrado</span>
               </div>
-              <button type="button" class="renew-disabled" disabled>
-                Renovación no disponible
+              <button
+                type="button"
+                class="renew-action"
+                [disabled]="!canRenew() || submittingPlanId() !== null"
+                (click)="renew(plan)">
+                {{ submittingPlanId() === plan.id ? 'Creando solicitud...' : 'Renovar con este plan' }}
               </button>
             </article>
           }
@@ -68,16 +92,30 @@
         <div class="state-card empty-card">
           <div>
             <h2>No hay planes disponibles</h2>
-            <p>El backend no devolvió planes en el catálogo.</p>
+            <p>En este momento no hay planes disponibles. Inténtalo nuevamente más tarde.</p>
           </div>
         </div>
       }
     </section>
 
+    <aside *ngIf="!canRenew()" class="integration-note">
+      <span class="note-icon" aria-hidden="true">i</span>
+      <p *ngIf="subscriptionStatus().status === 'inactive'">
+        Tu barbería aún no tiene una suscripción para renovar.
+        <a routerLink="/panel/subscription/status">Conoce los planes disponibles</a>.
+      </p>
+      <p *ngIf="subscriptionStatus().status === 'pending' || subscriptionStatus().status === 'approved'">
+        Ya hay un pago en proceso. Espera su confirmación antes de iniciar otra renovación.
+      </p>
+      <p *ngIf="subscriptionStatus().status === 'loading' || subscriptionStatus().status === 'unavailable' || subscriptionStatus().status === 'error'">
+        No se pudo confirmar el estado actual. Actualiza el estado de tu sesión e inténtalo nuevamente.
+      </p>
+    </aside>
+
     <aside class="integration-note">
       <span class="note-icon" aria-hidden="true">i</span>
       <p>
-        Esta pantalla muestra el catálogo recibido de <code>GET /subscription-service/all</code> y lo carga después de verificar la barbería del administrador. El backend todavía no expone qué plan contratado está vigente ni su duración; por eso no se marca un plan como actual y no se envía una renovación hasta disponer de esos datos.
+        La renovación es manual. Después de elegir un plan, sigue las instrucciones de pago y espera la confirmación para ver actualizado el estado de tu suscripción. La renovación automática aún no está disponible.
       </p>
     </aside>
     }
