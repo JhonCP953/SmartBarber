@@ -112,9 +112,10 @@ export class PanelComponent
       this.sessionService.session$.subscribe(() => {
 
         this.loadPanel();
-        this.subscriptionAccess.refresh();
 
       });
+
+    this.subscriptionAccess.refresh();
   }
 
 
@@ -137,6 +138,8 @@ export class PanelComponent
         return 'La suscripción de tu barbería está vencida';
       case 'declined':
         return 'El pago de tu suscripción fue rechazado';
+      case 'refunded':
+        return 'La suscripción de tu barbería fue reembolsada';
       case 'error':
         return 'No fue posible consultar la suscripción';
       case 'unavailable':
@@ -163,6 +166,8 @@ export class PanelComponent
           return 'El plan de la barbería venció. Avísale al administrador para que lo renueve o adquiera otro.';
         case 'declined':
           return 'El pago del plan fue rechazado. El administrador debe revisar las opciones de adquisición o renovación.';
+        case 'refunded':
+          return 'El plan fue reembolsado y ya no está activo. Consulta con el administrador de la barbería.';
         case 'loading':
           return 'Estamos consultando el estado del plan de la barbería.';
         case 'active':
@@ -187,10 +192,12 @@ export class PanelComponent
         return 'El plan ya venció. Renueva o adquiere una suscripción para volver a habilitar los módulos de la plataforma.';
       case 'declined':
         return 'El pago no fue aprobado. Revisa las opciones disponibles para adquirir o renovar tu plan.';
+      case 'refunded':
+        return 'La suscripción fue reembolsada y no está activa. Puedes adquirir una nueva suscripción.';
       case 'error':
         return state.message ?? 'Ocurrió un error al consultar el estado. Puedes reintentar sin perder el acceso a tu perfil.';
       case 'unavailable':
-        return 'La integración de consulta aún no está conectada porque falta confirmar el contrato del backend. No se bloquearán módulos ni se asumirá que el plan está activo.';
+        return 'No fue posible verificar el estado de la suscripción. Los módulos permanecerán restringidos hasta poder confirmarlo.';
       case 'active':
         return 'Tu barbería cuenta con una suscripción activa y vigente.';
     }
@@ -269,7 +276,7 @@ export class PanelComponent
         session.email,
 
       barbershopName:
-        null,
+        session.barbershopName,
 
       tenantId:
         session.tenantId,

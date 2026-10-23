@@ -4,6 +4,10 @@ import {
 } from '@angular/core';
 
 import {
+    User
+} from 'firebase/auth';
+
+import {
     firstValueFrom
 } from 'rxjs';
 
@@ -14,6 +18,10 @@ import {
 import {
     SessionService
 } from '../../../../core/auth/services/session.service';
+
+import {
+    AuthSession
+} from '../../../../core/auth/model/auth-session.model';
 
 import {
     AuthRepository
@@ -67,31 +75,7 @@ export class AuthSessionBootstrapService {
 
 
         try {
-
-
-            /*
-             * =================================================
-             * VALIDAR USUARIO CONTRA BACKEND
-             * =================================================
-             */
-
-            const backendAuthentication =
-                await firstValueFrom(
-                    this.authRepository
-                        .verifyAuthentication()
-                );
-
-            const session = mapBackendAuthentication(
-                backendAuthentication,
-                firebaseUser
-            );
-
-
-            this.sessionService
-                .setSession(
-                    session
-                );
-
+            await this.refreshForUser(firebaseUser);
 
         } catch (error: unknown) {
 
@@ -109,7 +93,35 @@ export class AuthSessionBootstrapService {
                 error
             );
         }
+    }
 
+    async refresh(): Promise<AuthSession> {
+        const firebaseUser =
+            await this.firebaseAuth.waitForAuthState();
+
+        if (!firebaseUser) {
+            throw new Error('FIREBASE_SESSION_NOT_FOUND');
+        }
+
+        return this.refreshForUser(firebaseUser);
+    }
+
+    private async refreshForUser(
+        firebaseUser: User
+    ): Promise<AuthSession> {
+        const backendAuthentication =
+            await firstValueFrom(
+                this.authRepository.verifyAuthentication()
+            );
+
+        const session = mapBackendAuthentication(
+            backendAuthentication,
+            firebaseUser
+        );
+
+        this.sessionService.setSession(session);
+
+        return session;
     }
 
 }

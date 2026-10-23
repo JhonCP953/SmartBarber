@@ -17,6 +17,7 @@ import { RouterLink } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
 import { SessionService } from '../../../../core/auth/services/session.service';
+import { BarbershopSubscriptionAccessService } from '../../application/services/barbershop-subscription-access.service';
 import { SubscriptionCatalogPlan } from '../../domain/models/subscription-catalog.model';
 import {
   SubscriptionApiService
@@ -37,6 +38,7 @@ import {
 export class SubscriptionStatusComponent implements OnInit, OnDestroy {
   private readonly formBuilder = inject(FormBuilder);
   private readonly sessionService = inject(SessionService);
+  private readonly subscriptionAccess = inject(BarbershopSubscriptionAccessService);
   private readonly subscriptionApi = inject(SubscriptionApiService);
   private readonly subscriptionWs = inject(SubscriptionWsService);
   private paymentSubscription?: Subscription;
@@ -138,6 +140,7 @@ export class SubscriptionStatusComponent implements OnInit, OnDestroy {
         this.paymentSubscription = this.subscriptionWs.getPaymentStatus().subscribe({
           next: event => {
             this.paymentMessage.set(this.getPaymentUpdateMessage(event));
+            this.subscriptionAccess.refresh();
           },
           error: (error: unknown) => {
             console.error('Error al recibir la actualización del pago:', error);

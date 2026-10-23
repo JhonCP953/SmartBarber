@@ -195,7 +195,7 @@ export interface BarberShopOnboardingEmployeeResponse {
 
     user: BarberShopOnboardingUserResponse;
 
-    createAt: string;
+    createAt: string | null;
 
 }
 
@@ -207,6 +207,8 @@ export interface BarberShopOnboardingEmployeeResponse {
  */
 
 export interface BarberShopOnboardingResponse {
+
+    id: string;
 
     name: string;
 

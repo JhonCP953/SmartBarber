@@ -64,22 +64,22 @@ export class SubscriptionService {
   createSubscription(
     payload: SubscriptionPayload
   ): Observable<SubscriptionCreationResponse> {
-    const barberId = this.getAuthenticatedEmployeeId();
+    const barbershopId = this.getAuthenticatedBarbershopId();
 
     return this.http.post<SubscriptionCreationResponse>(
       this.createUrl,
-      this.toRequest(payload, barberId, 'CREATE')
+      this.toRequest(payload, barbershopId, 'CREATE')
     );
   }
 
   renewSubscription(
     payload: SubscriptionPayload
   ): Observable<SubscriptionCreationResponse> {
-    const barberId = this.getAuthenticatedEmployeeId();
+    const barbershopId = this.getAuthenticatedBarbershopId();
 
     return this.http.put<SubscriptionCreationResponse>(
       this.renewUrl,
-      this.toRequest(payload, barberId, 'RENEW')
+      this.toRequest(payload, barbershopId, 'RENEW')
     );
   }
 
@@ -155,7 +155,7 @@ export class SubscriptionService {
 
   private toRequest(
     payload: SubscriptionPayload,
-    barberId: string,
+    barbershopId: string,
     type: SubscriptionType
   ): SubscriptionPayload & {
     barberId: string;
@@ -166,26 +166,25 @@ export class SubscriptionService {
       subscriptionId: payload.subscriptionId,
       duration: payload.duration,
       automaticRenew: payload.automaticRenew,
-      barberId,
+      barberId: barbershopId,
       status: 'PENDING',
       type
     };
   }
 
-  private getAuthenticatedEmployeeId(): string {
+  private getAuthenticatedBarbershopId(): string {
     const session = this.sessionService.currentSession;
 
     if (
       session?.role !== 'ADMIN' ||
-      !session.barberId ||
       !session.barbershopId
     ) {
       throw new Error(
-        'No se encontró un perfil de administrador asociado a una barbería.'
+        'No se encontró una barbería asociada al administrador autenticado.'
       );
     }
 
-    return session.barberId;
+    return session.barbershopId;
   }
 }
 

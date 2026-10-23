@@ -34,5 +34,13 @@ export interface BackendAuthenticationResponse {
     userId: string;
     customerId?: string | null;
     employeeId?: string | null;
-    barbershopId?: string | null;
+    barbershop?: {
+        id?: string | null;
+        name?: string | null;
+        location?: string | null;
+        phone?: string | null;
+        subscription?: {
+            status?: string | null;
+        } | null;
+    } | null;
 }
