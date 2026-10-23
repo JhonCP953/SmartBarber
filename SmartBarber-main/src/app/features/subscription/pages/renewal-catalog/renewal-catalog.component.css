@@ -4,10 +4,10 @@
 }
 
 .renewal-page {
-  width: min(1120px, calc(100% - 48px));
+  width: min(1180px, 100%);
   min-height: 65vh;
   margin: 0 auto;
-  padding: 42px 0 70px;
+  padding: 28px 0 60px;
 }
 
 .back-link {
@@ -26,8 +26,8 @@
 }
 
 .eyebrow {
-  color: #987548;
-  font-size: 10.6px;
+  color: #76552f;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.35px;
 }
@@ -40,8 +40,9 @@
 
 .page-heading p,
 .plan-description {
-  color: #786d63;
+  color: #51483e;
   line-height: 1.65;
+  font-size: 15px;
 }
 
 .page-heading p {
@@ -62,8 +63,10 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 19px 23px;
+  padding: 24px 28px;
   margin-bottom: 36px;
+  border-left: 5px solid #8b683b;
+  background: linear-gradient(110deg, #fffdfa, #f7f1e8);
 }
 
 .shop-icon {
@@ -81,13 +84,13 @@
 
 .shop-banner h2 {
   margin: 5px 0 2px;
-  font-size: 19.08px;
+  font-size: 24px;
 }
 
 .shop-banner p {
   margin: 0;
-  color: #82756a;
-  font-size: 12.72px;
+  color: #51483e;
+  font-size: 15px;
 }
 
 .section-heading {
@@ -100,12 +103,12 @@
 
 .section-heading h2 {
   margin: 7px 0 0;
-  font-size: 25.44px;
+  font-size: 28px;
 }
 
 .plan-count {
-  color: #806a50;
-  font-size: 12.72px;
+  color: #5e4a30;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -151,14 +154,14 @@
   padding: 6px 9px;
   border-radius: 999px;
   background: #f2eadc;
-  color: #8d693b;
-  font-size: 10.6px;
+  color: #674b24;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .plan-label {
-  color: #9b774f;
-  font-size: 9.54px;
+  color: #76552f;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -166,13 +169,13 @@
 .plan-card h3 {
   margin: 7px 0;
   color: #30231d;
-  font-size: 21.2px;
+  font-size: 23px;
 }
 
 .plan-description {
-  min-height: 62px;
+  min-height: 72px;
   margin: 0 0 17px;
-  font-size: 12.72px;
+  font-size: 15px;
 }
 
 .plan-price {
@@ -186,12 +189,12 @@
 
 .plan-price strong {
   color: #30231d;
-  font-size: 23.32px;
+  font-size: 25px;
 }
 
 .plan-price span {
-  color: #88796c;
-  font-size: 11.66px;
+  color: #5e554b;
+  font-size: 13px;
 }
 
 .renew-disabled,
@@ -213,13 +216,13 @@
 
 .primary-button {
   margin-top: 15px;
-  background: #392b22;
-  color: #fff;
+  background: #8b683b;
+  color: #fffdfa;
   cursor: pointer;
 }
 
 .primary-button:hover {
-  background: #54402f;
+  background: #73542f;
 }
 
 .integration-note {
@@ -241,15 +244,15 @@
   place-items: center;
   border-radius: 50%;
   background: #efe4d2;
-  color: #8d693b;
+  color: #674b24;
   font-family: Georgia, serif;
   font-weight: 700;
 }
 
 .integration-note p {
   margin: 1px 0 0;
-  color: #74675c;
-  font-size: 12.72px;
+  color: #51483e;
+  font-size: 15px;
   line-height: 1.65;
 }
 
@@ -268,13 +271,14 @@
 
 .state-card p {
   margin: 0;
-  color: #74675c;
+  color: #51483e;
   line-height: 1.6;
+  font-size: 15px;
 }
 
 .state-card h2 {
   margin: 0 0 6px;
-  font-size: 18.02px;
+  font-size: 20px;
 }
 
 .error-card {
@@ -298,6 +302,111 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.plan-card {
+  border-radius: 10px;
+  border-color: #e7dfd3;
+  box-shadow: 0 8px 24px rgba(46, 34, 24, .055);
+}
+
+.plan-card:focus-within,
+.renew-action:focus-visible,
+.primary-button:focus-visible,
+.back-link:focus-visible {
+  outline: 2px solid #946c39;
+  outline-offset: 3px;
+}
+
+.renew-action {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid #8b683b;
+  border-radius: 6px;
+  background: #8b683b;
+  color: #fffdfa;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .18s ease, transform .18s ease;
+}
+
+.renew-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #73542f;
+}
+
+.renew-action:disabled {
+  border-color: #ddd5ca;
+  background: #eeeae3;
+  color: #51483e;
+  cursor: not-allowed;
+}
+
+.subscription-badge {
+  margin-left: auto;
+  padding: 7px 11px;
+  border: 1px solid #e5d5bb;
+  border-radius: 999px;
+  background: #fbf7ef;
+  color: #5e4a30;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.subscription-badge[data-status="active"] {
+  border-color: #c9ddcc;
+  background: #f3f8f2;
+  color: #3d7248;
+}
+
+.renewal-alert {
+  margin: 0 0 16px;
+  padding: 13px 16px;
+  border: 1px solid #e5d5bb;
+  border-radius: 7px;
+  background: #fbf7ef;
+  color: #51483e;
+  font-size: 14px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.renewal-alert--error {
+  border-color: #e7b9b3;
+  background: #fff6f5;
+  color: #842b25;
+}
+
+.renewal-alert--success {
+  border-color: #c9ddcc;
+  background: #f3f8f2;
+  color: #32633b;
+}
+
+.integration-note a {
+  color: #76552f;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+@media (max-width: 720px) {
+  .renewal-page {
+    width: min(100% - 28px, 620px);
+    padding-top: 26px;
+  }
+
+  .shop-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+
+  .subscription-badge {
+    margin-left: 63px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -344,12 +453,12 @@
 }
 
 .renewal-page {
-  padding: 34px;
-  border: 1px solid #c5a880;
-  border-radius: 16px;
-  background: #1b1612;
-  color: #fdfbf7;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+  padding: 28px;
+  border: 1px solid #e6ded2;
+  border-radius: 12px;
+  background: #fffdfa;
+  color: #29231e;
+  box-shadow: 0 8px 24px rgba(45, 34, 24, .055);
 }
 
 .page-heading h1,
@@ -357,8 +466,7 @@
 .shop-banner h2,
 .plan-card h3,
 .state-card h2 {
-  color: #fdfbf7;
-  font-family: Georgia, 'Times New Roman', serif;
+  color: #302820;
 }
 
 .page-heading p,
@@ -366,38 +474,39 @@
 .plan-description,
 .state-card p,
 .integration-note p {
-  color: #bfa893;
+  color: #51483e;
 }
 
 .eyebrow,
 .plan-label {
-  color: #c5a880;
+  color: #76552f;
 }
 
 .back-link {
-  color: #d2b88f;
+  color: #76552f;
 }
 
 .shop-banner,
 .state-card,
 .plan-card,
 .integration-note {
-  border-color: #4a3b2c;
+  border-color: #e6ded2;
   border-radius: 10px;
-  background: linear-gradient(135deg, #282018 0%, #1e1712 100%);
-  color: #fdfbf7;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+  background: #fff;
+  color: #29231e;
+  box-shadow: 0 5px 16px rgba(45, 34, 24, .04);
 }
 
 .shop-banner {
-  border-left: 4px solid #c5a880;
+  border-left: 5px solid #8b683b;
+  background: linear-gradient(110deg, #fffdfa, #f7f1e8);
 }
 
 .shop-icon,
 .plan-mark {
-  border: 1px solid #5a4736;
-  background: #120e0b;
-  color: #c5a880;
+  border: 1px solid #e5d5bb;
+  background: #f7f1e8;
+  color: #765a35;
 }
 
 .plan-card {
@@ -405,69 +514,70 @@
 }
 
 .plan-card:hover {
-  border-color: #c5a880;
-  box-shadow: 0 10px 26px rgba(197, 168, 128, .16);
+  border-color: #a77b43;
+  box-shadow: 0 10px 26px rgba(55, 37, 22, .09);
 }
 
 .discount-badge {
-  background: #8f1d19;
-  color: #fff;
+  background: #f2eadc;
+  color: #674b24;
 }
 
 .plan-price {
-  border-color: #4a3b2c;
+  border-color: #ece5db;
 }
 
 .plan-price strong {
-  color: #d2b88f;
+  color: #302820;
 }
 
 .plan-price span {
-  color: #bfa893;
+  color: #5e554b;
 }
 
 .renew-disabled {
-  border: 1px solid #5a4736;
-  background: #241d17;
-  color: #bfa893;
+  border: 1px solid #ddd5ca;
+  background: #eeeae3;
+  color: #51483e;
 }
 
 .primary-button {
-  background: #c5a880;
-  color: #1b1612;
+  background: #8b683b;
+  color: #fffdfa;
 }
 
 .primary-button:hover {
-  background: #b89b72;
+  background: #73542f;
 }
 
 .integration-note {
-  background: #241d17;
+  background: #fbf9f5;
   box-shadow: none;
 }
 
 .note-icon,
 .state-icon {
-  background: #c5a880;
-  color: #1b1612;
+  background: #f2e8d8;
+  color: #674b24;
 }
 
 .integration-note code {
-  color: #e6d2b4;
+  color: #51483e;
 }
 
 .error-card {
-  border-color: #873b34;
-  background: linear-gradient(135deg, #321b18, #211411);
+  border-color: #e7c3bc;
+  background: #fff6f4;
 }
 
 .spinner {
-  border-color: #4a3b2c;
-  border-top-color: #c5a880;
+  border-color: #e6ded2;
+  border-top-color: #8b683b;
 }
 
 @media (max-width: 620px) {
   .renewal-page {
-    padding: 24px 16px;
+    width: calc(100% - 24px);
+    padding: 18px 14px;
   }
 }

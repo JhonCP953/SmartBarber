@@ -1,9 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-
-import {
-  SubscriptionApiService,
-  SubscriptionStatusContractUnavailableError
-} from '../../infrastructure/api/subscription-api.service';
+import { SessionService } from '../../../../core/auth/services/session.service';
+import { AuthSessionBootstrapService } from '../../../authentication/application/services/auth-session-bootstrap.service';
 
 export type SubscriptionAccessStatus =
   | 'loading'
@@ -13,6 +10,7 @@ export type SubscriptionAccessStatus =
   | 'pending'
   | 'expired'
   | 'declined'
+  | 'refunded'
   | 'error'
   | 'unavailable';
 
@@ -25,48 +23,46 @@ export interface SubscriptionAccessState {
   providedIn: 'root'
 })
 export class BarbershopSubscriptionAccessService {
-  private readonly subscriptionApi = inject(SubscriptionApiService);
+  private readonly sessionService = inject(SessionService);
+  private readonly authSessionBootstrap = inject(AuthSessionBootstrapService);
 
-  readonly state = signal<SubscriptionAccessState>({
-    status: 'unavailable',
-    message: 'La consulta de suscripción está pendiente de conectar con un contrato confirmado del backend.'
-  });
+  readonly state = signal<SubscriptionAccessState>(
+    this.getSessionStatusState()
+  );
 
   get restrictsModules(): boolean {
-    return [
-      'inactive',
-      'approved',
-      'pending',
-      'expired',
-      'declined'
-    ].includes(this.state().status);
+    const session = this.sessionService.currentSession;
+
+    return (
+      (session?.role === 'ADMIN' || session?.role === 'BARBER') &&
+      this.state().status !== 'active'
+    );
   }
 
   refresh(): void {
-    this.setLoading();
+    const currentSession = this.sessionService.currentSession;
+    this.applySessionStatus();
 
-    this.subscriptionApi.getCurrentSubscription().subscribe({
-      next: () => {
-        this.setError(
-          'El formato actual de suscripción no permite confirmar el estado activo y vigente. Se requiere el contrato específico de consulta de la barbería.'
-        );
-      },
-      error: (error: unknown) => {
-        if (error instanceof SubscriptionStatusContractUnavailableError) {
-          this.state.set({
-            status: 'unavailable',
-            message: error.message
-          });
-          return;
-        }
+    if (
+      !currentSession ||
+      (currentSession.role !== 'ADMIN' && currentSession.role !== 'BARBER')
+    ) {
+      return;
+    }
 
+    if (this.state().status === 'unavailable') {
+      this.setLoading();
+    }
+
+    void this.authSessionBootstrap.refresh()
+      .then(() => this.applySessionStatus())
+      .catch((error: unknown) => {
         this.setError(
           error instanceof Error
             ? error.message
-            : 'Ocurrió un error inesperado al consultar la suscripción.'
+            : 'Ocurrió un error inesperado al verificar la suscripción.'
         );
-      }
-    });
+      });
   }
 
   setVerifiedStatus(
@@ -81,5 +77,36 @@ export class BarbershopSubscriptionAccessService {
 
   setError(message: string): void {
     this.state.set({ status: 'error', message });
+  }
+
+  private applySessionStatus(): void {
+    this.state.set(this.getSessionStatusState());
+  }
+
+  private getSessionStatusState(): SubscriptionAccessState {
+    const status =
+      this.sessionService.currentSession?.subscriptionStatus;
+
+    switch (status) {
+      case 'ACTIVE':
+        return { status: 'active' };
+      case 'APPROVED':
+        return { status: 'approved' };
+      case 'PENDING':
+        return { status: 'pending' };
+      case 'DECLINED':
+        return { status: 'declined' };
+      case 'NOT_SUBSCRIPTION':
+        return { status: 'inactive' };
+      case 'EXPIRED':
+        return { status: 'expired' };
+      case 'REFUNDED':
+        return { status: 'refunded' };
+      default:
+        return {
+          status: 'unavailable',
+          message: 'No fue posible reconocer el estado del plan de esta barbería.'
+        };
+    }
   }
 }

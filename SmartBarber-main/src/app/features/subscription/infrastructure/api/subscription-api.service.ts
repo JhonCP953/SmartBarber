@@ -14,6 +14,7 @@ import {
 } from '../../domain/models/change-plan.model';
 
 import { SubscriptionPlan } from '../../domain/models/subscription-plan.model';
+import { SubscriptionBarberStatus } from '../subscription-ws.service';
 
 import {
   CancelSubscriptionRequest,
@@ -29,6 +30,21 @@ export class SubscriptionStatusContractUnavailableError extends Error {
   }
 }
 
+export interface ActualBarbershopSubscription {
+  id: string;
+  barberId: string;
+  subscriptionId: number;
+  status: SubscriptionBarberStatus;
+  duration: number;
+  subscriptionPrice: number;
+  subscriptionDiscount: number;
+  orderId: string;
+  createdAt: string;
+  updatedAt: string | null;
+  startDate: string | null;
+  expirationDate: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -41,8 +57,24 @@ export class SubscriptionApiService extends SubscriptionRepository {
     );
   }
 
+  getActualBarbershopSubscription(
+    barberId: string
+  ): Observable<ActualBarbershopSubscription> {
+    const id = barberId.trim();
+
+    if (!id) {
+      return throwError(
+        () => new Error('Se requiere el ID del empleado para consultar la suscripción actual.')
+      );
+    }
+
+    return this.http.get<ActualBarbershopSubscription>(
+      `${environment.apiUrl}/subscription-barbershop-service/actual-subscription/${encodeURIComponent(id)}`
+    );
+  }
+
   private readonly unsupported = {
-    current: 'La consulta de la suscripción vigente está pendiente de confirmar. La ruta propuesta GET /subscription-barbershop-service/my-status y su respuesta no están conectadas.',
+    current: 'La consulta heredada espera un modelo distinto al DTO de GET /subscription-barbershop-service/actual-subscription/{barberId}. Usa getActualBarbershopSubscription con el ID del empleado.',
     plans: 'El catálogo del backend usa un DTO distinto al que espera el cliente legado de suscripciones.',
     change: 'El backend actual no documenta una operación para cambiar el plan de una suscripción.',
     cancel: 'El backend actual no documenta una operación para cancelar una suscripción.',

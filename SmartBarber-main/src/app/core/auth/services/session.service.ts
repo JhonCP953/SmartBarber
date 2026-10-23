@@ -93,6 +93,8 @@ export class SessionService {
       return {
         ...session,
         barbershopId: session.barbershopId ?? null,
+        barbershopName: session.barbershopName ?? null,
+        subscriptionStatus: session.subscriptionStatus ?? null,
         tenantId: session.tenantId ?? session.barbershopId ?? null,
         barberId: session.barberId ?? null,
         clientId: session.clientId ?? null

@@ -112,9 +112,10 @@ export class PanelComponent
       this.sessionService.session$.subscribe(() => {
 
         this.loadPanel();
-        this.subscriptionAccess.refresh();
 
       });
+
+    this.subscriptionAccess.refresh();
   }
 
 
@@ -137,6 +138,8 @@ export class PanelComponent
         return 'La suscripción de tu barbería está vencida';
       case 'declined':
         return 'El pago de tu suscripción fue rechazado';
+      case 'refunded':
+        return 'La suscripción de tu barbería fue reembolsada';
       case 'error':
         return 'No fue posible consultar la suscripción';
       case 'unavailable':
@@ -156,13 +159,15 @@ export class PanelComponent
         case 'inactive':
           return 'La barbería no tiene un plan activo. Avísale al administrador para que adquiera una suscripción.';
         case 'approved':
-          return 'La solicitud fue aprobada, pero el backend aún no confirma un plan activo. Consulta con el administrador de la barbería.';
+          return 'La solicitud fue aprobada y está pendiente la activación del plan. Consulta con el administrador de la barbería.';
         case 'pending':
           return 'El pago o la confirmación del plan de la barbería está pendiente. Consulta con su administrador.';
         case 'expired':
           return 'El plan de la barbería venció. Avísale al administrador para que lo renueve o adquiera otro.';
         case 'declined':
           return 'El pago del plan fue rechazado. El administrador debe revisar las opciones de adquisición o renovación.';
+        case 'refunded':
+          return 'El plan fue reembolsado y ya no está activo. Consulta con el administrador de la barbería.';
         case 'loading':
           return 'Estamos consultando el estado del plan de la barbería.';
         case 'active':
@@ -170,27 +175,29 @@ export class PanelComponent
         case 'error':
           return state.message ?? 'No fue posible consultar el estado. Puedes reintentar o avisar al administrador.';
         case 'unavailable':
-          return 'La integración de consulta está pendiente de confirmar. No se bloquearán módulos por falta de respuesta; consulta con el administrador de tu barbería.';
+          return 'Aún no es posible confirmar el estado del plan. Consulta con el administrador de tu barbería.';
       }
     }
 
     switch (state.status) {
       case 'loading':
-        return 'Estamos consultando el estado de la suscripción con el backend.';
+        return 'Estamos consultando el estado de la suscripción.';
       case 'inactive':
         return 'Para utilizar los módulos de la plataforma, tu barbería necesita una suscripción activa. Puedes consultar los planes disponibles.';
       case 'approved':
-        return 'El estado aprobado no habilita por sí solo los módulos. Espera a que el backend confirme que el plan está activo y vigente.';
+        return 'El pago fue aprobado y el plan está pendiente de activación. Espera un momento y vuelve a consultar su estado.';
       case 'pending':
         return 'El pago o la confirmación del plan todavía está pendiente. Puedes revisar los módulos de suscripción mientras se confirma.';
       case 'expired':
         return 'El plan ya venció. Renueva o adquiere una suscripción para volver a habilitar los módulos de la plataforma.';
       case 'declined':
         return 'El pago no fue aprobado. Revisa las opciones disponibles para adquirir o renovar tu plan.';
+      case 'refunded':
+        return 'La suscripción fue reembolsada y no está activa. Puedes adquirir una nueva suscripción.';
       case 'error':
         return state.message ?? 'Ocurrió un error al consultar el estado. Puedes reintentar sin perder el acceso a tu perfil.';
       case 'unavailable':
-        return 'La integración de consulta aún no está conectada porque falta confirmar el contrato del backend. No se bloquearán módulos ni se asumirá que el plan está activo.';
+        return 'No fue posible confirmar el estado de la suscripción. Inténtalo de nuevo más tarde.';
       case 'active':
         return 'Tu barbería cuenta con una suscripción activa y vigente.';
     }
@@ -269,7 +276,7 @@ export class PanelComponent
         session.email,
 
       barbershopName:
-        null,
+        session.barbershopName,
 
       tenantId:
         session.tenantId,
@@ -307,6 +314,14 @@ export class PanelComponent
           )
         ) ?? null
     );
+  }
+
+  get currentModuleId(): string {
+    return this.currentModule?.id ?? 'dashboard';
+  }
+
+  get isAdminUser(): boolean {
+    return this.sessionService.currentSession?.role === 'ADMIN';
   }
 
 

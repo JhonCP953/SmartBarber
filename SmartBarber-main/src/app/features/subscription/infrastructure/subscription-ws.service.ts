@@ -6,26 +6,28 @@ import { SessionService } from '../../../core/auth/services/session.service';
 import { environment } from '../../../../environments/environment';
 
 export type SubscriptionType = 'CREATE' | 'RENEW';
+export const SUBSCRIPTION_DURATION = 60;
 export type SubscriptionBarberStatus =
   | 'ACTIVE'
   | 'APPROVED'
   | 'PENDING'
   | 'DECLINED'
-  | 'EXPIRED';
+  | 'EXPIRED'
+  | 'REFUNDED'
+  | 'NOT_SUBSCRIPTION'
+  | 'CANCELED';
 
 export interface SubscriptionPayload {
   subscriptionId: number;
   duration: number;
   automaticRenew: boolean;
-  // Optional UI-only values; toRequest deliberately excludes them from HTTP.
-  fullName?: string | null;
-  email?: string | null;
-  cardNumber?: string | null;
-  expirationDate?: string | null;
-  cvv?: string | null;
-  autoRenew?: boolean;
-  planName?: string;
-  price?: number;
+}
+
+export interface SubscriptionBarbershopRequest
+  extends SubscriptionPayload {
+  barberId: string;
+  status: SubscriptionBarberStatus;
+  type: SubscriptionType;
 }
 
 export interface SubscriptionCreationResponse {
@@ -157,11 +159,7 @@ export class SubscriptionService {
     payload: SubscriptionPayload,
     barberId: string,
     type: SubscriptionType
-  ): SubscriptionPayload & {
-    barberId: string;
-    status: SubscriptionBarberStatus;
-    type: SubscriptionType;
-  } {
+  ): SubscriptionBarbershopRequest {
     return {
       subscriptionId: payload.subscriptionId,
       duration: payload.duration,

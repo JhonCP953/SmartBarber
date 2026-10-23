@@ -201,10 +201,11 @@ export class RegisterAdminUseCase {
                                         if (
                                             session.role !== 'ADMIN' ||
                                             session.userId !== onboardingResponse.employee.user.id ||
-                                            session.barberId !== onboardingResponse.employee.id
+                                            session.barberId !== onboardingResponse.employee.id ||
+                                            session.barbershopId !== onboardingResponse.id
                                         ) {
                                             throw new Error(
-                                                'La sesión autenticada no coincide con el administrador recién registrado.'
+                                                'La sesión autenticada no coincide con el administrador o la barbería recién registrados.'
                                             );
                                         }
 

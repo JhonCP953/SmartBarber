@@ -1,156 +1,156 @@
-<form
-    [formGroup]="form"
-    (ngSubmit)="submit()">
+<section class="registration-card">
+    <header class="registration-heading">
+        <div>
+            <span class="section-eyebrow">NUEVO EQUIPO</span>
+            <h2>Registrar barbero</h2>
+            <p>
+                Vincula la cuenta de Google que utilizará para entrar a SmartBarber
+                y completa sus datos profesionales.
+            </p>
+        </div>
 
-    <h2>Registrar barbero</h2>
+        <button
+            type="button"
+            class="text-button"
+            (click)="cancelRegistration()"
+            [disabled]="isSubmitting || isConnectingGoogle">
+            Cerrar
+        </button>
+    </header>
 
-    <label for="name">
-        Nombre completo *
-    </label>
+    <div class="account-link">
+        <div>
+            <span class="field-eyebrow">ACCESO A SMARTBARBER</span>
+            <strong *ngIf="registrationUser">
+                {{ form.controls.email.value }}
+            </strong>
+            <p *ngIf="!registrationUser">
+                El barbero iniciará sesión con la cuenta de Google que se vincule aquí.
+            </p>
+        </div>
 
-    <input
-        id="name"
-        formControlName="name">
+        <button
+            type="button"
+            class="secondary-button"
+            (click)="connectGoogleAccount()"
+            [disabled]="isConnectingGoogle || isSubmitting">
+            {{
+                isConnectingGoogle
+                    ? 'Conectando...'
+                    : registrationUser
+                        ? 'Cambiar cuenta'
+                        : 'Vincular cuenta de Google'
+            }}
+        </button>
+    </div>
 
-    <small
-        *ngIf="
-            form.controls.name.touched &&
-            form.controls.name.invalid
-        ">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="employee-name">Nombre completo *</label>
+                <input
+                    id="employee-name"
+                    formControlName="name"
+                    autocomplete="name">
+                <small *ngIf="form.controls.name.touched && form.controls.name.invalid">
+                    Ingresa el nombre del barbero (máximo 120 caracteres).
+                </small>
+            </div>
 
-        El nombre es obligatorio.
+            <div class="form-field">
+                <label for="employee-email">Correo de acceso</label>
+                <input
+                    id="employee-email"
+                    type="email"
+                    formControlName="email"
+                    readonly
+                    aria-describedby="employee-email-help">
+                <small id="employee-email-help" class="field-hint">
+                    Se toma de la cuenta de Google vinculada.
+                </small>
+                <small *ngIf="form.controls.email.touched && form.controls.email.invalid">
+                    Vincula una cuenta de Google válida para habilitar el acceso del barbero.
+                </small>
+            </div>
 
-    </small>
+            <div class="form-field">
+                <label for="employee-document-type">Tipo de documento *</label>
+                <select id="employee-document-type" formControlName="documentType">
+                    <option value="CC">Cédula de ciudadanía</option>
+                    <option value="CE">Cédula de extranjería</option>
+                </select>
+            </div>
 
+            <div class="form-field">
+                <label for="employee-document">Número de documento *</label>
+                <input
+                    id="employee-document"
+                    formControlName="document"
+                    autocomplete="off">
+                <small *ngIf="form.controls.document.touched && form.controls.document.invalid">
+                    El documento es obligatorio (máximo 30 caracteres).
+                </small>
+            </div>
 
-    <label for="documentType">
-        Tipo de documento *
-    </label>
+            <div class="form-field">
+                <label for="employee-cell">Celular *</label>
+                <input
+                    id="employee-cell"
+                    type="tel"
+                    maxlength="10"
+                    formControlName="cell"
+                    autocomplete="tel">
+                <small *ngIf="form.controls.cell.touched && form.controls.cell.invalid">
+                    Ingresa un número de celular de 10 dígitos.
+                </small>
+            </div>
+        </div>
 
-    <select
-        id="documentType"
-        formControlName="documentType">
+        <fieldset>
+            <legend>Especialidades *</legend>
+            <div class="specialty-options">
+                <label *ngFor="let specialty of specialties">
+                    <input
+                        type="checkbox"
+                        [checked]="selectedSpecialties.has(specialty)"
+                        (change)="toggleSpecialty(
+                            specialty,
+                            $any($event.target).checked
+                        )">
+                    <span>{{ specialty }}</span>
+                </label>
+            </div>
+            <small *ngIf="selectedSpecialties.size === 0">
+                Selecciona al menos una especialidad.
+            </small>
+        </fieldset>
 
-        <option value="CC">
-            Cédula de ciudadanía
-        </option>
+        <p *ngIf="backendError" class="message error-message" role="alert">
+            {{ backendError }}
+        </p>
 
-        <option value="CE">
-            Cédula de extranjería
-        </option>
+        <p *ngIf="successMessage" class="message success-message" role="status">
+            {{ successMessage }}
+        </p>
 
-    </select>
-
-
-    <label for="document">
-        Número de documento *
-    </label>
-
-    <input
-        id="document"
-        formControlName="document">
-
-    <small
-        *ngIf="
-            form.controls.document.touched &&
-            form.controls.document.invalid
-        ">
-
-        El documento es obligatorio.
-
-    </small>
-
-
-    <label for="email">
-        Correo electrónico *
-    </label>
-
-    <input
-        id="email"
-        type="email"
-        formControlName="email">
-
-
-    <label for="cell">
-        Celular *
-    </label>
-
-    <input
-        id="cell"
-        type="tel"
-        maxlength="10"
-        formControlName="cell">
-
-
-    <fieldset>
-
-        <legend>
-            Especialidades *
-        </legend>
-
-        <label
-            *ngFor="
-                let specialty of specialties
-            ">
-
-            <input
-                type="checkbox"
-                [checked]="
-                    selectedSpecialties.has(
-                        specialty
-                    )
-                "
-                (change)="
-                    toggleSpecialty(
-                        specialty,
-                        $any($event.target).checked
-                    )
-                ">
-
-            {{ specialty }}
-
-        </label>
-
-    </fieldset>
-
-    <small
-        *ngIf="
-            selectedSpecialties.size === 0
-        ">
-
-        Selecciona al menos una especialidad.
-
-    </small>
-
-
-    <p
-        *ngIf="backendError"
-        role="alert">
-
-        {{ backendError }}
-
-    </p>
-
-
-    <p
-        *ngIf="successMessage"
-        role="status">
-
-        {{ successMessage }}
-
-    </p>
-
-
-    <button
-        type="submit"
-        [disabled]="isSubmitting">
-
-        {{
-            isSubmitting
-                ? 'Registrando...'
-                : 'Registrar barbero'
-        }}
-
-    </button>
-
-</form>
+        <footer class="form-actions">
+            <button
+                type="button"
+                class="text-button"
+                (click)="cancelRegistration()"
+                [disabled]="isSubmitting || isConnectingGoogle">
+                Cancelar
+            </button>
+            <button
+                type="submit"
+                class="primary-button"
+                [disabled]="isSubmitting || isConnectingGoogle">
+                {{
+                    isSubmitting
+                        ? 'Registrando...'
+                        : 'Crear barbero'
+                }}
+            </button>
+        </footer>
+    </form>
+</section>

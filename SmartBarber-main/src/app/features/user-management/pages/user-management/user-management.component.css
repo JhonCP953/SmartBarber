@@ -772,3 +772,169 @@
         padding: 20px 16px;
     }
 }
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.page-header-copy {
+    min-width: 0;
+}
+
+.register-employee-button {
+    flex: 0 0 auto;
+}
+
+.employee-registration-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 750px) {
+    .page-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+.user-management {
+    margin: 0;
+    padding: 22px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #29231e;
+    box-shadow: none;
+}
+
+.page-header h1,
+.card-heading h2,
+.empty-state h3 {
+    color: #29231e;
+}
+
+.page-header p,
+.empty-state p {
+    color: #71685e;
+}
+
+.section-eyebrow,
+.card-eyebrow {
+    color: #8b683b;
+}
+
+.management-card {
+    border-color: #e6ded2;
+    border-radius: 10px;
+    background: #fffdfa;
+    box-shadow: 0 8px 24px rgba(45, 34, 24, .055);
+}
+
+.card-heading {
+    border-color: #ece5db;
+}
+
+.record-count {
+    color: #80633e;
+}
+
+.form-field label {
+    color: #4f463c;
+}
+
+.form-field input,
+.form-field textarea {
+    border-color: #ded6ca;
+    border-radius: 6px;
+    background: #fff;
+    color: #29231e;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+    color: #9b9287;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+    border-color: #a77b43;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(167, 123, 67, .12);
+}
+
+.form-field small {
+    color: #a6473e;
+}
+
+.primary-button {
+    border-color: #8b683b;
+    background: #8b683b;
+    color: #fffdfa;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: #73542f;
+}
+
+.secondary-button {
+    border-color: #d8cbb8;
+    background: #faf7f1;
+    color: #5b4b39;
+}
+
+.secondary-button:hover:not(:disabled) {
+    border-color: #a77b43;
+    background: #f3ece0;
+    color: #372d22;
+}
+
+.message {
+    border-radius: 7px;
+}
+
+.error-message {
+    border-color: #e7c3bc;
+    background: #fff6f4;
+    color: #8e3931;
+}
+
+.success-message {
+    border-color: #c9ddcc;
+    background: #f3f8f2;
+    color: #3d7248;
+}
+
+.data-item {
+    background: #fffdfa;
+}
+
+.data-item span,
+.selected-user-summary span {
+    color: #81766a;
+}
+
+.data-item strong {
+    color: #3c332a;
+}
+
+.user-table th {
+    border-color: #ece5db;
+    color: #80633e;
+}
+
+.user-table td {
+    border-color: #eee8df;
+    color: #665e54;
+}
+
+.user-table td strong {
+    color: #302820;
+}
+
+.empty-state {
+    border-color: #e1d7c8;
+    background: #fcfaf6;
+}

@@ -1,7 +1,7 @@
 <div class="subscription-page-container">
   <main class="content-card-grid">
     <section class="plan-summary-box" aria-labelledby="selected-plan-heading">
-      <span class="popular-pill">ADQUISICIÓN DE PLAN</span>
+      <span class="popular-pill">PLANES SMARTBARBER</span>
 
       <div class="plan-summary-content">
         <span class="section-eyebrow">SUSCRIPCIÓN PARA TU BARBERÍA</span>
@@ -9,22 +9,19 @@
           {{ selectedPlan()?.name || 'Elige tu plan' }}
         </h1>
 
-        <div *ngIf="selectedPlan() as plan" class="price-tag-container">
-          <span class="price-value">{{ formatCurrency(plan.price) }}</span>
-          <span class="price-period">Precio del catálogo</span>
-        </div>
-
-        <p *ngIf="selectedPlan() as plan" class="plan-info-text">
-          {{ plan.description }}
-        </p>
+        <ng-container *ngIf="selectedPlan() as plan">
+          <div class="price-tag-container">
+            {{ formatCurrency(plan.price) }}
+          </div>
+          <p class="plan-info-text">{{ plan.description }}</p>
+        </ng-container>
 
         <p *ngIf="!selectedPlan()" class="plan-info-text">
-          Selecciona uno de los planes disponibles para ver su valor y continuar.
+          Selecciona un plan para revisar su precio y continuar.
         </p>
 
         <div *ngIf="loading()" class="plan-state" role="status" aria-live="polite">
-          <span class="spinner" aria-hidden="true"></span>
-          <span>Consultando planes disponibles...</span>
+          Consultando planes disponibles...
         </div>
 
         <div *ngIf="!loading() && plans().length" class="available-plans">
@@ -57,16 +54,39 @@
     <section class="payment-section-box" aria-labelledby="payment-title">
       <a class="back-link" routerLink="/panel/subscription">← Volver a suscripción</a>
 
-      <div class="payment-header-group">
-        <span class="section-eyebrow">PAGO DE SUSCRIPCIÓN</span>
-        <h2 id="payment-title" class="main-title">Datos de pago</h2>
+      <header class="payment-header-group">
+        <span class="section-eyebrow">PLAN DE TU BARBERÍA</span>
+        <h2 id="payment-title" class="main-title">Adquirir suscripción</h2>
         <p class="main-subtitle">
-          Completa los campos para continuar con la solicitud. Esta interfaz no procesa ni transmite datos reales de tarjeta.
+          Elige un plan para activar los beneficios de SmartBarber en tu establecimiento.
         </p>
+      </header>
+
+      <div
+        class="subscription-state"
+        [attr.data-status]="accessState().status"
+        role="status"
+        aria-live="polite">
+        <span class="subscription-state-label">ESTADO ACTUAL</span>
+        <strong>{{ subscriptionStatusLabel() }}</strong>
+      </div>
+
+      <div *ngIf="accessState().status === 'active'" class="form-alert form-alert-success">
+        Tu barbería ya tiene una suscripción activa.
+        <a routerLink="/panel/subscription/renewal">Consultar opciones de renovación</a>
+      </div>
+
+      <div
+        *ngIf="accessState().status === 'pending' || accessState().status === 'approved'"
+        class="form-alert form-alert-info">
+        Ya existe una solicitud en proceso. Espera la confirmación antes de adquirir otro plan.
       </div>
 
       <div *ngIf="errorMessage()" class="form-alert form-alert-error" role="alert">
         {{ errorMessage() }}
+        <button *ngIf="!loading()" type="button" class="inline-retry" (click)="reloadPlans()">
+          Reintentar
+        </button>
       </div>
 
       <div *ngIf="createdSubscription()" class="form-alert form-alert-success" role="status">
@@ -78,141 +98,33 @@
         {{ paymentMessage() }}
       </div>
 
-      <form
-        [formGroup]="subscriptionForm"
-        (ngSubmit)="acquireSubscription()"
-        class="clean-payment-form"
-        novalidate>
-        <label class="field-container">
-          <span>Nombre completo</span>
-          <span class="input-icon-wrapper">
-            <span class="icon-prefix" aria-hidden="true">👤</span>
-            <input
-              type="text"
-              formControlName="fullName"
-              class="form-control-input"
-              placeholder="Ej. Juan Pérez"
-              autocomplete="name">
-          </span>
-          <small *ngIf="isFieldInvalid('fullName')" class="field-error">
-            {{ fieldError('fullName') }}
-          </small>
-        </label>
-
-        <label class="field-container">
-          <span>Correo electrónico</span>
-          <span class="input-icon-wrapper">
-            <span class="icon-prefix" aria-hidden="true">✉️</span>
-            <input
-              type="email"
-              formControlName="email"
-              class="form-control-input"
-              placeholder="nombre@ejemplo.com"
-              autocomplete="email">
-          </span>
-          <small *ngIf="isFieldInvalid('email')" class="field-error">
-            {{ fieldError('email') }}
-          </small>
-        </label>
-
-        <div class="form-row-double">
-          <label class="field-container">
-            <span>Número de tarjeta (solo validación local)</span>
-            <span class="input-icon-wrapper">
-              <span class="icon-prefix" aria-hidden="true">💳</span>
-              <input
-                type="text"
-                inputmode="numeric"
-                formControlName="cardNumber"
-                class="form-control-input"
-                placeholder="16 dígitos"
-                maxlength="16"
-                autocomplete="off">
-            </span>
-            <small *ngIf="isFieldInvalid('cardNumber')" class="field-error">
-              {{ fieldError('cardNumber') }}
-            </small>
-          </label>
-
-          <label class="field-container">
-            <span>Fecha de expiración</span>
-            <span class="input-icon-wrapper">
-              <span class="icon-prefix" aria-hidden="true">📅</span>
-              <input
-                type="text"
-                formControlName="expirationDate"
-                class="form-control-input"
-                placeholder="MM/AA"
-                maxlength="7"
-                autocomplete="off">
-            </span>
-            <small *ngIf="isFieldInvalid('expirationDate')" class="field-error">
-              {{ fieldError('expirationDate') }}
-            </small>
-          </label>
+      <section class="renewal-note">
+        <span class="renewal-note-icon" aria-hidden="true">↻</span>
+        <div>
+          <strong>Renovación manual</strong>
+          <p>
+            La renovación debe hacerse manualmente. La opción automática aún no está disponible.
+          </p>
         </div>
+      </section>
 
-        <label class="field-container">
-          <span>CVV (solo validación local)</span>
-          <span class="input-icon-wrapper">
-            <span class="icon-prefix" aria-hidden="true">🔒</span>
-            <input
-              type="password"
-              inputmode="numeric"
-              formControlName="cvv"
-              class="form-control-input"
-              placeholder="3 o 4 dígitos"
-              maxlength="4"
-              autocomplete="off">
-          </span>
-          <small *ngIf="isFieldInvalid('cvv')" class="field-error">
-            {{ fieldError('cvv') }}
-          </small>
-        </label>
+      <button
+        *ngIf="canAcquireSubscription()"
+        type="button"
+        class="btn-complete-payment"
+        [disabled]="
+          submitting() ||
+          loading() ||
+          selectedPlanId() === null ||
+          !canAcquireSubscription()
+        "
+        (click)="acquireSubscription()">
+        {{ submitting() ? 'CREANDO SOLICITUD...' : 'CONTINUAR CON EL PLAN' }}
+      </button>
 
-        <div class="auto-renewal-card">
-          <div class="renewal-text-block">
-            <span class="renewal-title">Activar renovación automática</span>
-            <p class="renewal-sub">La preferencia se incluye en la solicitud de suscripción.</p>
-          </div>
-          <label class="switch-toggle">
-            <input type="checkbox" formControlName="autoRenew" aria-label="Activar renovación automática">
-            <span class="toggle-slider round"></span>
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          class="btn-complete-payment"
-          [disabled]="submitting() || loading() || selectedPlanId() === null || !plans().length">
-          <span class="btn-card-icon" aria-hidden="true">💳</span>
-          {{ submitting() ? 'PROCESANDO SOLICITUD...' : 'Continuar con la adquisición' }}
-        </button>
-      </form>
-
-      <div class="security-features-footer">
-        <div class="sec-badge-item">
-          <span class="badge-emoji" aria-hidden="true">ℹ️</span>
-          <div>
-            <strong>Datos de prueba</strong>
-            <p>No ingreses información bancaria real.</p>
-          </div>
-        </div>
-        <div class="sec-badge-item">
-          <span class="badge-emoji" aria-hidden="true">🛡️</span>
-          <div>
-            <strong>Sin envío de tarjeta</strong>
-            <p>Los datos de tarjeta no se incluyen en la solicitud HTTP.</p>
-          </div>
-        </div>
-        <div class="sec-badge-item">
-          <span class="badge-emoji" aria-hidden="true">⚡</span>
-          <div>
-            <strong>Estado de pago</strong>
-            <p>Se escucha la actualización asociada al orderId cuando el backend lo devuelve.</p>
-          </div>
-        </div>
-      </div>
+      <p class="request-footnote">
+        Sigue las instrucciones que aparecerán después de continuar. No compartas los datos de tu tarjeta por otros medios.
+      </p>
     </section>
   </main>
 </div>

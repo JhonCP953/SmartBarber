@@ -1,13 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { finalize, forkJoin } from 'rxjs';
+import { Observable, Subscription, finalize, forkJoin } from 'rxjs';
 
 import { SessionService } from '../../../../core/auth/services/session.service';
+import { BarbershopSubscriptionAccessService } from '../../application/services/barbershop-subscription-access.service';
 import { BarberShopResponse } from '../../../barber-shop/domain/models/barber-shop.model';
 import { BarberShopApiService } from '../../../barber-shop/infrastructure/services/barber-shop-api.service';
 import { SubscriptionCatalogPlan } from '../../domain/models/subscription-catalog.model';
 import { SubscriptionApiService } from '../../infrastructure/api/subscription-api.service';
+import {
+  SubscriptionCreationResponse,
+  SUBSCRIPTION_DURATION,
+  SubscriptionWsService
+} from '../../infrastructure/subscription-ws.service';
 
 @Component({
   selector: 'app-renewal-catalog',
@@ -17,15 +23,27 @@ import { SubscriptionApiService } from '../../infrastructure/api/subscription-ap
   styleUrl: './renewal-catalog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RenewalCatalogComponent implements OnInit {
+export class RenewalCatalogComponent implements OnInit, OnDestroy {
   private readonly sessionService = inject(SessionService);
   private readonly barberShopApi = inject(BarberShopApiService);
   private readonly subscriptionApi = inject(SubscriptionApiService);
+  private readonly subscriptionAccess = inject(BarbershopSubscriptionAccessService);
+  private readonly subscriptionWs = inject(SubscriptionWsService);
+  private paymentSubscription?: Subscription;
 
   readonly barberShop = signal<BarberShopResponse | null>(null);
   readonly plans = signal<SubscriptionCatalogPlan[]>([]);
   readonly loading = signal(false);
+  readonly submittingPlanId = signal<number | null>(null);
   readonly errorMessage = signal('');
+  readonly paymentMessage = signal('');
+  readonly createdSubscription = signal<SubscriptionCreationResponse | null>(null);
+  readonly subscriptionStatus = this.subscriptionAccess.state;
+
+  ngOnDestroy(): void {
+    this.paymentSubscription?.unsubscribe();
+    this.subscriptionWs.disconnectWebSocket();
+  }
 
   ngOnInit(): void {
     this.loadRenewalInformation();
@@ -43,6 +61,54 @@ export class RenewalCatalogComponent implements OnInit {
     }).format(value);
   }
 
+  canRenew(): boolean {
+    return ['active', 'expired', 'declined', 'refunded']
+      .includes(this.subscriptionStatus().status);
+  }
+
+  renew(plan: SubscriptionCatalogPlan): void {
+    if (this.submittingPlanId() !== null || !this.canRenew()) {
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.paymentMessage.set('');
+    this.createdSubscription.set(null);
+    this.submittingPlanId.set(plan.id);
+
+    let request: Observable<SubscriptionCreationResponse>;
+    try {
+      request = this.subscriptionWs.renewSubscription({
+        subscriptionId: plan.id,
+        duration: SUBSCRIPTION_DURATION,
+        automaticRenew: false
+      });
+    } catch (error: unknown) {
+      this.submittingPlanId.set(null);
+      this.errorMessage.set(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible validar la barbería para iniciar la renovación.'
+      );
+      return;
+    }
+
+    request.subscribe({
+      next: response => {
+        this.submittingPlanId.set(null);
+        this.createdSubscription.set(response);
+        this.listenForPayment(response);
+      },
+      error: (error: unknown) => {
+        this.submittingPlanId.set(null);
+        console.error('No fue posible iniciar la renovación:', error);
+        this.errorMessage.set(
+          'No fue posible iniciar la renovación. Verifica el estado del plan e inténtalo nuevamente.'
+        );
+      }
+    });
+  }
+
   private loadRenewalInformation(): void {
     const session = this.sessionService.currentSession;
 
@@ -57,7 +123,7 @@ export class RenewalCatalogComponent implements OnInit {
     ) {
       this.loading.set(false);
       this.errorMessage.set(
-        'No se encontró una barbería asociada al perfil de administrador autenticado. Vuelve a iniciar sesión para actualizar la información desde el backend.'
+        'No encontramos una barbería asociada a tu perfil. Cierra sesión y vuelve a ingresar; si el problema continúa, contacta al administrador.'
       );
       return;
     }
@@ -91,5 +157,48 @@ export class RenewalCatalogComponent implements OnInit {
           );
         }
       });
+  }
+
+  private listenForPayment(response: SubscriptionCreationResponse): void {
+    this.paymentSubscription?.unsubscribe();
+    this.paymentSubscription = this.subscriptionWs.getPaymentStatus().subscribe({
+      next: event => {
+        this.paymentMessage.set(this.getPaymentUpdateMessage(event));
+        this.subscriptionAccess.refresh();
+      },
+      error: (error: unknown) => {
+        console.error('Error al recibir la actualización del pago:', error);
+        this.errorMessage.set(
+          'La renovación se solicitó, pero no se pudo recibir el estado del pago.'
+        );
+      }
+    });
+
+    try {
+      this.subscriptionWs.connectWebSocket(response.orderId);
+      this.paymentMessage.set(
+        'Renovación solicitada. Esperando confirmación del pago.'
+      );
+    } catch (error: unknown) {
+      console.error('No fue posible conectar con el estado del pago:', error);
+      this.errorMessage.set(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible conectar con el estado del pago.'
+      );
+    }
+  }
+
+  private getPaymentUpdateMessage(event: unknown): string {
+    if (
+      typeof event === 'object' &&
+      event !== null &&
+      'status' in event &&
+      typeof event.status === 'string'
+    ) {
+      return `Estado de la transacción: ${event.status}.`;
+    }
+
+    return 'Se recibió una actualización de la transacción.';
   }
 }

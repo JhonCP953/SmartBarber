@@ -176,6 +176,12 @@ export class RegisterClientUseCase {
                                     null,
 
                                 barbershopId:
+                                    null,
+
+                                barbershopName:
+                                    null,
+
+                                subscriptionStatus:
                                     null
 
                             });

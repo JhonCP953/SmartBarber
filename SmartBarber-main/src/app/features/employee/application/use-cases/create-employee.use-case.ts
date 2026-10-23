@@ -14,8 +14,12 @@ export class CreateEmployeeUseCase {
     ) { }
 
     execute(
-        request: EmployeeRegistration
+        request: EmployeeRegistration,
+        idToken: string
     ): Observable<Employee> {
-        return this.employeeRepository.createEmployee(request);
+        return this.employeeRepository.createEmployee(
+            request,
+            idToken
+        );
     }
 }

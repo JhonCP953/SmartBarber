@@ -4,8 +4,14 @@ import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { SessionService } from '../../../../core/auth/services/session.service';
+import { BarbershopSubscriptionAccessService } from '../../application/services/barbershop-subscription-access.service';
 import { BarberShopResponse } from '../../../barber-shop/domain/models/barber-shop.model';
 import { BarberShopApiService } from '../../../barber-shop/infrastructure/services/barber-shop-api.service';
+import {
+  ActualBarbershopSubscription,
+  SubscriptionApiService
+} from '../../infrastructure/api/subscription-api.service';
+import { SubscriptionBarberStatus } from '../../infrastructure/subscription-ws.service';
 
 interface SubscriptionModuleCard {
   title: string;
@@ -13,6 +19,7 @@ interface SubscriptionModuleCard {
   route: string;
   icon: string;
   state: string;
+  available: boolean;
 }
 
 @Component({
@@ -26,10 +33,17 @@ interface SubscriptionModuleCard {
 export class SubscriptionDashboardComponent implements OnInit {
   private readonly sessionService = inject(SessionService);
   private readonly barberShopApi = inject(BarberShopApiService);
+  private readonly subscriptionApi = inject(SubscriptionApiService);
+  private readonly subscriptionAccess = inject(BarbershopSubscriptionAccessService);
 
   readonly barberShop = signal<BarberShopResponse | null>(null);
+  readonly actualSubscription = signal<ActualBarbershopSubscription | null>(null);
+  readonly actualPlanName = signal('');
+  readonly subscriptionStatus = this.subscriptionAccess.state;
   readonly loading = signal(true);
+  readonly subscriptionDetailsLoading = signal(false);
   readonly errorMessage = signal('');
+  readonly subscriptionDetailsError = signal('');
 
   readonly modules: SubscriptionModuleCard[] = [
     {
@@ -37,41 +51,57 @@ export class SubscriptionDashboardComponent implements OnInit {
       description: 'Selecciona un plan e inicia la transacción para tu barbería.',
       route: 'status',
       icon: '+',
-      state: 'Recomendado'
+      state: 'Disponible',
+      available: true
     },
     {
       title: 'Estado de suscripción',
       description: 'Revisa el plan actual, su vigencia y el estado del pago.',
       route: 'status',
       icon: '◉',
-      state: 'Consulta pendiente de endpoint'
+      state: 'Estado desde autenticación',
+      available: true
     },
     {
       title: 'Renovación',
-      description: 'Consulta los planes disponibles para renovar tu suscripción.',
+      description: 'Elige un plan para ampliar la vigencia de tu suscripción.',
       route: 'renewal',
       icon: '↻',
-      state: 'Catálogo conectado al backend'
+      state: 'Renovación manual',
+      available: true
     },
     {
       title: 'Historial de pagos',
-      description: 'Consulta las transacciones y referencias de pago.',
+      description: 'La consulta detallada de pagos aún no está disponible.',
       route: 'payment-history',
       icon: '▤',
-      state: 'Consulta pendiente de endpoint'
+      state: 'Próximamente',
+      available: false
     },
-    {
-      title: 'Cancelar suscripción',
-      description: 'Revisa la vigencia y las condiciones antes de cancelar.',
-      route: 'cancel',
-      icon: '×',
-      state: 'Operación pendiente de endpoint'
-    }
   ];
 
-  isBarbershopActive(status?: string): boolean {
-    return status?.toLocaleUpperCase() === 'ACTIVO' ||
-      status?.toLocaleUpperCase() === 'ACTIVE';
+  subscriptionStatusLabel(): string {
+    switch (this.subscriptionStatus().status) {
+      case 'active':
+        return 'Activa';
+      case 'approved':
+        return 'Aprobada';
+      case 'pending':
+        return 'Pendiente';
+      case 'inactive':
+        return 'Sin suscripción';
+      case 'expired':
+        return 'Vencida';
+      case 'declined':
+        return 'Rechazada';
+      case 'refunded':
+        return 'Reembolsada';
+      case 'loading':
+        return 'Verificando';
+      case 'error':
+      case 'unavailable':
+        return 'No confirmada';
+    }
   }
 
   ngOnInit(): void {
@@ -84,7 +114,7 @@ export class SubscriptionDashboardComponent implements OnInit {
     if (!session || session.role !== 'ADMIN' || !session.barbershopId) {
       this.loading.set(false);
       this.errorMessage.set(
-        'No se encontró una barbería asociada a tu perfil de administrador. Vuelve a iniciar sesión para actualizar la asociación desde el backend.'
+        'No encontramos una barbería asociada a tu perfil. Cierra sesión y vuelve a ingresar; si el problema continúa, contacta al administrador.'
       );
       return;
     }
@@ -101,11 +131,85 @@ export class SubscriptionDashboardComponent implements OnInit {
           }
 
           this.barberShop.set(barberShop);
+
+          if (
+            this.subscriptionStatus().status === 'active' &&
+            session.barberId
+          ) {
+            this.loadActualSubscription(session.barberId);
+          }
         },
         error: (error: unknown) => {
           console.error('No fue posible cargar la barbería del perfil:', error);
           this.errorMessage.set(
             'No fue posible cargar la información de la barbería asociada a tu perfil.'
+          );
+        }
+      });
+  }
+
+  formatCurrency(value: number): string {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      maximumFractionDigits: 0
+    }).format(value);
+  }
+
+  actualSubscriptionStatusLabel(status: SubscriptionBarberStatus): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Activa';
+      case 'APPROVED':
+        return 'Aprobada';
+      case 'PENDING':
+        return 'Pendiente';
+      case 'DECLINED':
+        return 'Rechazada';
+      case 'EXPIRED':
+        return 'Vencida';
+      case 'REFUNDED':
+        return 'Reembolsada';
+      case 'CANCELED':
+        return 'Cancelada';
+      case 'NOT_SUBSCRIPTION':
+        return 'Sin suscripción';
+    }
+  }
+
+  private loadActualSubscription(barberId: string): void {
+    this.subscriptionDetailsLoading.set(true);
+    this.subscriptionDetailsError.set('');
+
+    this.subscriptionApi.getActualBarbershopSubscription(barberId)
+      .pipe(finalize(() => this.subscriptionDetailsLoading.set(false)))
+      .subscribe({
+        next: subscription => {
+          if (subscription.barberId !== barberId) {
+            this.subscriptionDetailsError.set(
+              'La suscripción recibida no corresponde al empleado autenticado.'
+            );
+            return;
+          }
+
+          this.actualSubscription.set(subscription);
+          this.actualPlanName.set(`Plan ${subscription.subscriptionId}`);
+          this.subscriptionApi.getSubscriptionCatalog().subscribe({
+            next: plans => {
+              const plan = plans.find(item => item.id === subscription.subscriptionId);
+              if (plan) {
+                this.actualPlanName.set(plan.name);
+              }
+            },
+            error: (error: unknown) => {
+              console.error('No fue posible consultar el nombre del plan actual:', error);
+            }
+          });
+        },
+        error: (error: unknown) => {
+          console.error('No fue posible consultar la suscripción actual:', error);
+          this.subscriptionDetailsError.set(
+            'No se pudieron consultar los detalles de vigencia. El estado general se conserva desde la sesión autenticada.'
           );
         }
       });

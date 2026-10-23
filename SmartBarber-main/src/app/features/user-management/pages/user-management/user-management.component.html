@@ -6,7 +6,7 @@
 
     <header class="page-header">
 
-        <div>
+        <div class="page-header-copy">
 
             <span class="section-eyebrow">
                 ADMINISTRACIÓN
@@ -17,13 +17,34 @@
             </h1>
 
             <p>
-                Consulta el estado de acceso de los usuarios
-                y administra su bloqueo.
+                Registra barberos con acceso propio y administra
+                el estado de acceso de los usuarios.
             </p>
 
         </div>
 
+        <button
+            type="button"
+            class="primary-button register-employee-button"
+            (click)="openEmployeeRegistration()"
+            [disabled]="!barberiaId">
+            Crear barbero
+        </button>
+
     </header>
+
+    <div *ngIf="!barberiaId" class="message error-message" role="alert">
+        No se encontró la barbería asociada a esta sesión. No es posible registrar
+        un barbero hasta restablecer el acceso de administrador.
+    </div>
+
+    <section *ngIf="showEmployeeRegistration()" class="management-card employee-registration-card">
+        <app-employee-register
+            [barberiaId]="barberiaId"
+            (registered)="onEmployeeRegistered($event)"
+            (cancelled)="closeEmployeeRegistration()">
+        </app-employee-register>
+    </section>
 
 
     <!-- ========================================================= -->

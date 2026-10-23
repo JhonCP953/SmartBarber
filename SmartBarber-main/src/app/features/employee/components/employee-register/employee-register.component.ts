@@ -32,6 +32,18 @@ import {
     Employee
 } from '../../domain/models/employee.model';
 
+import {
+    FirebaseAuthService
+} from '../../../../core/auth/services/firebase-auth.service';
+
+import {
+    USER_ROLE_IDS
+} from '../../../authentication/domain/models/user-role.model';
+
+import {
+    User
+} from 'firebase/auth';
+
 @Component({
     selector: 'app-employee-register',
 
@@ -56,8 +68,8 @@ export class EmployeeRegisterComponent {
     private readonly createEmployee =
         inject(CreateEmployeeUseCase);
 
-    @Input()
-    userId = '';
+    private readonly firebaseAuth =
+        inject(FirebaseAuthService);
 
     @Input()
     barberiaId = '';
@@ -66,11 +78,19 @@ export class EmployeeRegisterComponent {
     registered =
         new EventEmitter<Employee>();
 
+    @Output()
+    cancelled =
+        new EventEmitter<void>();
+
     isSubmitting = false;
+
+    isConnectingGoogle = false;
 
     successMessage = '';
 
     backendError = '';
+
+    registrationUser: User | null = null;
 
     readonly specialties = [
 
@@ -148,7 +168,67 @@ export class EmployeeRegisterComponent {
         }
     }
 
-    submit(): void {
+    async connectGoogleAccount(): Promise<void> {
+        if (this.isConnectingGoogle || this.isSubmitting) {
+            return;
+        }
+
+        this.backendError = '';
+        this.registrationUser = null;
+        this.form.controls.email.setValue('');
+        this.isConnectingGoogle = true;
+
+        try {
+            await this.firebaseAuth
+                .signOutEmployeeRegistration();
+
+            const user =
+                await this.firebaseAuth
+                    .signInWithGoogleForEmployeeRegistration();
+
+            if (!user.email) {
+                await this.firebaseAuth
+                    .signOutEmployeeRegistration();
+
+                this.backendError =
+                    'La cuenta de Google debe tener un correo electrónico para iniciar sesión.';
+
+                return;
+            }
+
+            this.registrationUser = user;
+            this.form.controls.email.setValue(
+                user.email.trim().toLowerCase()
+            );
+        } catch (error: unknown) {
+            this.backendError =
+                this.getErrorMessage(error);
+        } finally {
+            this.isConnectingGoogle = false;
+        }
+    }
+
+    async cancelRegistration(): Promise<void> {
+        if (this.isSubmitting || this.isConnectingGoogle) {
+            return;
+        }
+
+        if (this.registrationUser) {
+            try {
+                await this.firebaseAuth
+                    .signOutEmployeeRegistration();
+            } catch (error: unknown) {
+                this.backendError =
+                    this.getErrorMessage(error);
+
+                return;
+            }
+        }
+
+        this.cancelled.emit();
+    }
+
+    async submit(): Promise<void> {
 
         this.successMessage = '';
 
@@ -164,13 +244,17 @@ export class EmployeeRegisterComponent {
             return;
         }
 
-        if (
-            !this.userId ||
-            !this.barberiaId
-        ) {
+        if (!this.registrationUser) {
+            this.backendError =
+                'Primero vincula la cuenta de Google que utilizará el barbero para iniciar sesión.';
+
+            return;
+        }
+
+        if (!this.barberiaId) {
 
             this.backendError =
-                'No fue posible identificar el usuario o la barbería.';
+                'No fue posible identificar la barbería de esta sesión.';
 
             return;
         }
@@ -181,8 +265,9 @@ export class EmployeeRegisterComponent {
         const request:
             EmployeeRegistration = {
 
-            userId:
-                this.userId,
+            user: {
+                roleId: USER_ROLE_IDS.BARBER
+            },
 
             barberiaId:
                 this.barberiaId,
@@ -212,8 +297,28 @@ export class EmployeeRegisterComponent {
 
         this.isSubmitting = true;
 
+        let idToken: string;
+
+        try {
+            idToken =
+                await this.registrationUser.getIdToken();
+
+            await this.firebaseAuth
+                .signOutEmployeeRegistration();
+
+            this.registrationUser = null;
+            this.form.controls.email.setValue('');
+        } catch (error: unknown) {
+            this.backendError =
+                this.getErrorMessage(error);
+
+            this.isSubmitting = false;
+
+            return;
+        }
+
         this.createEmployee
-            .execute(request)
+            .execute(request, idToken)
 
             .pipe(
                 finalize(
@@ -227,7 +332,7 @@ export class EmployeeRegisterComponent {
                 next: employee => {
 
                     this.successMessage =
-                        'Empleado registrado correctamente.';
+                        'Barbero registrado correctamente. Podrá iniciar sesión con la cuenta de Google vinculada.';
 
                     this.registered.emit(
                         employee
@@ -252,9 +357,54 @@ export class EmployeeRegisterComponent {
                 error: error => {
 
                     this.backendError =
-                        error?.error?.message ??
-                        'No fue posible registrar el empleado.';
+                        this.getErrorMessage(error);
                 }
             });
+    }
+
+    private getErrorMessage(error: unknown): string {
+        if (typeof error === 'object' && error !== null) {
+            if ('error' in error) {
+                const responseBody = error.error;
+
+                if (
+                    typeof responseBody === 'object' &&
+                    responseBody !== null
+                ) {
+                    if (
+                        'data' in responseBody &&
+                        typeof responseBody.data === 'object' &&
+                        responseBody.data !== null &&
+                        'message' in responseBody.data &&
+                        typeof responseBody.data.message === 'string'
+                    ) {
+                        return responseBody.data.message;
+                    }
+
+                    if (
+                        'message' in responseBody &&
+                        typeof responseBody.message === 'string'
+                    ) {
+                        return responseBody.message;
+                    }
+                }
+            }
+
+            if ('code' in error && typeof error.code === 'string') {
+                if (error.code === 'auth/popup-closed-by-user') {
+                    return 'Se cerró la ventana de Google antes de vincular la cuenta.';
+                }
+
+                if (error.code === 'auth/popup-blocked') {
+                    return 'El navegador bloqueó la ventana de Google. Permite las ventanas emergentes e inténtalo de nuevo.';
+                }
+            }
+
+            if ('message' in error && typeof error.message === 'string') {
+                return error.message;
+            }
+        }
+
+        return 'No fue posible completar el registro del barbero. Inténtalo nuevamente.';
     }
 }

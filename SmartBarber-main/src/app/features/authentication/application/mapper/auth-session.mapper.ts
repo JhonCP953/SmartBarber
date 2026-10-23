@@ -2,6 +2,7 @@ import { User } from 'firebase/auth';
 
 import {
     AuthSession,
+    SubscriptionBarberStatus,
     UserRole
 } from '../../../../core/auth/model/auth-session.model';
 
@@ -20,12 +21,18 @@ export function mapBackendAuthentication(
     let clientId: string | null = null;
     let barberId: string | null = null;
     let barbershopId: string | null = null;
+    let barbershopName: string | null = null;
+    let subscriptionStatus: SubscriptionBarberStatus | null = null;
 
     if (role === 'CLIENT') {
         clientId = requireId(response.customerId, 'customerId');
     } else {
         barberId = requireId(response.employeeId, 'employeeId');
-        barbershopId = requireId(response.barbershopId, 'barbershopId');
+        barbershopId = requireId(response.barbershop?.id, 'barbershopId');
+        barbershopName = response.barbershop?.name?.trim() || null;
+        subscriptionStatus = mapSubscriptionStatus(
+            response.barbershop?.subscription?.status
+        );
     }
 
     return {
@@ -39,8 +46,27 @@ export function mapBackendAuthentication(
         tenantId: barbershopId,
         photoUrl: firebaseUser.photoURL,
         barberId,
-        barbershopId
+        barbershopId,
+        barbershopName,
+        subscriptionStatus
     };
+}
+
+function mapSubscriptionStatus(
+    status: string | null | undefined
+): SubscriptionBarberStatus | null {
+    switch (status) {
+        case 'ACTIVE':
+        case 'APPROVED':
+        case 'PENDING':
+        case 'DECLINED':
+        case 'NOT_SUBSCRIPTION':
+        case 'EXPIRED':
+        case 'REFUNDED':
+            return status;
+        default:
+            return null;
+    }
 }
 
 function mapRole(role: BackendRoleResponse): UserRole {

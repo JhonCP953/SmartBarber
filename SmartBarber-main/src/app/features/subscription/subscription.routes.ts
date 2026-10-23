@@ -26,19 +26,8 @@ export const SUBSCRIPTION_ROUTES: Routes = [
     path: 'payment-history',
     data: {
       title: 'Historial de pagos',
-      description: 'Consulta las transacciones de suscripción de tu barbería.',
-      availability: 'La API documentada no expone todavía un endpoint de consulta del historial de transacciones.'
-    },
-    loadComponent: () =>
-      import('./pages/subscription-module/subscription-module.component')
-        .then(m => m.SubscriptionModuleComponent)
-  },
-  {
-    path: 'cancel',
-    data: {
-      title: 'Cancelar suscripción',
-      description: 'Administra la vigencia de la suscripción de tu barbería.',
-      availability: 'La API documentada no incluye una operación para cancelar una suscripción. No se enviará una solicitud a un endpoint no confirmado.'
+      description: 'Consulta los pagos relacionados con el plan de tu barbería.',
+      availability: 'El historial detallado de pagos estará disponible próximamente.'
     },
     loadComponent: () =>
       import('./pages/subscription-module/subscription-module.component')

@@ -5,7 +5,7 @@
 
 .subscription-page-container {
   min-height: 100%;
-  padding: 30px;
+  padding: 24px 0 48px;
   background: #f7f4ee;
   display: flex;
   justify-content: center;
@@ -18,7 +18,7 @@
   grid-template-columns: minmax(280px, 1fr) minmax(0, 1.35fr);
   gap: 30px;
   width: 100%;
-  max-width: 1150px;
+  max-width: 1180px;
 }
 
 .plan-summary-box,
@@ -687,5 +687,213 @@
 @media (max-width: 600px) {
   .content-card-grid {
     gap: 14px;
+  }
+}
+
+.plan-summary-box,
+.payment-section-box {
+  border-color: #e8e1d6;
+  border-radius: 12px;
+  background: #fffdfa;
+  color: #211b16;
+  box-shadow: 0 12px 32px rgba(46, 34, 24, .06);
+}
+
+.plan-summary-box {
+  background: linear-gradient(145deg, #fffdfa, #f8f4ec);
+}
+
+.payment-section-box {
+  background: #fffdfa;
+}
+
+.plan-heading,
+.price-tag-container,
+.payment-header-group .main-title,
+.available-plans h2,
+.available-plan strong {
+  color: #211b16;
+}
+
+.section-eyebrow,
+.eyebrow,
+.back-link {
+  color: #9a7140;
+}
+
+.plan-info-text,
+.payment-header-group .main-subtitle,
+.available-plan small {
+  color: #756d63;
+  border-color: #e9e1d6;
+}
+
+.available-plan {
+  border-color: #e7dfd3;
+  border-radius: 8px;
+  background: #fffdfa;
+  color: #211b16;
+}
+
+.available-plan:hover,
+.available-plan.selected {
+  border-color: #c49a5a;
+  background: #fbf6ed;
+}
+
+.available-plan-price {
+  color: #86643a;
+}
+
+.subscription-state,
+.renewal-note {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0;
+  padding: 15px 17px;
+  border: 1px solid #e9e1d6;
+  border-radius: 8px;
+  background: #f8f5ef;
+}
+
+.subscription-state {
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 17px 19px;
+}
+
+.subscription-state-label {
+  color: #786f64;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.subscription-state strong {
+  color: #44372c;
+  font-size: 16px;
+}
+
+.subscription-state[data-status="active"] {
+  border-color: #c9ddcc;
+  background: #f3f8f2;
+}
+
+.subscription-state[data-status="active"] strong {
+  color: #3d7248;
+}
+
+.renewal-note {
+  align-items: flex-start;
+  border-color: #e5d5bb;
+  background: #fbf7ef;
+}
+
+.renewal-note-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: #f0e5d3;
+  color: #8c683c;
+}
+
+.renewal-note strong {
+  color: #3b3026;
+  font-size: 14px;
+}
+
+.renewal-note p,
+.request-footnote {
+  margin: 4px 0 0;
+  color: #776e63;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.btn-complete-payment {
+  border: 1px solid #b88c50;
+  border-radius: 7px;
+  background: #c49a5a;
+  color: #211b16;
+  font-weight: 800;
+  letter-spacing: .4px;
+}
+
+.btn-complete-payment:hover:not(:disabled) {
+  background: #d2ae76;
+}
+
+.btn-complete-payment:focus-visible,
+.available-plan:focus-visible,
+.inline-retry:focus-visible,
+.back-link:focus-visible {
+  outline: 2px solid #926a38;
+  outline-offset: 3px;
+}
+
+.form-alert {
+  border-radius: 7px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.form-alert-success {
+  border-color: #c9ddcc;
+  background: #f3f8f2;
+  color: #3d7248;
+}
+
+.form-alert-info {
+  border-color: #e5d5bb;
+  background: #fbf7ef;
+  color: #6c5436;
+}
+
+.form-alert a {
+  margin-left: 5px;
+  color: #76552f;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.inline-retry {
+  margin-left: 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.request-footnote {
+  margin-top: 12px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .subscription-page-container {
+    padding: 14px 10px;
+  }
+
+  .plan-summary-box,
+  .payment-section-box {
+    padding: 22px 17px;
+  }
+
+  .subscription-state,
+  .renewal-note {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .popular-pill {
+    position: static;
+    align-self: flex-start;
+    margin-bottom: 18px;
   }
 }

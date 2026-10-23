@@ -2,6 +2,15 @@ export type UserRole = 'CLIENT' | 'ADMIN' | 'BARBER';
 
 export type UserStatus = 'ACTIVE' | 'BLOCKED' | 'INACTIVE';
 
+export type SubscriptionBarberStatus =
+  | 'ACTIVE'
+  | 'APPROVED'
+  | 'PENDING'
+  | 'DECLINED'
+  | 'NOT_SUBSCRIPTION'
+  | 'EXPIRED'
+  | 'REFUNDED';
+
 export interface AuthSession {
   userId: string;
   clientId: string | null;
@@ -14,4 +23,6 @@ export interface AuthSession {
   photoUrl: string | null;
   barberId: string | null;
   barbershopId: string | null;
+  barbershopName: string | null;
+  subscriptionStatus: SubscriptionBarberStatus | null;
 }

@@ -643,6 +643,241 @@
     0.8s linear infinite;
 }
 
+.barber-config-page {
+  min-width: 0;
+  padding: 18px 0;
+  background: transparent;
+  color: #29231e;
+}
+
+.module-introduction h1,
+.item-heading h3,
+.editor-content h2 {
+  color: #29231e;
+}
+
+.module-introduction p,
+.editor-content > p,
+.item-heading span,
+.detail strong,
+.empty-state p {
+  color: #71685e;
+}
+
+.introduction-badge,
+.section-label {
+  border-color: #e5d5bb;
+  background: #fbf7ef;
+  color: #765a35;
+}
+
+.management-card {
+  max-width: 1180px;
+  border-color: #e6ded2;
+  border-radius: 10px;
+  background: #fffdfa;
+  box-shadow: 0 8px 24px rgba(45, 34, 24, .055);
+}
+
+.management-editor {
+  border-color: #ece5db;
+  background: #fbf9f5;
+}
+
+.management-editor .editor-content h2,
+.management-editor .step-item strong {
+  color: #302820;
+}
+
+.management-editor .editor-content > p,
+.management-editor .step-item div span {
+  color: #62594f;
+  font-size: .9rem;
+}
+
+.management-editor .section-label {
+  border-color: #e5d5bb;
+  background: #fbf7ef;
+  color: #765a35;
+}
+
+.management-editor .step-number {
+  background: #8b683b;
+  color: #fffdfa;
+}
+
+.management-editor .step-item,
+.management-editor .editor-summary > div {
+  border-color: #e6ded2;
+}
+
+.management-editor .editor-summary span {
+  color: #62594f;
+  font-size: .8rem;
+}
+
+.management-editor .editor-summary strong {
+  color: #302820;
+  font-size: 1rem;
+}
+
+.editor-card,
+.barbershop-item {
+  border-color: #e6ded2;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(45, 34, 24, .04);
+}
+
+.editor-header {
+  border-color: #ece5db;
+}
+
+.editor-header h2,
+.read-only-grid strong {
+  color: #302820;
+}
+
+.editor-header p,
+.read-only-message p {
+  color: #71685e;
+}
+
+.read-only-message {
+  border-color: #e6ded2;
+  background: #fbf9f5;
+}
+
+.read-only-message strong,
+.read-only-grid span,
+.detail-label {
+  color: #80633e;
+}
+
+.read-only-grid > div,
+.item-heading {
+  border-color: #ece5db;
+}
+
+.barbershop-information strong {
+  color: #302820;
+}
+
+.detail strong {
+  color: #51483e;
+}
+
+.action-button.primary,
+.button-primary {
+  border-color: #8b683b;
+  background: #8b683b;
+  color: #fffdfa;
+}
+
+.action-button.primary:hover,
+.button-primary:hover:not(:disabled) {
+  border-color: #73542f;
+  background: #73542f;
+}
+
+.action-button.secondary,
+.button-secondary {
+  border-color: #d8cbb8;
+  background: #faf7f1;
+  color: #5b4b39;
+}
+
+.action-button.secondary:hover,
+.button-secondary:hover:not(:disabled) {
+  border-color: #a77b43;
+  background: #f3ece0;
+  color: #372d22;
+}
+
+.loading-indicator {
+  border-color: #e6ded2;
+  border-top-color: #8b683b;
+}
+
+.barbershop-list {
+  border-left: 1px solid #ece5db;
+  background: #fffdfa;
+}
+
+.list-header h2,
+.list-header .section-label {
+  color: #302820;
+}
+
+.counter-badge {
+  border-color: #e5d5bb;
+  background: #fbf7ef;
+  color: #765a35;
+}
+
+.status-badge {
+  border: 1px solid #c9ddcc;
+  background: #f3f8f2;
+  color: #32633b;
+  font-size: .75rem;
+}
+
+.status-badge.inactive {
+  border-color: #e7c3bc;
+  background: #fff6f4;
+  color: #8e3931;
+}
+
+.item-number {
+  background: #f2e8d8;
+  color: #60451f;
+}
+
+.item-heading h3 {
+  color: #302820;
+}
+
+.item-heading span,
+.detail strong {
+  color: #51483e;
+  font-size: .95rem;
+}
+
+.detail-label {
+  color: #62594f;
+  font-size: .75rem;
+}
+
+.item-actions {
+  border-color: #ece5db;
+}
+
+.empty-state {
+  border-color: #ded6ca;
+  background: #fbf9f5;
+}
+
+.empty-state h3 {
+  color: #302820;
+}
+
+@media (max-width: 760px) {
+  .barber-config-page {
+    padding: 12px 0;
+  }
+}
+
+@media (max-width: 1050px) {
+  .management-editor {
+    border-bottom-color: #ece5db;
+  }
+
+  .barbershop-list {
+    border-top: 1px solid #ece5db;
+    border-left: 0;
+  }
+}
+
 
 @keyframes barber-config-spin {
   to {

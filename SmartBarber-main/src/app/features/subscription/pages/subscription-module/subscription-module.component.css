@@ -104,6 +104,61 @@
 }
 
 .module-page {
+  width: min(1180px, 100%);
+  padding: 32px;
+  border-color: #e6ded2;
+  border-radius: 10px;
+  background: #fffdfa;
+  color: #29231e;
+  box-shadow: 0 8px 24px rgba(45, 34, 24, .055);
+}
+
+.module-heading h1,
+.availability-card h2 {
+  color: #29231e;
+}
+
+.module-heading p,
+.availability-card p {
+  color: #71685e;
+}
+
+.eyebrow,
+.availability-label {
+  color: #80633e;
+}
+
+.back-link,
+.dashboard-link {
+  color: #765a35;
+}
+
+.availability-card {
+  border-color: #e6ded2;
+  border-left: 4px solid #8b683b;
+  border-radius: 8px;
+  background: #fbf9f5;
+  color: #29231e;
+  box-shadow: none;
+}
+
+.availability-card .safety-note {
+  border-color: #e6ded2;
+  color: #71685e;
+}
+
+.availability-icon {
+  background: #f2e8d8;
+  color: #765a35;
+}
+
+@media (max-width: 600px) {
+  .module-page {
+    padding: 22px 16px;
+  }
+}
+
+.module-page {
   padding: 34px;
   border: 1px solid #c5a880;
   border-radius: 16px;

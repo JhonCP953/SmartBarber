@@ -132,12 +132,10 @@ export const BARBER_SHOP_ROUTES: Routes = [
     {
         path: 'CRUD-Servicios',
 
-        /*
         canActivate: [
             authGuard,
             roleGuard
         ],
-        */
 
         data: {
             roles: [
