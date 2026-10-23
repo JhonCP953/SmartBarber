@@ -10,7 +10,10 @@ import {
     signOut
 } from 'firebase/auth';
 
-import { initializeApp } from 'firebase/app';
+import {
+    getApps,
+    initializeApp
+} from 'firebase/app';
 
 import {
     BehaviorSubject,
@@ -31,6 +34,8 @@ export class FirebaseAuthService {
 
     private readonly auth: Auth =
         getAuth(this.firebaseApp);
+
+    private employeeRegistrationAuth: Auth | null = null;
 
     private readonly userSubject =
         new BehaviorSubject<User | null>(
@@ -92,6 +97,27 @@ export class FirebaseAuthService {
     }
 }
 
+    async signInWithGoogleForEmployeeRegistration(): Promise<User> {
+        const provider = new GoogleAuthProvider();
+
+        provider.setCustomParameters({
+            prompt: 'select_account'
+        });
+
+        const result = await signInWithPopup(
+            this.getEmployeeRegistrationAuth(),
+            provider
+        );
+
+        return result.user;
+    }
+
+    async signOutEmployeeRegistration(): Promise<void> {
+        await signOut(
+            this.getEmployeeRegistrationAuth()
+        );
+    }
+
 
     async getIdToken(): Promise<string | null> {
 
@@ -117,5 +143,22 @@ export class FirebaseAuthService {
         await signOut(this.auth);
 
         this.userSubject.next(null);
+    }
+
+    private getEmployeeRegistrationAuth(): Auth {
+        if (!this.employeeRegistrationAuth) {
+            const appName =
+                'smartbarber-employee-registration';
+            const existingApp =
+                getApps().find(app => app.name === appName);
+            const registrationApp =
+                existingApp ??
+                initializeApp(firebaseConfig, appName);
+
+            this.employeeRegistrationAuth =
+                getAuth(registrationApp);
+        }
+
+        return this.employeeRegistrationAuth;
     }
 }

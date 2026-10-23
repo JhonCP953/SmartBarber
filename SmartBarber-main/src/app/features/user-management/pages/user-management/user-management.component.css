@@ -772,3 +772,30 @@
         padding: 20px 16px;
     }
 }
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.page-header-copy {
+    min-width: 0;
+}
+
+.register-employee-button {
+    flex: 0 0 auto;
+}
+
+.employee-registration-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 750px) {
+    .page-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

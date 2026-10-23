@@ -30,6 +30,18 @@ import {
     ManagedUser
 } from '../../domain/models/user-management.model';
 
+import {
+    EmployeeRegisterComponent
+} from '../../../employee/components/employee-register/employee-register.component';
+
+import {
+    Employee
+} from '../../../employee/domain/models/employee.model';
+
+import {
+    SessionService
+} from '../../../../core/auth/services/session.service';
+
 
 @Component({
     selector: 'app-user-management',
@@ -38,7 +50,8 @@ import {
 
     imports: [
         CommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        EmployeeRegisterComponent
     ],
 
     templateUrl:
@@ -61,9 +74,15 @@ export class UserManagementComponent {
     private readonly blockUserUseCase =
         inject(BlockUserUseCase);
 
+    private readonly sessionService =
+        inject(SessionService);
+
 
     readonly users =
         signal<ManagedUser[]>([]);
+
+    readonly showEmployeeRegistration =
+        signal(false);
 
 
     readonly selectedUser =
@@ -127,6 +146,36 @@ export class UserManagementComponent {
                     ]
                 ]
             });
+
+    get barberiaId(): string {
+        return this.sessionService.getBarbershopId() ?? '';
+    }
+
+    openEmployeeRegistration(): void {
+        this.errorMessage.set('');
+        this.successMessage.set('');
+
+        if (!this.barberiaId) {
+            this.errorMessage.set(
+                'La sesión no contiene el identificador de la barbería. Vuelve a iniciar sesión o contacta con soporte.'
+            );
+
+            return;
+        }
+
+        this.showEmployeeRegistration.set(true);
+    }
+
+    closeEmployeeRegistration(): void {
+        this.showEmployeeRegistration.set(false);
+    }
+
+    onEmployeeRegistered(employee: Employee): void {
+        this.showEmployeeRegistration.set(false);
+        this.successMessage.set(
+            `${employee.name} fue registrado y podrá iniciar sesión con la cuenta de Google vinculada.`
+        );
+    }
 
 
     searchUser(): void {

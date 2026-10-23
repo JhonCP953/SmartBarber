@@ -26,6 +26,18 @@ import {
     BlockUserUseCase
 } from './application/use-cases/block-user.use-case';
 
+import {
+    EmployeeRepository
+} from '../employee/domain/repositories/employee.repository';
+
+import {
+    EmployeeApiService
+} from '../employee/infrastructure/api/employee-api.service';
+
+import {
+    CreateEmployeeUseCase
+} from '../employee/application/use-cases/create-employee.use-case';
+
 
 export const USER_MANAGEMENT_ROUTES:
     Routes = [
@@ -52,9 +64,19 @@ export const USER_MANAGEMENT_ROUTES:
                         UserManagementApiService
                 },
 
+                {
+                    provide:
+                        EmployeeRepository,
+
+                    useClass:
+                        EmployeeApiService
+                },
+
                 GetUserUseCase,
 
-                BlockUserUseCase
+                BlockUserUseCase,
+
+                CreateEmployeeUseCase
             ],
 
             loadComponent: () =>

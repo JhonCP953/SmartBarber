@@ -13,7 +13,8 @@ import {
 export abstract class EmployeeRepository {
 
     abstract createEmployee(
-        request: EmployeeRegistration
+        request: EmployeeRegistration,
+        idToken: string
     ):
         Observable<Employee>;
 }
