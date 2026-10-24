@@ -501,7 +501,7 @@ export class AppointmentComponent implements OnInit {
 
     this.isLoading = true;
 
-    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00-05:00`;
+    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00`;
 
     const cleanServiceIds = this.selectedServicesIds
       .map((s: any) => {
