@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {VirtualQueueRepository} from '../../domain/repository/virtualqueue.repository'
-
+import {QueueSnapshotResponse} from '../../domain/model/reservation-queue.model'
 
 @Injectable()
 export class GetQueueUseCase {
@@ -10,7 +10,7 @@ export class GetQueueUseCase {
     private repository: VirtualQueueRepository
   ) {}
 
-  execute(employeeId: string) {
+  execute(employeeId: string):Observable<QueueSnapshotResponse> {
     return this.repository.getQueue(employeeId);
   }
 

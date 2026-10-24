@@ -4,6 +4,8 @@
  * =====================================================
  */
 
+import { exp } from "firebase/firestore/pipelines";
+
 export type ReservationStatus =
   'WAITING' |
   'IN_PROGRESS' |
@@ -150,7 +152,15 @@ export interface QueueWebSocketMessage {
 
 }
 
-
+export interface QueueStatus {
+  id: string,
+  employeeId: string,
+	barbershopId: string,
+	acceptingClients: boolean,
+	version: number,
+	creationDate: string,
+	updatedDate: string
+}
 /*
  * =====================================================
  * TYPE GUARD
