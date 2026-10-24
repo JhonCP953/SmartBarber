@@ -8,12 +8,13 @@ import {
 } from '@angular/common/http';
 
 import {VirtualQueueRepository} from '../../domain/repository/virtualqueue.repository'
-import {OpenQueueResponse} from '../../domain/model/reservation-queue.model'
+import {OpenQueueResponse, QueueStatus} from '../../domain/model/reservation-queue.model'
 import {QueueSnapshotResponse} from '../../domain/model/reservation-queue.model'
 import {CompleteCurrentTurnResponse} from '../../domain/model/reservation-queue.model'
 import {NextCustomerResponse} from '../../domain/model/reservation-queue.model'
 import {CloseQueueResponse} from '../../domain/model/reservation-queue.model'
 import { environment } from '../../../../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class VirtualQueueHttpAdapter
@@ -24,6 +25,12 @@ export class VirtualQueueHttpAdapter
   constructor(
     private http: HttpClient
   ) {}
+  
+  statusQuee(employeeId: string): Observable<QueueStatus> {
+    return this.http.get<QueueStatus>(
+       `${environment.apiUrl}/api/v1/queue/${employeeId}/status`
+    );
+  }
 
   openQueue(employeeId: string) {
     return this.http.post<OpenQueueResponse>( 

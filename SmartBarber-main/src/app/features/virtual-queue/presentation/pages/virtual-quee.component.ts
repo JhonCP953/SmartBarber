@@ -1,6 +1,7 @@
 import {
   Component,
   OnInit,
+  computed,
   inject,
   signal
 } from '@angular/core';
@@ -11,24 +12,30 @@ import { OpenQueueUseCase } from '../../application/usecase/open-queue.use-case'
 import { CloseQueueUseCase } from '../../application/usecase/close-queue.use-case';
 import { GetQueueUseCase } from '../../application/usecase/get-queue.use-case';
 import { NextCustomerUseCase } from '../../application/usecase/next-customer.use-case';
+import { GetStatusQueueUseCase } from '../../application/usecase/get-status-queue.use-case';
 import { CompleteCurrentTurnUseCase } from '../../application/usecase/complete-current-turn.use-case';
+
+import { SessionService } from '../../../../core/auth/services/session.service';
 
 import {
   QueueReservation,
-  QueueSnapshotResponse
+  QueueSnapshotResponse,
+  QueueStatus,
+  QueueErrorResponse
 } from '../../domain/model/reservation-queue.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-virtual-queue',
   standalone: true,
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   templateUrl: './virtual-queue.component.html',
   styleUrl: './virtual-queue.component.css'
 })
-export class VirtualQueueComponent
-  implements OnInit {
+export class VirtualQueueComponent implements OnInit {
+
+  private readonly session =
+    inject(SessionService);
 
   private readonly openQueueUseCase =
     inject(OpenQueueUseCase);
@@ -44,6 +51,9 @@ export class VirtualQueueComponent
 
   private readonly completeCurrentTurnUseCase =
     inject(CompleteCurrentTurnUseCase);
+
+  private readonly getStatusQueue =
+    inject(GetStatusQueueUseCase);
 
   readonly loading =
     signal(false);
@@ -63,20 +73,35 @@ export class VirtualQueueComponent
   readonly waitingTurns =
     signal<QueueReservation[]>([]);
 
+  readonly statusQueue =
+    signal<QueueStatus | null>(null);
+
   readonly acceptingClients =
     signal(false);
 
   readonly waitingCount =
     signal(0);
 
-  /**
-   * TEMPORAL
-   */
-  readonly employeeId =
-    '62b82354-95aa-4444-a2ae-54441973d590';
+  readonly queueClosed = computed(
+    () => !!this.snapshot() && !this.acceptingClients()
+  );
+
+  private get employeeId(): string {
+
+    const barberId =
+      this.session.getBarberId();
+
+    if (!barberId) {
+      throw new Error(
+        'No existe un barbero autenticado.'
+      );
+    }
+
+    return barberId;
+  }
 
   ngOnInit(): void {
-    this.loadQueue();
+    this.consultStatusQueue();
   }
 
   loadQueue(): void {
@@ -127,6 +152,39 @@ export class VirtualQueueComponent
       });
   }
 
+  consultStatusQueue(): void {
+    this.loading.set(true)
+
+    this.getStatusQueue.execute(this.employeeId)
+      .subscribe({
+        next: response => {
+          this.loading.set(false),
+            this.statusQueue.set(response)
+          this.acceptingClients.set(response.acceptingClients)
+          if (response.acceptingClients) {
+            this.loadQueue();
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+
+          this.loading.set(false);
+          this.acceptingClients.set(false)
+          const response: QueueErrorResponse =
+            error.error;
+
+          console.error(
+            'Error en el proceso de consulta de cola',
+            response
+          );
+
+          this.errorMessage.set(
+            response.message
+          );
+        }
+      });
+
+  }
+
   openQueue(): void {
 
     this.actionLoading.set(true);
@@ -138,18 +196,24 @@ export class VirtualQueueComponent
         next: () => {
 
           this.actionLoading.set(false);
-
           this.loadQueue();
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
+
+          this.loading.set(false);
+          this.acceptingClients.set(false)
+          const response: QueueErrorResponse =
+            error.error;
 
           console.error(
-            'Error abriendo cola',
-            error
+            'Error en el proceso de consulta de cola',
+            response
           );
 
-          this.actionLoading.set(false);
+          this.errorMessage.set(
+            response.message
+          );
         }
       });
   }
@@ -163,20 +227,25 @@ export class VirtualQueueComponent
       .subscribe({
 
         next: () => {
-
           this.actionLoading.set(false);
-
-          this.loadQueue();
+          this.consultStatusQueue();
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
+
+          this.loading.set(false);
+          this.acceptingClients.set(false)
+          const response: QueueErrorResponse =
+            error.error;
 
           console.error(
-            'Error cerrando cola',
-            error
+            'Error en el proceso de consulta de cola',
+            response
           );
 
-          this.actionLoading.set(false);
+          this.errorMessage.set(
+            response.message
+          );
         }
       });
   }
@@ -192,7 +261,6 @@ export class VirtualQueueComponent
         next: () => {
 
           this.actionLoading.set(false);
-
           this.loadQueue();
         },
 
@@ -219,18 +287,24 @@ export class VirtualQueueComponent
         next: () => {
 
           this.actionLoading.set(false);
-
           this.loadQueue();
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
+
+          this.loading.set(false);
+          this.acceptingClients.set(false)
+          const response: QueueErrorResponse =
+            error.error;
 
           console.error(
-            'Error completando turno',
-            error
+            'Error en el proceso de consulta de cola',
+            response
           );
 
-          this.actionLoading.set(false);
+          this.errorMessage.set(
+            response.message
+          );
         }
       });
   }
