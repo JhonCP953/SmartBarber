@@ -7,6 +7,8 @@ import {QueueSnapshotResponse} from '../../domain/model/reservation-queue.model'
 import {CompleteCurrentTurnResponse} from '../../domain/model/reservation-queue.model'
 import {NextCustomerResponse} from '../../domain/model/reservation-queue.model'
 import {CloseQueueResponse} from '../../domain/model/reservation-queue.model'
+import {JoinQueueRequest} from '../../domain/model/reservation-queue.model'
+import {JoinQueueResonse} from '../../domain/model/reservation-queue.model'
 import {QueueStatus} from '../../domain/model/reservation-queue.model'
 import { Injectable } from '@angular/core';
 
@@ -40,4 +42,8 @@ export abstract class VirtualQueueRepository {
   abstract statusQuee(   
     employeeId: string
   ): Observable<QueueStatus>;
+
+  abstract joinQueue(
+      body: JoinQueueRequest
+  ): Observable<JoinQueueResonse>;
 }

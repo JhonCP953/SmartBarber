@@ -4,7 +4,9 @@
  * =====================================================
  */
 
-import { exp } from "firebase/firestore/pipelines";
+import { exp } from 'firebase/firestore/pipelines';
+import {ServiceReservation} from './service-reservation.model'
+import {QueueTurn} from './queue-event.model'
 
 export type ReservationStatus =
   'WAITING' |
@@ -45,7 +47,7 @@ export interface CloseQueueResponse {
  * =====================================================
  */
 
-export interface QueueReservation {
+/*export interface QueueReservation {
 
   id: string;
 
@@ -73,7 +75,7 @@ export interface QueueReservation {
 
   updatedDate: string | null;
 
-}
+}*/
 
 /*
  * =====================================================
@@ -88,14 +90,36 @@ export interface QueueSnapshotResponse {
   acceptingClients: boolean;
 
   currentTurn:
-    QueueReservation |
+    QueueTurn |
     null;
 
   waitingTurns:
-    QueueReservation[];
+    QueueTurn[];
 
   updatedAt: string;
 
+}
+
+export interface JoinQueueResonse {
+  creationDate: string;
+  customer: Customer;
+  duration: number;
+  employeeId: string;
+  endTime: string | null;
+  id: string | null;
+  notes: string;
+  queueEntryTime: string;
+  reservationType: string;
+  serviceReservations: ServiceReservation[];
+  startTime: string | null;
+  status: string;
+  updatedDate: string | null;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string;
 }
 
 /*
@@ -105,8 +129,8 @@ export interface QueueSnapshotResponse {
  */
 
 export type NextCustomerResponse =
-  QueueReservation;
-
+  //QueueReservation;
+  QueueTurn
 /*
  * =====================================================
  * COMPLETE CURRENT TURN
@@ -114,13 +138,22 @@ export type NextCustomerResponse =
  */
 
 export type CompleteCurrentTurnResponse =
-  QueueReservation;
+  //QueueReservation;
+  QueueTurn
 
 /*
  * =====================================================
  * ERROR RESPONSE
  * =====================================================
  */
+
+export interface JoinQueueRequest{
+	customerId: string,
+	barbershopId: string,
+	employeeId: string,
+	reservationServiceId: [number],
+	notes: string
+}
 
 export interface QueueErrorResponse {
 

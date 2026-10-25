@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 
 import {VirtualQueueRepository} from '../../domain/repository/virtualqueue.repository'
-import {OpenQueueResponse, QueueStatus} from '../../domain/model/reservation-queue.model'
+import {JoinQueueRequest, JoinQueueResonse, OpenQueueResponse, QueueStatus} from '../../domain/model/reservation-queue.model'
 import {QueueSnapshotResponse} from '../../domain/model/reservation-queue.model'
 import {CompleteCurrentTurnResponse} from '../../domain/model/reservation-queue.model'
 import {NextCustomerResponse} from '../../domain/model/reservation-queue.model'
@@ -25,6 +25,10 @@ export class VirtualQueueHttpAdapter
   constructor(
     private http: HttpClient
   ) {}
+  
+  joinQueue(body: JoinQueueRequest): Observable<JoinQueueResonse> {
+    return this.http.post<JoinQueueResonse>(`${environment.apiUrl}/api/v1/queue/join`, body);
+  }
   
   statusQuee(employeeId: string): Observable<QueueStatus> {
     return this.http.get<QueueStatus>(
