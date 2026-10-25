@@ -150,7 +150,8 @@
             <span class="metric-label">Turno actual</span>
           </div>
           @if (currentTurn(); as turn) {
-            <strong class="metric-value metric-value-id">#{{ turn.id }}</strong>
+            <!--<strong class="metric-value metric-value-id">#{{ turn.reservationId }}</strong>-->
+            <strong class="metric-value metric-value-id">#{{ turn.reservationId }}</strong>
             <span class="metric-caption">En atención</span>
           } @else {
             <strong class="metric-value metric-value-muted">Sin turno</strong>
@@ -177,18 +178,18 @@
             <div class="current-turn-content">
               <div class="turn-number">
                 <span>Reserva</span>
-                <strong>#{{ turn.id }}</strong>
+                <strong>#{{ turn.reservationId }}</strong>
               </div>
  
               <div class="turn-details">
                 <div class="detail-item">
                   <span>Duración estimada</span>
-                  <strong>{{ turn.duration }} min</strong>
+                  <strong>{{ turn.durationMinutes }} min</strong>
                 </div>
-                <div class="detail-item">
+                <!--<div class="detail-item">
                   <span>Tipo de reserva</span>
                   <strong>{{ turn.reservationType }}</strong>
-                </div>
+                </div>-->
               </div>
             </div>
           } @else {
@@ -293,11 +294,11 @@
               <span role="columnheader">Estado</span>
             </div>
  
-            @for (turn of waitingTurns(); track turn.id) {
+            @for (turn of waitingTurns(); track turn.reservationId) {
               <div class="waiting-row" role="row">
-                <strong class="reservation-id" role="cell">#{{ turn.id }}</strong>
-                <span class="reservation-type" role="cell">{{ turn.reservationType }}</span>
-                <span class="reservation-duration" role="cell">{{ turn.duration }} min</span>
+                <strong class="reservation-id" role="cell">#{{ turn.reservationId }}</strong>
+                <!--<span class="reservation-type" role="cell">{{ turn.reservationType }}</span>-->
+                <span class="reservation-duration" role="cell">{{ turn.durationMinutes }} min</span>
                 <span class="status-badge status-waiting" role="cell">En espera</span>
               </div>
             }

@@ -9,6 +9,7 @@ import { GetQueueUseCase } from './application/usecase/get-queue.use-case';
 import { NextCustomerUseCase } from './application/usecase/next-customer.use-case';
 import { CompleteCurrentTurnUseCase } from './application/usecase/complete-current-turn.use-case';
 import { GetStatusQueueUseCase } from './application/usecase/get-status-queue.use-case';
+import {VirtualQueueWebSocketUseCase} from './application/usecase/virtual-queue-socket.use-case';
 
 export const VIRTUAL_QUEUE_ROUTES: Routes = [
   {
@@ -24,7 +25,7 @@ export const VIRTUAL_QUEUE_ROUTES: Routes = [
       NextCustomerUseCase,
       CompleteCurrentTurnUseCase,
       GetStatusQueueUseCase,
-      
+      VirtualQueueWebSocketUseCase
     ],
     loadComponent: () =>
       import('./presentation/pages/virtual-quee.component')

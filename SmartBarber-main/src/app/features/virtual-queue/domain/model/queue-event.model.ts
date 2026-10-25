@@ -12,3 +12,31 @@ export interface OpenAndCloseEventQueue {
   employee: Information;
   barbershop: BarbershopInformation;
 }
+
+export interface QueueEvent {
+  type: string;
+  payload: QueueSnapshotResponseEvent;
+}
+
+export interface QueueSnapshotResponseEvent {
+  employeeId: string;
+  acceptingClients: boolean;
+  currentTurn: QueueTurn | null;
+  waitingTurns: QueueTurn[];
+  updatedAt: string;
+}
+
+export interface QueueTurn {
+  reservationId: string;
+  customer: Customer;
+  position: number;
+  estimatedWaitMinutes: number;
+  durationMinutes: number;
+  status: string;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  cell: string;
+}

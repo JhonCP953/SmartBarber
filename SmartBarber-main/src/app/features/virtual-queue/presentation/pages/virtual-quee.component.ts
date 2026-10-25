@@ -14,15 +14,17 @@ import { GetQueueUseCase } from '../../application/usecase/get-queue.use-case';
 import { NextCustomerUseCase } from '../../application/usecase/next-customer.use-case';
 import { GetStatusQueueUseCase } from '../../application/usecase/get-status-queue.use-case';
 import { CompleteCurrentTurnUseCase } from '../../application/usecase/complete-current-turn.use-case';
+import { VirtualQueueWebSocketUseCase } from '../../application/usecase/virtual-queue-socket.use-case';
 
 import { SessionService } from '../../../../core/auth/services/session.service';
 
 import {
-  QueueReservation,
   QueueSnapshotResponse,
+  //QueueReservation,
   QueueStatus,
-  QueueErrorResponse
+  QueueErrorResponse,
 } from '../../domain/model/reservation-queue.model';
+import { QueueSnapshotResponseEvent, QueueTurn } from '../../domain/model/queue-event.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -55,6 +57,9 @@ export class VirtualQueueComponent implements OnInit {
   private readonly getStatusQueue =
     inject(GetStatusQueueUseCase);
 
+  private readonly websocketEvents =
+    inject(VirtualQueueWebSocketUseCase);
+
   readonly loading =
     signal(false);
 
@@ -65,16 +70,19 @@ export class VirtualQueueComponent implements OnInit {
     signal('');
 
   readonly snapshot =
-    signal<QueueSnapshotResponse | null>(null);
+    signal<QueueSnapshotResponse | QueueSnapshotResponseEvent | null>(null);
 
   readonly currentTurn =
-    signal<QueueReservation | null>(null);
+    signal</*QueueReservation | */QueueTurn  | null>(null);
 
   readonly waitingTurns =
-    signal<QueueReservation[]>([]);
+    signal</*QueueReservation | QueueReservation []*/ QueueTurn[]>([]);
 
   readonly statusQueue =
     signal<QueueStatus | null>(null);
+
+  readonly payload =
+    signal<QueueSnapshotResponse | null>(null);
 
   readonly acceptingClients =
     signal(false);
@@ -163,6 +171,7 @@ export class VirtualQueueComponent implements OnInit {
           this.acceptingClients.set(response.acceptingClients)
           if (response.acceptingClients) {
             this.loadQueue();
+            this.connectWebsocketEvent()
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -192,13 +201,12 @@ export class VirtualQueueComponent implements OnInit {
     this.openQueueUseCase
       .execute(this.employeeId)
       .subscribe({
-
         next: () => {
 
           this.actionLoading.set(false);
           this.loadQueue();
+          this.connectWebsocketEvent()
         },
-
         error: (error: HttpErrorResponse) => {
 
           this.loading.set(false);
@@ -306,6 +314,114 @@ export class VirtualQueueComponent implements OnInit {
             response.message
           );
         }
+      });
+  }
+
+  connectWebsocketEvent(): void {
+
+    this.websocketEvents
+      .connectWebsocket(this.employeeId)
+      .subscribe({
+      
+        next: event => {
+
+          console.log(
+            '[QUEUE EVENT]',
+            event.type,
+            event
+          );
+
+          switch (event.type) {
+
+            case 'QUEUE_SNAPSHOT':
+
+              this.snapshot.set(event.payload);
+
+              this.acceptingClients.set(
+                event.payload.acceptingClients
+              );
+
+              this.currentTurn.set(
+                event.payload.currentTurn
+              );
+
+              this.waitingTurns.set(
+                event.payload.waitingTurns
+              );
+
+              this.waitingCount.set(
+                event.payload.waitingTurns.length
+              );
+
+              break;
+
+            case 'QUEUE_NEXT_CUSTOMER':
+
+              this.snapshot.set(event.payload);
+
+              this.acceptingClients.set(
+                event.payload.acceptingClients
+              );
+
+              this.currentTurn.set(
+                event.payload.currentTurn
+              );
+
+              this.waitingTurns.set(
+                event.payload.waitingTurns
+              );
+
+              this.waitingCount.set(
+                event.payload.waitingTurns.length
+              );
+
+              break;
+
+            case 'QUEUE_COMPLETED_CURRENT_TURN':
+
+              this.snapshot.set(event.payload);
+
+              this.acceptingClients.set(
+                event.payload.acceptingClients
+              );
+
+              this.currentTurn.set(
+                event.payload.currentTurn
+              );
+
+              this.waitingTurns.set(
+                event.payload.waitingTurns
+              );
+
+              this.waitingCount.set(
+                event.payload.waitingTurns.length
+              );
+
+              break;
+
+            default:
+
+              console.warn(
+                'Evento no manejado:',
+                event.type
+              );
+          }
+        },
+
+        error: error => {
+
+          console.error(
+            'Error WebSocket:',
+            error
+          );
+        },
+
+        /*complete: () => {
+
+          console.log(
+            'Conexión WebSocket cerrada'
+          );
+        }*/
       });
   }
 }

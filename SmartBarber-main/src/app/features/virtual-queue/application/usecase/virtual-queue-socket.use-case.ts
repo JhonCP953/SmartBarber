@@ -1,55 +1,116 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import {
-  VirtualQueueRepository
-} from '../../domain/repository/virtualqueue.repository';
-
-import {
-  QueueEvent
-} from '../../domain/model/queue-event.model';
+import { environment } from '../../../../../environments/environment';
+import { QueueEvent } from '../../domain/model/queue-event.model';
+import { EventQueueRepository } from '../../domain/repository/event-queue.repository';
 
 @Injectable({
   providedIn: 'root'
 })
-export class VirtualQueueWebSocketUseCAse
-  extends VirtualQueueRepository {
+export class VirtualQueueWebSocketUseCase extends EventQueueRepository {
 
   private socket?: WebSocket;
 
-  connect(
+  override connectWebsocket(
     employeeId: string
   ): Observable<QueueEvent> {
 
-    return new Observable(observer => {
+    return new Observable<QueueEvent>(observer => {
+
+      if (this.socket?.readyState === WebSocket.OPEN) {
+        this.socket.close();
+      }
+
+      const wsUrl = environment.apiUrl
+        .replace(/^http:/, 'ws:')
+        .replace(/^https:/, 'wss:')
+        .replace(/\/$/, '');
 
       this.socket = new WebSocket(
-        `ws://localhost:8080ws/virtual-queue?employeeId=${employeeId}`
+        `${wsUrl}/ws/virtual-queue?employeeId=${encodeURIComponent(employeeId)}`
       );
+
+      this.socket.onopen = () => {
+        console.log(
+          '[VirtualQueueWS] Conectado para empleado:',
+          employeeId
+        );
+      };
 
       this.socket.onmessage = event => {
 
-        const response =
-          JSON.parse(event.data) as QueueEvent;
+        try {
 
-        observer.next(response);
+          const response = JSON.parse(
+            event.data
+          ) as QueueEvent;
+
+          if (!response?.type) {
+            return;
+          }
+
+          observer.next(response);
+
+        } catch (error) {
+
+          console.error(
+            '[VirtualQueueWS] Error procesando mensaje',
+            error
+          );
+        }
       };
 
-      this.socket.onerror = error => {
+      /*this.socket.onerror = error => {
+
+        console.error(
+          '[VirtualQueueWS] Error de conexión',
+          error
+        );
+
         observer.error(error);
       };
 
-      this.socket.onclose = () => {
+      this.socket.onclose = event => {
+
+        console.log(
+          '[VirtualQueueWS] Conexión cerrada',
+          event.code,
+          event.reason
+        );
+
         observer.complete();
       };
 
       return () => {
-        this.socket?.close();
-      };
+
+        if (
+          this.socket &&
+          (
+            this.socket.readyState === WebSocket.OPEN ||
+            this.socket.readyState === WebSocket.CONNECTING
+          )
+        ) {
+          this.socket.close();
+        }
+
+        this.socket = undefined;
+      };*/
     });
   }
 
   disconnect(): void {
-    this.socket?.close();
+
+    if (
+      this.socket &&
+      (
+        this.socket.readyState === WebSocket.OPEN ||
+        this.socket.readyState === WebSocket.CONNECTING
+      )
+    ) {
+      this.socket.close();
+    }
+
+    this.socket = undefined;
   }
 }
