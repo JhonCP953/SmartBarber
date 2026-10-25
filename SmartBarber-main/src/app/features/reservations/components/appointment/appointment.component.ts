@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +7,8 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { Unsubscribe, getAuth, onAuthStateChanged } from 'firebase/auth';
 import { ReservationService } from '../../services/reservation.service';
 import { Barberia, Barbero, SlotHorario, RangoOcupado } from '../../models/reservation.model';
+import {CreateReservationPayload} from '../../models/reservation.model'
+import {SessionService} from '../../../../core/auth/services/session.service'
 
 interface Turno {
   inicio: string;                 // "08:00"
@@ -38,6 +40,7 @@ interface ResultadoHorario {
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent implements OnInit, OnDestroy {
+  private readonly sessionService = inject(SessionService);
   // UID del usuario logueado en Firebase (se mantiene actualizado con onAuthStateChanged)
   internalDatabaseUserId: string = getAuth().currentUser?.uid ?? '';
   barberias: Barberia[] = [];
@@ -94,7 +97,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     this.authUnsub = onAuthStateChanged(getAuth(), (user) => {
       this.internalDatabaseUserId = user?.uid ?? '';
     });
-
     this.generarCalendario();
     this.cargarBarberias();
   }
@@ -582,7 +584,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00`;
+    const startTimeIso = `${this.selectedFecha}T${this.selectedHora}:00-05:00`;
 
     // Servicios: lista de números si todos los ids son numéricos; si no, se envían tal cual (texto)
     const rawServiceIds: string[] = this.selectedServicesIds.map((s: any) =>
@@ -591,7 +593,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     const todosNumericos = rawServiceIds.every(id => /^\d+$/.test(id));
     const reservationServiceId: any[] = todosNumericos ? rawServiceIds.map(Number) : rawServiceIds;
 
-    const customerId = 'af45046b-2939-4718-a8b1-952701cdbeea';         // usuario logueado (UID de Firebase)
+    const customerId = this.sessionService.getClientId()|| '';         // usuario logueado (UID de Firebase)
     const employeeId = String(this.selectedBarbero.id || '').trim();   // id_empleado (UUID) del barbero elegido
     const barbershopId = String(this.selectedBarberiaId || '').trim(); // id_barberia (UUID) de la sede elegida
 
@@ -604,7 +606,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const payload = {
+    const payload : CreateReservationPayload = {
       customerId,
       employeeId,
       barbershopId,

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, from, throwError } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { getAuth } from 'firebase/auth';
+import {CreateReservationPayload} from '../models/reservation.model'
 
 @Injectable({
   providedIn: 'root'
@@ -85,7 +86,7 @@ export class ReservationService {
     );
   }
 
-  createReservation(payload: any): Observable<any> {
+  createReservation(payload: CreateReservationPayload): Observable<any> {
     console.log("Http"+JSON.stringify(payload));
     return this.getAuthHeaders().pipe(
       switchMap(headers => this.http.post(this.createReservationUrl, payload, { headers }))
