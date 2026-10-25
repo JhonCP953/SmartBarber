@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.input-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444444;
+}
+
+.styled-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #dcd6cd;
+  border-radius: 8px;
+  background-color: #faf8f5;
+  font-size: 0.95rem;
+  color: #2c2c2c;
+  outline: none;
+}
+
+.styled-select:focus {
+  border-color: #c29b68;
+  box-shadow: 0 0 0 2px rgba(194, 155, 104, 0.2);
+}

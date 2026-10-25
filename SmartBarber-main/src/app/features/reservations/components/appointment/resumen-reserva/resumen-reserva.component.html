@@ -1,0 +1,18 @@
+<div class="service-summary-box">
+  <div class="summary-row" *ngFor="let s of servicios">
+    <span class="service-title-sum">{{ s.name | uppercase }}</span>
+    <span class="service-price-sum">COP {{ (s.special_price || s.price) | number }}</span>
+  </div>
+  <div class="summary-sub">
+    <span>{{ duracion }} min</span>
+  </div>
+  <hr class="summary-divider" />
+  <div class="summary-total-row">
+    <strong>Total</strong>
+    <strong class="total-price">COP {{ total | number }}</strong>
+  </div>
+</div>
+
+<button class="btn-confirmar" type="button" (click)="confirmar.emit()" [disabled]="cargando">
+  {{ cargando ? 'Procesando...' : 'Confirmar Reserva' }}
+</button>

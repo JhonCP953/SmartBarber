@@ -1,0 +1,23 @@
+<div class="input-group">
+  <label class="input-label">Horarios Disponibles para el {{ selectedFecha }}</label>
+
+  <!-- Estado de carga -->
+  <small *ngIf="loading" class="text-muted">Cargando horarios...</small>
+
+  <!-- Error o barbero sin turno -->
+  <small *ngIf="!loading && error" class="text-danger">{{ error }}</small>
+
+  <div class="slots-container" *ngIf="!loading">
+    <button
+      type="button"
+      *ngFor="let slot of slots"
+      class="slot-btn"
+      [class.active]="selectedHora === slot.hora"
+      [class.disabled]="!slot.disponible"
+      [disabled]="!slot.disponible"
+      (click)="horaSeleccionada.emit(slot)"
+    >
+      {{ slot.hora }} {{ !slot.disponible ? '(' + slot.motivoOcupado + ')' : '' }}
+    </button>
+  </div>
+</div>

@@ -30,6 +30,16 @@ export interface Barbero {
   scheduleId?: number | string | null;
 }
 
+export interface Servicio {
+  id: number;
+  name: string;
+  description?: string;
+  duration?: number;
+  price: number;
+  special_price?: number | null;
+  offert?: boolean;
+}
+
 export interface SlotHorario {
   hora: string;
   disponible: boolean;
