@@ -1,0 +1,9 @@
+<div class="input-group">
+  <label class="input-label">Sede Barbería *</label>
+  <select class="styled-select" [ngModel]="selectedId" (ngModelChange)="barberiaChange.emit($event)">
+    <option value="" disabled>-- Seleccionar Barbería --</option>
+    <option *ngFor="let b of barberias" [value]="b.id">
+      {{ b.name }} - {{ b.location }}
+    </option>
+  </select>
+</div>

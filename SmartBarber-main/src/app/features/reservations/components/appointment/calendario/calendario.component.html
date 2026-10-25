@@ -1,0 +1,22 @@
+<div class="calendar-widget">
+  <div class="calendar-header-nav">
+    <button class="cal-nav-btn" type="button" (click)="cambioMes.emit(-1)">&lt;</button>
+    <span class="cal-month-title">{{ mes.titulo }}</span>
+    <button class="cal-nav-btn" type="button" (click)="cambioMes.emit(1)">&gt;</button>
+  </div>
+  <div class="calendar-days-grid">
+    <span class="day-label">L</span><span class="day-label">M</span><span class="day-label">M</span><span class="day-label">J</span><span class="day-label">V</span><span class="day-label">S</span><span class="day-label">D</span>
+
+    <div *ngFor="let p of mes.relleno" class="cal-day-empty"></div>
+
+    <button
+      *ngFor="let d of mes.dias"
+      class="cal-day-cell"
+      [class.active-day]="selectedDia === d"
+      type="button"
+      (click)="diaSeleccionado.emit(d)"
+    >
+      {{ d }}
+    </button>
+  </div>
+</div>

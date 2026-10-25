@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+
+.barberos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.barber-card {
+  border: 1px solid #e2ded8;
+  border-radius: 10px;
+  padding: 0.8rem;
+  cursor: pointer;
+  background: #faf8f5;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.barber-card:hover {
+  border-color: #c29b68;
+}
+
+.barber-card.selected {
+  border: 2px solid #c29b68;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(194, 155, 104, 0.2);
+}
+
+.barber-avatar-container {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.barber-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.barber-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2c2c2c;
+  margin: 0 0 0.2rem 0;
+}
+
+.barber-spec {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0 0 0.5rem 0;
+}
+
+.barber-status {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.libre { background-color: #2ecc71; }
+.status-dot.ocupado { background-color: #e74c3c; }
+.status-dot.almuerzo { background-color: #3498db; }
+.status-dot.descanso { background-color: #f39c12; }
+
+.status-text {
+  color: #555;
+  font-weight: 600;
+}
