@@ -3,12 +3,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, from, throwError } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { getAuth } from 'firebase/auth';
+import {CreateReservationPayload} from '../models/reservation.model'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
   private apiUrl = 'http://localhost:8080';
+
+  // Endpoint de creación de reservas: POST http://localhost:8080/reservation-service/create
+  private readonly createReservationUrl = `${this.apiUrl}/reservation-service/create`;
 
   constructor(private http: HttpClient) {}
 
@@ -65,14 +69,14 @@ export class ReservationService {
     );
   }
 
-  // El id es el del HORARIO (numerico), por ejemplo /schedule-service/id/5
-  getScheduleById(scheduleId: number | string): Observable<any> {
+  // Horario del empleado: GET /schedule-service/empleado/{idEmpleado}
+  getScheduleById(employeeId: number | string): Observable<any> {
     return this.getAuthHeaders().pipe(
-      switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/empleado/${scheduleId}`, { headers }))
+      switchMap(headers => this.http.get(`${this.apiUrl}/schedule-service/empleado/${employeeId}`, { headers }))
     );
   }
 
-  // Endpoint que debe crear el backend: reservas del empleado en un dia (YYYY-MM-DD)
+  // Reservas del empleado en un día (YYYY-MM-DD): GET /reservation-service/employee/{idEmpleado}?date=
   getReservationsByEmployee(employeeId: string, date: string): Observable<any> {
     return this.getAuthHeaders().pipe(
       switchMap(headers => this.http.get(
@@ -82,9 +86,10 @@ export class ReservationService {
     );
   }
 
-  createReservation(payload: any): Observable<any> {
+  createReservation(payload: CreateReservationPayload): Observable<any> {
+    console.log("Http"+JSON.stringify(payload));
     return this.getAuthHeaders().pipe(
-      switchMap(headers => this.http.post(`${this.apiUrl}/reservation-service/create`, payload, { headers }))
+      switchMap(headers => this.http.post(this.createReservationUrl, payload, { headers }))
     );
   }
 }

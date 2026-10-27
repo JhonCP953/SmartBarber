@@ -1,0 +1,20 @@
+<div class="barberos-grid">
+  <div
+    *ngFor="let barbero of barberos"
+    class="barber-card"
+    [class.selected]="selected?.id === barbero.id"
+    (click)="barberoSeleccionado.emit(barbero)"
+  >
+    <div class="barber-avatar-container">
+      <img [src]="barbero.foto" [alt]="barbero.name" class="barber-img" />
+    </div>
+    <div class="barber-info">
+      <h4 class="barber-name">{{ barbero.name }}</h4>
+      <p class="barber-spec">{{ barbero.especialidad }}</p>
+      <div class="barber-status">
+        <span class="status-dot" [ngClass]="barbero.estado"></span>
+        <span class="status-text">{{ barbero.estadoTexto }}</span>
+      </div>
+    </div>
+  </div>
+</div>

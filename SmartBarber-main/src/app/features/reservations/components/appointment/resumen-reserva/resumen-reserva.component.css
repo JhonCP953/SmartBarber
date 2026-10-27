@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+.service-summary-box {
+  background: #faf8f5;
+  border: 1px solid #e2ded8;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2c2c2c;
+}
+
+.summary-row + .summary-row {
+  margin-top: 0.4rem;
+}
+
+.summary-sub {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.summary-divider {
+  border: none;
+  border-top: 1px solid #dcd6cd;
+  margin: 0.8rem 0;
+}
+
+.summary-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  color: #2c2c2c;
+}
+
+.total-price {
+  color: #2c2c2c;
+}
+
+.btn-confirmar {
+  background-color: #2c2c2c;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1.5rem;
+  transition: background 0.2s;
+}
+
+.btn-confirmar:hover {
+  background-color: #c29b68;
+}

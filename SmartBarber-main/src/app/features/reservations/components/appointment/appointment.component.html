@@ -1,6 +1,6 @@
 <div class="booking-page-wrapper">
   <div class="booking-main-card">
-    
+
     <!-- Encabezado -->
     <div class="booking-header">
       <span class="gauge-tag">MIS RESERVAS</span>
@@ -10,171 +10,66 @@
 
     <!-- Contenedor 2 Columnas -->
     <div class="booking-grid-columns">
-      
-      <!-- COLUMNA 1: Paso 1 - Barbería y Barberos -->
+
+      <!-- COLUMNA 1: Paso 1 - Barbería, barberos y servicios -->
       <div class="step-card">
         <div class="step-header">
           <h3> Seleccionar Barbería (Sede)</h3>
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Sede Barbería *</label>
-          <select class="styled-select" [(ngModel)]="selectedBarberiaId" (ngModelChange)="onBarberiaChange($event)">
-            <option value="" disabled>-- Seleccionar Barbería --</option>
-            <option *ngFor="let b of barberias" [value]="b.id">
-              {{ b.name }} - {{ b.location }}
-            </option>
-          </select>
-        </div>
+        <app-barberia-selector
+          [barberias]="barberias"
+          [selectedId]="selectedBarberiaId"
+          (barberiaChange)="onBarberiaChange($event)">
+        </app-barberia-selector>
 
-        <!-- Tarjetas de Barberos -->
-        <div class="barberos-grid">
-          <div 
-            *ngFor="let barbero of barberosFiltrados" 
-            class="barber-card"
-            [class.selected]="selectedBarbero?.id === barbero.id"
-            (click)="onBarberoSelect(barbero)"
-          >
-            <div class="barber-avatar-container">
-              <img [src]="barbero.foto" [alt]="barbero.name" class="barber-img" />
-            </div>
-            <div class="barber-info">
-              <h4 class="barber-name">{{ barbero.name }}</h4>
-              <p class="barber-spec">{{ barbero.especialidad }}</p>
-              <div class="barber-status">
-                <span class="status-dot" [ngClass]="barbero.estado"></span>
-                <span class="status-text">{{ barbero.estadoTexto }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="services-section mt-4">
-  <label class="section-title">Servicios Disponibles *</label>
+        <app-barbero-list
+          [barberos]="barberosFiltrados"
+          [selected]="selectedBarbero"
+          (barberoSeleccionado)="onBarberoSelect($event)">
+        </app-barbero-list>
 
-  <!-- Spinner / Estado de carga de servicios -->
-  <div *ngIf="loadingServicios" class="text-center py-3">
-    <small class="text-muted">Cargando servicios de la sede...</small>
-  </div>
-
-  <!-- Mensaje si no hay servicios -->
-  <div *ngIf="!loadingServicios && serviciosDisponibles.length === 0" class="alert alert-warning py-2 text-center">
-    <small>No hay servicios disponibles para esta barbería.</small>
-  </div>
-
-  <!-- Contenedor de Tarjetas / Lista de Servicios -->
-  <div *ngIf="!loadingServicios && serviciosDisponibles.length > 0" class="services-grid">
-    <div 
-      *ngFor="let servicio of serviciosDisponibles" 
-      class="service-card" 
-      [class.selected]="isServiceSelected(servicio.id)"
-      (click)="toggleServiceSelection(servicio)"
-    >
-      <div class="service-info">
-        <div class="service-name-row">
-          <input 
-            type="checkbox" 
-            [checked]="isServiceSelected(servicio.id)" 
-            class="service-checkbox" 
-            readonly
-          />
-          <h5 class="service-name">{{ servicio.name }}</h5>
-        </div>
-        <p class="service-desc" *ngIf="servicio.description">{{ servicio.description }}</p>
-        <span class="service-duration" *ngIf="servicio.duration">
-          ⏱️ {{ servicio.duration }} min
-        </span>
+        <app-servicio-list
+          [servicios]="serviciosDisponibles"
+          [selectedIds]="selectedServicesIds"
+          [loading]="loadingServicios"
+          (servicioToggle)="toggleServicio($event)">
+        </app-servicio-list>
       </div>
 
-      <div class="service-price-badge">
-        <span class="price-amount">COP {{ (servicio.special_price || servicio.price) | number }}</span>
-        <small class="old-price" *ngIf="servicio.offert && servicio.price > servicio.special_price">
-          COP {{ servicio.price | number }}
-        </small>
-      </div>
-    </div>
-  </div>
-</div>
-      </div>
-
-      <!-- COLUMNA 2: Paso 2 - Calendario y Confirmación -->
+      <!-- COLUMNA 2: Paso 2 - Calendario, horarios y confirmación -->
       <div class="step-card">
         <div class="step-header">
           <h3>Seleccionar Barbero y Hora </h3>
         </div>
 
-        <!-- Calendario Dinámico -->
-        <div class="calendar-widget">
-          <div class="calendar-header-nav">
-            <button class="cal-nav-btn" type="button" (click)="cambiarMes(-1)">&lt;</button>
-            <span class="cal-month-title">{{ currentMonthYear }}</span>
-            <button class="cal-nav-btn" type="button" (click)="cambiarMes(1)">&gt;</button>
-          </div>
-          <div class="calendar-days-grid">
-            <span class="day-label">L</span><span class="day-label">M</span><span class="day-label">M</span><span class="day-label">J</span><span class="day-label">V</span><span class="day-label">S</span><span class="day-label">D</span>
+        <app-calendario
+          [currentDate]="currentDate"
+          [selectedDia]="selectedDia"
+          (cambioMes)="cambiarMes($event)"
+          (diaSeleccionado)="seleccionarDia($event)">
+        </app-calendario>
 
-            <div *ngFor="let p of paddingDays" class="cal-day-empty"></div>
+        <app-horarios-slots
+          *ngIf="selectedBarbero"
+          class="mt-3"
+          [selectedFecha]="selectedFecha"
+          [selectedHora]="selectedHora"
+          [slots]="slotsHorarios"
+          [loading]="loadingHorarios"
+          [error]="errorHorario"
+          (horaSeleccionada)="seleccionarHora($event)">
+        </app-horarios-slots>
 
-            <button 
-              *ngFor="let d of diasMes" 
-              class="cal-day-cell" 
-              [class.active-day]="selectedDia === d"
-              type="button"
-              (click)="seleccionarDia(d)"
-            >
-              {{ d }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Horarios Disponibles -->
-<div class="input-group mt-3" *ngIf="selectedBarbero">
-  <label class="input-label">Horarios Disponibles para el {{ selectedFecha }}</label>
-
-  <!-- Estado de carga -->
-  <small *ngIf="loadingHorarios" class="text-muted">Cargando horarios...</small>
-
-  <!-- Error o barbero sin turno -->
-  <small *ngIf="!loadingHorarios && errorHorario" class="text-danger">{{ errorHorario }}</small>
-
-  <div class="slots-container" *ngIf="!loadingHorarios">
-    <button
-      type="button"
-      *ngFor="let slot of slotsHorarios"
-      class="slot-btn"
-      [class.active]="selectedHora === slot.hora"
-      [class.disabled]="!slot.disponible"
-      [disabled]="!slot.disponible"
-      (click)="seleccionarHora(slot)"
-    >
-      {{ slot.hora }} {{ !slot.disponible ? '(' + slot.motivoOcupado + ')' : '' }}
-    </button>
-  </div>
-</div>
-
-        <!-- Resumen (Valor COP 30,000) -->
-        <div class="service-summary-box">
-          <div class="summary-row">
-            <span class="service-title-sum">CORTE DE CABELLO</span>
-            <span class="service-price-sum">COP 30,000</span>
-          </div>
-          <div class="summary-sub">
-            <span>30 min</span>
-          </div>
-          <hr class="summary-divider" />
-          <div class="summary-total-row">
-            <strong>Total</strong>
-            <strong class="total-price">COP 30,000</strong>
-          </div>
-        </div>
-
-        <!-- Botón de Confirmación -->
-        <button class="btn-confirmar" (click)="crearReserva()" [disabled]="isLoading">
-          {{ isLoading ? 'Procesando...' : 'Confirmar Reserva' }}
-        </button>
-
+        <app-resumen-reserva
+          [servicios]="serviciosSeleccionados"
+          [total]="precioTotal"
+          [duracion]="duracionTotal"
+          [cargando]="isLoading"
+          (confirmar)="crearReserva()">
+        </app-resumen-reserva>
       </div>
 
     </div>
-
   </div>
 </div>
