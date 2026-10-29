@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { BarberServiConfigComponent } from './crud-servicios.component';
-import { BarberServiceService } from '../../../service/barber-service.service';
-import { BarberShopApiService } from '../../../infrastructure/services/barber-shop-api.service';
+import { BarberServiceService } from '../../../../service/barber-service.service';
+import { BarberShopApiService } from '../../../../infrastructure/services/barber-shop-api.service';
 
 describe('BarberServiConfigComponent', () => {
   let component: BarberServiConfigComponent;

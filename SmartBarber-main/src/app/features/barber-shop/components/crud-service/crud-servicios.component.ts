@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BarberServiceService } from '../../../service/barber-service.service';
-import { BarberShopApiService } from '../../../infrastructure/services/barber-shop-api.service';
+import { BarberServiceService } from '../../service/barber-service.service';
+import { BarberShopApiService } from '../../infrastructure/services/barber-shop-api.service';
 
 import { BarberServicePayload, BarberiaOpcion, ServicioFormValue } from './models/servicio.model';
 import { buildServicePayload, toBarberiaOpciones, toServiciosView } from './mappers/servicio.mapper';
